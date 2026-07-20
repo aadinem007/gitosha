@@ -1,0 +1,22 @@
+{
+  "title": "Shipyard Issue #2 — Replace with your real title and ideas",
+  "ideas": [
+    {
+      "name": "Example Idea Name",
+      "category": "Software",
+      "oneLiner": "One sentence describing the idea.",
+      "scores": {
+        "demand": 7,
+        "competition": 5,
+        "scalability": 8,
+        "automation": 7,
+        "margin": 8,
+        "mrrPotential": 6,
+        "barrierToEntry": 6,
+        "aiLeverage": 6,
+        "globalReach": 8,
+        "timeToLaunch": 7
+      }
+    }
+  ]
+}

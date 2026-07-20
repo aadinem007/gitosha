@@ -1,0 +1,53 @@
+"use client";
+
+import { useState } from "react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+
+export function LoginForm({ next }: { next: string }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
+      },
+    });
+    setStatus(error ? "error" : "sent");
+  }
+
+  if (status === "sent") {
+    return (
+      <p className="text-sm text-emerald-400">
+        Check your inbox for a magic link to finish signing in.
+      </p>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <input
+        type="email"
+        required
+        placeholder="you@company.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-neutral-500 focus:outline-none"
+      />
+      <button
+        type="submit"
+        disabled={status === "loading"}
+        className="rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-neutral-950 hover:bg-neutral-200 disabled:opacity-60"
+      >
+        {status === "loading" ? "Sending…" : "Email me a magic link"}
+      </button>
+      {status === "error" && (
+        <p className="text-xs text-red-400">Something went wrong — try again.</p>
+      )}
+    </form>
+  );
+}

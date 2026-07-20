@@ -1,0 +1,83 @@
+// Shipyard data model.
+// Two products share one subscriber base:
+//  - Build-Intel Vault: the research/scoring subscription (Subscriber + Idea)
+//  - Foundry Kit: the starter-kit product (LicenseKey)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SubscriberTier {
+  FREE
+  PRO
+  TEAM
+}
+
+enum SubscriberStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+model Subscriber {
+  id                   String           @id @default(cuid())
+  email                String           @unique
+  tier                 SubscriberTier   @default(FREE)
+  status               SubscriberStatus @default(ACTIVE)
+  stripeCustomerId     String?          @unique
+  stripeSubscriptionId String?          @unique
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  @@index([tier])
+}
+
+enum LicenseTier {
+  SOLO
+  PRO
+  AGENCY
+}
+
+model LicenseKey {
+  id              String      @id @default(cuid())
+  key             String      @unique
+  email           String
+  tier            LicenseTier
+  stripePaymentId String?     @unique
+  activatedAt     DateTime?
+  createdAt       DateTime    @default(now())
+
+  @@index([email])
+}
+
+model Idea {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  category     String
+  oneLiner     String
+  scores       Json
+  totalScore   Int
+  isPremium    Boolean   @default(true)
+  teardownMd   String?
+  publishedAt  DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([publishedAt])
+  @@index([totalScore])
+}
+
+model Issue {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  summaryMd   String
+  ideaIds     String[]
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+}

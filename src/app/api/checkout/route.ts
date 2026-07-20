@@ -51,34 +51,50 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Vault subscription → Razorpay Subscription (needs a Plan ID from dashboard/setup script)
-  if (plan.mode === "subscription" && plan.planEnvVar) {
-    const planIdRzp = PLAN_IDS[plan.planEnvVar];
-    if (!planIdRzp) {
-      return NextResponse.json(
-        {
-          error: `Razorpay plan not configured for ${plan.id}. Run npm run setup-razorpay or set RAZORPAY_PLAN_* env vars.`,
-        },
-        { status: 500 }
-      );
+  // Vault: prefer Razorpay Subscriptions when plan IDs exist; otherwise
+  // fall back to a one-time Order (same unlock, no auto-renew yet).
+  if (plan.mode === "subscription") {
+    const planIdRzp = plan.planEnvVar ? PLAN_IDS[plan.planEnvVar] : "";
+
+    if (planIdRzp) {
+      const subscription = await razorpay.subscriptions.create({
+        plan_id: planIdRzp,
+        total_count: 120,
+        customer_notify: true,
+        notes: { planId: plan.id, product: plan.product, email },
+      });
+
+      return NextResponse.json({
+        mode: "subscription",
+        keyId: RAZORPAY_KEY_ID,
+        subscriptionId: subscription.id,
+        planId: plan.id,
+        product: plan.product,
+        email,
+        name: "Shipyard",
+        description: plan.name,
+      });
     }
 
-    const subscription = await razorpay.subscriptions.create({
-      plan_id: planIdRzp,
-      total_count: 120, // ~10 years of monthly billing; cancel anytime
-      customer_notify: true,
+    // Fallback: one-time Order for first month (works without Subscriptions product)
+    const order = await razorpay.orders.create({
+      amount: plan.amountPaise,
+      currency: "INR",
+      receipt: `vault_${Date.now()}`.slice(0, 40),
       notes: { planId: plan.id, product: plan.product, email },
     });
 
     return NextResponse.json({
-      mode: "subscription",
+      mode: "payment",
       keyId: RAZORPAY_KEY_ID,
-      subscriptionId: subscription.id,
+      orderId: order.id,
+      amount: plan.amountPaise,
+      currency: "INR",
       planId: plan.id,
       product: plan.product,
       email,
       name: "Shipyard",
-      description: plan.name,
+      description: `${plan.name} (first month)`,
     });
   }
 

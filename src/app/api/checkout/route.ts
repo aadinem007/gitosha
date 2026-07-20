@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { stripe, PRICE_IDS } from "@/lib/stripe";
+import { razorpay, RAZORPAY_KEY_ID, PLAN_IDS } from "@/lib/razorpay";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 
 const bodySchema = z.object({
@@ -14,31 +14,73 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const { planId, email } = parsed.data;
-  const plan = [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
-
-  if (!plan || plan.mode === "none" || !plan.priceEnvVar) {
-    return NextResponse.json({ error: "Unknown or free plan" }, { status: 400 });
-  }
-
-  const priceId = PRICE_IDS[plan.priceEnvVar as keyof typeof PRICE_IDS];
-  if (!priceId) {
+  if (!RAZORPAY_KEY_ID || RAZORPAY_KEY_ID.includes("placeholder")) {
     return NextResponse.json(
-      { error: `Stripe price not configured for ${plan.id}. Set the matching STRIPE_PRICE_* env var.` },
+      { error: "Razorpay is not configured yet. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET." },
       { status: 500 }
     );
   }
 
-  const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const { planId, email } = parsed.data;
+  const plan = [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
 
-  const session = await stripe.checkout.sessions.create({
-    mode: plan.mode === "subscription" ? "subscription" : "payment",
-    customer_email: email,
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${origin}/pricing`,
-    metadata: { planId: plan.id, product: plan.product },
-  });
+  if (!plan || plan.mode === "none" || !plan.amountPaise) {
+    return NextResponse.json({ error: "Unknown or free plan" }, { status: 400 });
+  }
 
-  return NextResponse.json({ url: session.url });
+  // One-time Foundry Kit purchase → Razorpay Order
+  if (plan.mode === "payment") {
+    const order = await razorpay.orders.create({
+      amount: plan.amountPaise,
+      currency: "INR",
+      receipt: `foundry_${Date.now()}`.slice(0, 40),
+      notes: { planId: plan.id, product: plan.product, email },
+    });
+
+    return NextResponse.json({
+      mode: "payment",
+      keyId: RAZORPAY_KEY_ID,
+      orderId: order.id,
+      amount: plan.amountPaise,
+      currency: "INR",
+      planId: plan.id,
+      product: plan.product,
+      email,
+      name: "Shipyard",
+      description: plan.name,
+    });
+  }
+
+  // Vault subscription → Razorpay Subscription (needs a Plan ID from dashboard/setup script)
+  if (plan.mode === "subscription" && plan.planEnvVar) {
+    const planIdRzp = PLAN_IDS[plan.planEnvVar];
+    if (!planIdRzp) {
+      return NextResponse.json(
+        {
+          error: `Razorpay plan not configured for ${plan.id}. Run npm run setup-razorpay or set RAZORPAY_PLAN_* env vars.`,
+        },
+        { status: 500 }
+      );
+    }
+
+    const subscription = await razorpay.subscriptions.create({
+      plan_id: planIdRzp,
+      total_count: 120, // ~10 years of monthly billing; cancel anytime
+      customer_notify: true,
+      notes: { planId: plan.id, product: plan.product, email },
+    });
+
+    return NextResponse.json({
+      mode: "subscription",
+      keyId: RAZORPAY_KEY_ID,
+      subscriptionId: subscription.id,
+      planId: plan.id,
+      product: plan.product,
+      email,
+      name: "Shipyard",
+      description: plan.name,
+    });
+  }
+
+  return NextResponse.json({ error: "Unsupported plan mode" }, { status: 400 });
 }

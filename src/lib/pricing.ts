@@ -6,7 +6,10 @@ export type PricingPlan = {
   cadence: string;
   description: string;
   features: string[];
-  priceEnvVar?: string;
+  /** Amount in paise (INR × 100). Free plans omit this. */
+  amountPaise?: number;
+  /** Env key for Razorpay subscription plan (vault only). */
+  planEnvVar?: "vaultPro" | "vaultTeam";
   mode: "subscription" | "payment" | "none";
   cta: string;
 };
@@ -16,7 +19,7 @@ export const VAULT_PLANS: PricingPlan[] = [
     id: "vault-free",
     product: "vault",
     name: "Free",
-    price: "$0",
+    price: "₹0",
     cadence: "forever",
     description: "The weekly digest and top-3 scored ideas, summary only.",
     features: [
@@ -31,7 +34,7 @@ export const VAULT_PLANS: PricingPlan[] = [
     id: "vault-pro",
     product: "vault",
     name: "Pro",
-    price: "$19",
+    price: "₹1,499",
     cadence: "/month",
     description: "The full scored database, every teardown, launch-kit templates.",
     features: [
@@ -41,7 +44,8 @@ export const VAULT_PLANS: PricingPlan[] = [
       "CSV export of the scoring database",
       "10% off Foundry Kit",
     ],
-    priceEnvVar: "vaultPro",
+    amountPaise: 149900,
+    planEnvVar: "vaultPro",
     mode: "subscription",
     cta: "Start Pro",
   },
@@ -49,7 +53,7 @@ export const VAULT_PLANS: PricingPlan[] = [
     id: "vault-team",
     product: "vault",
     name: "Team",
-    price: "$79",
+    price: "₹5,999",
     cadence: "/month",
     description: "5 seats, private idea requests, priority research queue.",
     features: [
@@ -58,7 +62,8 @@ export const VAULT_PLANS: PricingPlan[] = [
       "Submit a niche for custom scoring",
       "Priority research queue",
     ],
-    priceEnvVar: "vaultTeam",
+    amountPaise: 599900,
+    planEnvVar: "vaultTeam",
     mode: "subscription",
     cta: "Start Team",
   },
@@ -69,16 +74,16 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     id: "foundry-solo",
     product: "foundry",
     name: "Solo",
-    price: "$149",
+    price: "₹11,999",
     cadence: "one-time",
     description: "Full source, single project license, community support.",
     features: [
       "Next.js + TypeScript + Tailwind scaffold",
       "Prisma + Supabase auth wired up",
-      "Stripe billing + webhook handlers pre-built",
+      "Razorpay billing + webhook handlers pre-built",
       "Agent-native architecture docs",
     ],
-    priceEnvVar: "foundrySolo",
+    amountPaise: 1199900,
     mode: "payment",
     cta: "Buy Solo",
   },
@@ -86,7 +91,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     id: "foundry-agency",
     product: "foundry",
     name: "Agency",
-    price: "$499",
+    price: "₹39,999",
     cadence: "one-time",
     description: "Unlimited client projects, white-label rights, priority support.",
     features: [
@@ -95,7 +100,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
       "White-label rights",
       "Priority support",
     ],
-    priceEnvVar: "foundryAgency",
+    amountPaise: 3999900,
     mode: "payment",
     cta: "Buy Agency",
   },

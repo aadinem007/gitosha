@@ -8,7 +8,7 @@ const STACK = [
   "Tailwind CSS",
   "Prisma + PostgreSQL (Supabase-ready)",
   "Supabase Auth (magic link, pre-wired)",
-  "Stripe Checkout + webhooks (subscriptions and one-time)",
+  "Razorpay Checkout + webhooks (subscriptions and one-time — INR)",
   "Resend for transactional email",
   "Docker + GitHub Actions CI",
 ];

@@ -12,7 +12,7 @@ Read this file first — human or coding agent. It exists so a new contributor
 | Styling | Tailwind CSS v4 | No CSS files to hunt for, utility classes colocated with markup |
 | DB | PostgreSQL via Prisma | Supabase's free tier gives you the Postgres instance |
 | Auth | Supabase Auth (magic link) | No password storage/reset flow to build or secure |
-| Payments | Stripe Checkout + webhooks | Hosted checkout page — no PCI scope in this codebase |
+| Payments | Razorpay Checkout + webhooks | Indian UPI/cards; popup checkout — no PCI scope here |
 | Email | Resend | Free tier covers early volume; swap provider by editing `src/lib/email.ts` only |
 
 ## Directory map
@@ -25,8 +25,9 @@ src/
   components/          Client-interactive UI (forms, buttons). Server components stay in app/.
   lib/
     prisma.ts           Singleton Prisma client
-    stripe.ts           Stripe client + price-ID env lookup
-    pricing.ts           Single source of truth for plans (used by pricing page AND checkout API)
+    razorpay.ts         Razorpay client + plan-ID env lookup
+    pricing.ts           Single source of truth for plans (INR, used by pricing page AND checkout API)
+    fulfill.ts           Shared unlock logic after a successful payment
     ideas-data.ts        Seed data for the scored-idea database
     email.ts             All outbound email in one place
     license.ts           License-key generation
@@ -56,17 +57,15 @@ zero manual steps in between.
 ## Data flow for a Vault subscription
 
 1. `CheckoutButton` posts `{ planId, email }` to `POST /api/checkout`.
-2. The API route looks up the Stripe Price ID for that plan from env vars
-   (never hardcoded) and creates a Checkout Session.
-3. Stripe redirects to its hosted page, then back to `/checkout/success`.
-4. Stripe calls `POST /api/stripe/webhook` with `checkout.session.completed`.
-5. The webhook upserts a `Subscriber` row with the correct tier and emails a
-   welcome message.
-6. `/vault` reads the signed-in user's email from Supabase, looks up their
+2. The API creates a Razorpay Subscription against the plan ID in env vars.
+3. The browser opens Razorpay Checkout with `subscription_id`.
+4. On success, the client posts to `POST /api/checkout/verify` (signature check)
+   which unlocks the subscriber; Razorpay also hits
+   `POST /api/razorpay/webhook` as a backup.
+5. `/vault` reads the signed-in user's email from Supabase, looks up their
    `Subscriber` row, and unlocks premium `Idea` rows accordingly.
 
 ## Data flow for a Foundry Kit purchase
 
-Same checkout flow, but `mode: "payment"` instead of `"subscription"`, and the
-webhook branch generates a `LicenseKey` row and emails the key instead of
-upgrading a subscription tier.
+Same flow, but `mode: "payment"` creates a Razorpay Order instead of a
+Subscription, and fulfillment generates a `LicenseKey` row.

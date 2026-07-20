@@ -2,8 +2,9 @@
 
 I can't post to your personal Reddit/X/LinkedIn/Indie Hackers accounts (that
 needs your login), but everything below is written and ready to paste. Post
-in this order, roughly 1-2 days apart, and swap `shipyard.build` for wherever
-you actually deploy it (see README for the free Vercel URL you'll get first).
+in this order, roughly 1-2 days apart. Live site URL to use everywhere:
+
+  https://shipyard-omega-opal.vercel.app
 
 ---
 
@@ -33,7 +34,7 @@ scored database and teardowns. Would love brutal feedback on the scoring
 methodology from this community specifically — you're the audience who'd
 catch me if I started inflating numbers.
 
-[link]
+https://shipyard-omega-opal.vercel.app
 
 ---
 

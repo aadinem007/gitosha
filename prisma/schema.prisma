@@ -25,14 +25,14 @@ enum SubscriberStatus {
 }
 
 model Subscriber {
-  id                   String           @id @default(cuid())
-  email                String           @unique
-  tier                 SubscriberTier   @default(FREE)
-  status               SubscriberStatus @default(ACTIVE)
-  stripeCustomerId     String?          @unique
-  stripeSubscriptionId String?          @unique
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  id                      String           @id @default(cuid())
+  email                   String           @unique
+  tier                    SubscriberTier   @default(FREE)
+  status                  SubscriberStatus @default(ACTIVE)
+  razorpayCustomerId      String?          @unique
+  razorpaySubscriptionId  String?          @unique
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
 
   @@index([tier])
 }
@@ -44,13 +44,14 @@ enum LicenseTier {
 }
 
 model LicenseKey {
-  id              String      @id @default(cuid())
-  key             String      @unique
-  email           String
-  tier            LicenseTier
-  stripePaymentId String?     @unique
-  activatedAt     DateTime?
-  createdAt       DateTime    @default(now())
+  id                String      @id @default(cuid())
+  key               String      @unique
+  email             String
+  tier              LicenseTier
+  razorpayPaymentId String?     @unique
+  razorpayOrderId   String?
+  activatedAt       DateTime?
+  createdAt         DateTime    @default(now())
 
   @@index([email])
 }

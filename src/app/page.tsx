@@ -100,7 +100,7 @@ export default function Home() {
               </p>
               <h3 className="mt-2 text-lg font-semibold">Foundry Kit</h3>
               <p className="mt-2 text-sm text-neutral-400">
-                An AI-agent-native SaaS starter kit — Next.js, Prisma, Supabase, Stripe billing
+                An AI-agent-native SaaS starter kit — Next.js, Prisma, Supabase, Razorpay billing
                 pre-wired, and architecture docs written for coding agents, not just humans.
               </p>
               <Link

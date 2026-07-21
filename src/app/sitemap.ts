@@ -11,6 +11,7 @@ export default function sitemap() {
     "/method",
     "/license",
     "/faq",
+    "/whats-inside",
     "/terms",
     "/privacy",
     "/refund",

@@ -61,6 +61,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/whats-inside" className="hover:text-[var(--ink)]">
+                  What’s inside
+                </Link>
+              </li>
+              <li>
                 <Link href="/faq" className="hover:text-[var(--ink)]">
                   FAQ
                 </Link>

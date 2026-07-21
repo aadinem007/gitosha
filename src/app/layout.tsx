@@ -22,9 +22,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shipyard — Know what to build. Ship it properly.",
+  title: "Shipyard — Stop building the wrong product",
   description:
-    "Honest opportunity research scored on a public 10-dimension rubric, plus the production scaffold to launch winners. Built for Indian operators. Pay with UPI.",
+    "Honest opportunity scores, kill criteria, and a production SaaS scaffold with Razorpay. Operator from ₹999/mo launch. Foundry Agency for studios at ₹29,999 one-time.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard-omega-opal.vercel.app"),
 };
 

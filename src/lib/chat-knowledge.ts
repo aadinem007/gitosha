@@ -13,12 +13,12 @@ export type KnowledgeEntry = {
 };
 
 export const CHAT_GREETING: ChatReply = {
-  text: "Hey — I'm Yardhand, Shipyard's guide. Ask about pricing, Vault research, Foundry downloads, or how payments work. I'll keep it straight.",
+  text: "Hey — I'm Yardhand. Tell me what you want: cheaper Operator access, Foundry download after pay, or why studios pick Agency at ₹29,999. I'll be blunt.",
   suggestions: [
-    "What is Shipyard?",
+    "Why pay ₹29,999 for Agency?",
     "Show pricing",
     "How do I get Foundry after paying?",
-    "What's the difference: Solo vs Agency?",
+    "What's free?",
   ],
 };
 
@@ -107,11 +107,14 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
   },
   {
     id: "solo-vs-agency",
-    keywords: ["difference", "solo vs", "vs agency", "agency vs", "which plan", "compare"],
+    keywords: ["difference", "solo vs", "vs agency", "agency vs", "which plan", "compare", "29999", "29,999", "worth"],
     reply: {
-      text: "Same kit code. Solo = license for one commercial product. Agency = unlimited client projects, white-label rights, priority support, and 1 year of Studio Vault. Agency is not custom freelance work — it's the kit + broader rights + support.",
-      links: [{ label: "Foundry plans", href: "/foundry-kit" }],
-      suggestions: ["How do I get Foundry after paying?", "Show pricing"],
+      text: "Solo (₹9,999) = one product you own. Agency (₹29,999) = unlimited client builds, white-label, handoff/invoice/proposal templates, priority support, and 1 year Studio Vault. If you ship for clients, Agency usually pays for itself by the second engagement — same zip, wider rights.",
+      links: [
+        { label: "Compare table", href: "/foundry-kit#compare" },
+        { label: "Pricing", href: "/pricing" },
+      ],
+      suggestions: ["How do I get Foundry after paying?", "Show pricing", "What's free?"],
     },
   },
   {
@@ -182,6 +185,18 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       text: "Join the free weekly issue from the homepage — top scored opportunities, no spam pitch walls. Paying Operator unlocks the full Vault anytime.",
       links: [{ label: "Homepage", href: "/" }],
       suggestions: ["What is the Vault?", "Show pricing"],
+    },
+  },
+  {
+    id: "free",
+    keywords: ["free", "scout", "₹0", "no card", "what's free", "whats free"],
+    reply: {
+      text: "Scout is free forever — weekly top-3, public method, teardown archive. No card. Operator is ₹999/mo launch for the full vault. Foundry is paid one-time with instant zip download.",
+      links: [
+        { label: "Start on homepage", href: "/" },
+        { label: "Pricing", href: "/pricing" },
+      ],
+      suggestions: ["Show pricing", "Why pay ₹29,999 for Agency?"],
     },
   },
   {

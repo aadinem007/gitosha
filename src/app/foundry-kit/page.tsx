@@ -64,6 +64,9 @@ export default function FoundryKitPage() {
             <Link href="/faq" className="text-[var(--muted)] hover:text-[var(--ink)]">
               FAQ
             </Link>
+            <Link href="/whats-inside" className="text-[var(--muted)] hover:text-[var(--ink)]">
+              What’s inside
+            </Link>
             <a href="#compare" className="text-[var(--muted)] hover:text-[var(--ink)]">
               Solo vs Agency
             </a>

@@ -32,11 +32,14 @@ export default function FoundryKitPage() {
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
             Production scaffold
           </p>
-          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">Foundry</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
+          <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            Foundry
+          </h1>
+          <div className="animate-pulse-line rule mt-6 max-w-xs" />
+          <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
             Auth, database, billing, webhooks, deploy — packaged so you build the product, not the
             plumbing. Pay once. Download the zip instantly from your license portal.
           </p>

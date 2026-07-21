@@ -13,24 +13,35 @@ export default async function LicensePage({
     <>
       <Nav />
       <main className="flex-1">
-        <section className="mx-auto max-w-2xl px-6 py-16">
-          <h1 className="font-display text-4xl font-bold tracking-tight">Your license</h1>
-          <p className="mt-3 text-[var(--muted)]">
-            Enter the email and license key from checkout. Download Foundry as a zip — no manual
-            email from us required. You can re-download anytime.
+        <section className="mx-auto max-w-2xl px-6 py-16 sm:py-20">
+          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+            Delivery
           </p>
-          <div className="mt-10">
+          <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            Your license
+          </h1>
+          <div className="animate-pulse-line rule mt-6 max-w-xs" />
+          <p className="animate-rise-delay-2 mt-6 leading-relaxed text-[var(--muted)]">
+            Enter the email and license key from checkout. Download Foundry as a zip — no manual email
+            from us required. You can re-download anytime.
+          </p>
+          <div className="mt-10 rounded-xl border border-[var(--line)] bg-[var(--panel)]/50 p-6 sm:p-8">
             <LicensePortal initialEmail={email} initialKey={key} />
           </div>
-          <ol className="mt-12 list-decimal space-y-2 pl-5 text-sm text-[var(--muted)]">
+          <ol className="mt-12 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-[var(--muted)]">
             <li>Download the zip</li>
-            <li>Unzip → open the <code className="text-[var(--fog)]">foundry-kit</code> folder</li>
             <li>
-              Copy <code className="text-[var(--fog)]">env.example (or .env.example)</code> to{" "}
-              <code className="text-[var(--fog)]">.env</code> and fill your keys
+              Unzip → open the <code className="font-mono text-[var(--fog)]">foundry-kit</code> folder
             </li>
             <li>
-              Run <code className="text-[var(--fog)]">npm install && npx prisma db push && npm run dev</code>
+              Copy <code className="font-mono text-[var(--fog)]">env.example</code> to{" "}
+              <code className="font-mono text-[var(--fog)]">.env</code> and fill your keys
+            </li>
+            <li>
+              Run{" "}
+              <code className="font-mono text-[var(--fog)]">
+                npm install && npx prisma db push && npm run dev
+              </code>
             </li>
           </ol>
         </section>

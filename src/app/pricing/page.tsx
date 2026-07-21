@@ -48,11 +48,14 @@ export default function PricingPage() {
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
             Plans
           </p>
-          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">Pricing</h1>
-          <p className="mt-4 max-w-2xl text-[var(--muted)] leading-relaxed">
+          <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            Pricing
+          </h1>
+          <div className="rule animate-pulse-line mt-6 max-w-[8rem]" />
+          <p className="animate-rise-delay-2 mt-6 max-w-2xl leading-relaxed text-[var(--muted)]">
             Launch pricing for early operators. Research and scaffolds under one roof. Pay in INR
             via UPI, cards, or netbanking.
           </p>

@@ -41,13 +41,13 @@ export function LoginForm({ next }: { next: string }) {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="rounded-md bg-[var(--brass)] px-4 py-2.5 text-sm font-semibold text-[var(--hull)] hover:brightness-110 disabled:opacity-60"
+        className="btn-primary px-4 py-2.5 text-sm disabled:opacity-60"
       >
         {status === "loading" ? "Sending…" : "Email me a magic link"}
       </button>
-      {status === "error" && (
-        <p className="text-xs text-red-400">Something went wrong — try again.</p>
-      )}
+      <p className="min-h-[1.1rem] text-xs leading-snug text-red-400" aria-live="polite">
+        {status === "error" ? "Something went wrong — try again." : "\u00a0"}
+      </p>
     </form>
   );
 }

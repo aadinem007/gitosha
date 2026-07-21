@@ -32,7 +32,7 @@ export function WaitlistForm({
 
   if (status === "done") {
     return (
-      <p className="text-sm font-medium text-[var(--brass)]">
+      <p className="relative min-h-[2.75rem] text-sm font-medium leading-snug text-[var(--brass)]">
         You&apos;re on the list. First issue lands this week.
       </p>
     );
@@ -45,8 +45,8 @@ export function WaitlistForm({
       onSubmit={handleSubmit}
       className={
         stacked
-          ? "flex w-full flex-col gap-2"
-          : "flex w-full max-w-md flex-col gap-2 sm:flex-row sm:items-stretch"
+          ? "relative isolate flex w-full min-w-0 flex-col gap-2 overflow-hidden"
+          : "relative isolate flex w-full max-w-md flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-stretch"
       }
     >
       <label className="sr-only absolute -left-[9999px]" aria-hidden="true">
@@ -77,9 +77,16 @@ export function WaitlistForm({
       >
         {status === "loading" ? "Joining…" : cta}
       </button>
-      {status === "error" && (
-        <p className="text-xs text-red-400 sm:col-span-2">Something went wrong — try again.</p>
-      )}
+      <p
+        className={
+          stacked
+            ? "min-h-[1.1rem] text-xs leading-snug text-red-400"
+            : "min-h-[1.1rem] w-full text-xs leading-snug text-red-400"
+        }
+        aria-live="polite"
+      >
+        {status === "error" ? "Something went wrong — try again." : "\u00a0"}
+      </p>
     </form>
   );
 }

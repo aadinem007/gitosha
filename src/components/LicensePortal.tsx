@@ -85,7 +85,7 @@ export function LicensePortal({
   }
 
   return (
-    <div className="mx-auto w-full max-w-md space-y-4">
+    <div className="relative isolate mx-auto w-full max-w-md space-y-4 overflow-hidden">
       <div>
         <label className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
           Purchase email
@@ -95,7 +95,7 @@ export function LicensePortal({
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-md border border-[var(--line)] bg-[var(--panel)] px-3 py-2.5 text-sm"
+          className="mt-1 w-full rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
           placeholder="you@company.com"
         />
       </div>
@@ -108,7 +108,7 @@ export function LicensePortal({
           required
           value={key}
           onChange={(e) => setKey(e.target.value.toUpperCase())}
-          className="mt-1 w-full rounded-md border border-[var(--line)] bg-[var(--panel)] px-3 py-2.5 font-mono text-sm tracking-wide"
+          className="mt-1 w-full rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 font-mono text-sm tracking-wide text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
           placeholder="SHIP-XXXX-XXXX-XXXX"
         />
       </div>
@@ -118,7 +118,7 @@ export function LicensePortal({
           type="button"
           onClick={lookup}
           disabled={status === "checking" || !email || !key}
-          className="flex-1 rounded-md border border-[var(--line)] px-4 py-2.5 text-sm font-semibold disabled:opacity-60"
+          className="btn-ghost flex-1 px-4 py-2.5 text-sm font-semibold disabled:opacity-60"
         >
           {status === "checking" ? "Checking…" : "Verify license"}
         </button>
@@ -126,14 +126,14 @@ export function LicensePortal({
           type="button"
           onClick={download}
           disabled={status === "downloading" || status === "checking" || !email || !key}
-          className="flex-1 rounded-md bg-[var(--brass)] px-4 py-2.5 text-sm font-semibold text-[var(--hull)] disabled:opacity-60"
+          className="btn-primary flex-1 px-4 py-2.5 text-sm disabled:opacity-60"
         >
           {status === "downloading" ? "Preparing zip…" : "Download Foundry zip"}
         </button>
       </div>
 
       {meta && (
-        <div className="rounded-lg border border-[var(--brass)]/30 bg-[var(--panel)] px-4 py-3 text-sm">
+        <div className="rounded-lg border border-[var(--brass)]/30 bg-[var(--hull)]/60 px-4 py-3 text-sm">
           <p>
             Tier: <span className="font-semibold text-[var(--brass)]">{meta.tier}</span>
           </p>
@@ -141,7 +141,7 @@ export function LicensePortal({
           {meta.vaultAccess ? (
             <p className="mt-2 text-[var(--signal)]">
               Vault included —{" "}
-              <a href="/login" className="underline">
+              <a href="/login" className="underline underline-offset-4">
                 sign in
               </a>{" "}
               with this email.
@@ -149,7 +149,7 @@ export function LicensePortal({
           ) : (
             <p className="mt-2 text-[var(--muted)]">
               Need research too?{" "}
-              <a href="/pricing" className="text-[var(--brass)] underline">
+              <a href="/pricing" className="text-[var(--brass)] underline underline-offset-4">
                 Operator plans
               </a>
             </p>
@@ -157,7 +157,9 @@ export function LicensePortal({
         </div>
       )}
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      <p className="min-h-[1.25rem] text-sm leading-snug text-red-400" aria-live="polite">
+        {error || "\u00a0"}
+      </p>
     </div>
   );
 }

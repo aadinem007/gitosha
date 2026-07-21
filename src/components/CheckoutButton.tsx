@@ -131,7 +131,7 @@ export function CheckoutButton({
   }
 
   return (
-    <div className="flex w-full min-w-0 flex-col gap-2">
+    <div className="relative isolate flex w-full min-w-0 flex-col gap-2 overflow-hidden">
       <input
         type="email"
         required

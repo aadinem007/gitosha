@@ -38,8 +38,14 @@ export default function FoundryKitPage() {
           <h1 className="mt-3 font-display text-4xl font-bold tracking-tight">Foundry</h1>
           <p className="mt-4 max-w-2xl text-[var(--muted)]">
             The undifferentiated work behind every SaaS — auth, database, billing, webhooks, deploy —
-            packaged so you spend weeks on the product, not the plumbing. This is the same foundation
-            Shipyard itself runs on.
+            packaged so you spend weeks on the product, not the plumbing. After payment you get an
+            automatic zip download (license-gated). No waiting on us.
+          </p>
+          <p className="mt-3 text-sm text-[var(--muted)]">
+            Already paid?{" "}
+            <a href="/license" className="font-semibold text-[var(--brass)] underline">
+              Open license portal →
+            </a>
           </p>
 
           <div className="mt-12 grid gap-10 sm:grid-cols-2">

@@ -29,17 +29,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-  // Ensure Foundry kit source is available to the download API on Vercel
-  outputFileTracingIncludes: {
-    "/api/license/download": ["./kits/foundry/**/*"],
-  },
   async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: securityHeaders,
-      },
-    ];
+    return [{ source: "/:path*", headers: securityHeaders }];
   },
 };
 

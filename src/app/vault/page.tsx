@@ -19,9 +19,19 @@ export default async function VaultPage() {
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-6xl px-6 py-16">
-          <div className="flex items-baseline justify-between">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
             <h1 className="font-display text-3xl font-bold tracking-tight">The Vault</h1>
-            <span className="text-sm text-[var(--muted)]">{ideas.length} opportunities scored</span>
+            <div className="flex items-center gap-4 text-sm text-[var(--muted)]">
+              <span>{ideas.length} opportunities scored</span>
+              {isPro && (
+                <a
+                  href="/api/vault/export"
+                  className="font-semibold text-[var(--brass)] hover:underline"
+                >
+                  Export CSV
+                </a>
+              )}
+            </div>
           </div>
           {!isPro && (
             <div className="mt-4 rounded-md border border-[var(--line)] bg-[var(--panel)] px-4 py-3 text-sm text-[var(--fog)]">

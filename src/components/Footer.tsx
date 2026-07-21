@@ -10,6 +10,9 @@ export function Footer() {
           <a href="/security" className="hover:text-[var(--ink)]">
             Security
           </a>
+          <a href="/license" className="hover:text-[var(--ink)]">
+            License
+          </a>
           <a href="mailto:aaditya.shah8005@gmail.com" className="hover:text-[var(--ink)]">
             Contact
           </a>

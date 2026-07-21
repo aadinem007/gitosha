@@ -67,5 +67,9 @@ zero manual steps in between.
 
 ## Data flow for a Foundry Kit purchase
 
-Same flow, but `mode: "payment"` creates a Razorpay Order instead of a
-Subscription, and fulfillment generates a `LicenseKey` row.
+1. Same Razorpay Order → verify/webhook → `LicenseKey` row.
+2. Success page + `/license` portal call `POST /api/license/download`.
+3. Server zips `kits/foundry/` (personalized LICENSE) and streams it.
+4. Re-downloads allowed (tracked on `LicenseKey.downloadCount`).
+
+See `docs/DELIVERY.md`.

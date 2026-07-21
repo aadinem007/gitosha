@@ -20,6 +20,9 @@ export function Nav() {
           <Link href="/foundry-kit" className="hover:text-[var(--ink)]">
             Foundry
           </Link>
+          <Link href="/license" className="hidden hover:text-[var(--ink)] sm:inline">
+            License
+          </Link>
           <Link href="/pricing" className="hover:text-[var(--ink)]">
             Pricing
           </Link>

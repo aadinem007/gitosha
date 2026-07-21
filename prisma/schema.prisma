@@ -51,6 +51,8 @@ model LicenseKey {
   razorpayPaymentId String?     @unique
   razorpayOrderId   String?
   activatedAt       DateTime?
+  downloadCount     Int         @default(0)
+  lastDownloadedAt  DateTime?
   createdAt         DateTime    @default(now())
 
   @@index([email])

@@ -66,7 +66,7 @@ export function CheckoutButton({
         name: data.name,
         description: data.description,
         prefill: { email: data.email },
-        theme: { color: "#c9a227" },
+        theme: { color: "#d4a05a" },
         handler: async (response: {
           razorpay_payment_id: string;
           razorpay_order_id?: string;
@@ -124,23 +124,23 @@ export function CheckoutButton({
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className={`${base} ${style}`}>
+      <button type="button" onClick={() => setOpen(true)} className={`${base} ${style}`}>
         {label}
       </button>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-full min-w-0 flex-col gap-2">
       <input
         type="email"
         required
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
+        className="w-full min-w-0 rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
       />
-      <button disabled={loading} onClick={startCheckout} className={`${base} ${style}`}>
+      <button type="button" disabled={loading} onClick={startCheckout} className={`${base} ${style}`}>
         {loading ? "Opening checkout…" : label}
       </button>
     </div>

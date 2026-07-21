@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { fulfillPurchase } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { safeEqual } from "@/lib/secure";
 
 type RazorpayWebhookBody = {
   event: string;
@@ -15,7 +16,7 @@ type RazorpayWebhookBody = {
 function verifySignature(rawBody: string, signature: string | null, secret: string): boolean {
   if (!signature) return false;
   const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
-  return expected === signature;
+  return safeEqual(expected, signature);
 }
 
 export async function POST(req: NextRequest) {
@@ -30,24 +31,32 @@ export async function POST(req: NextRequest) {
 
   const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
   if (!webhookSecret) {
-    return NextResponse.json({ error: "Missing webhook secret" }, { status: 400 });
+    return NextResponse.json({ error: "Unavailable" }, { status: 400 });
   }
 
   const rawBody = await req.text();
-  const signature = req.headers.get("x-razorpay-signature");
+  if (rawBody.length > 256_000) {
+    return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+  }
 
+  const signature = req.headers.get("x-razorpay-signature");
   if (!verifySignature(rawBody, signature, webhookSecret)) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  const event = JSON.parse(rawBody) as RazorpayWebhookBody;
+  let event: RazorpayWebhookBody;
+  try {
+    event = JSON.parse(rawBody) as RazorpayWebhookBody;
+  } catch {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
 
   switch (event.event) {
     case "payment.captured": {
       const payment = event.payload.payment?.entity;
       if (!payment) break;
       const notes = (payment.notes ?? {}) as Record<string, string>;
-      const email = notes.email;
+      const email = notes.email?.toLowerCase();
       const planId = notes.planId;
       if (!email || !planId) break;
 
@@ -65,7 +74,7 @@ export async function POST(req: NextRequest) {
       const sub = event.payload.subscription?.entity;
       if (!sub) break;
       const notes = (sub.notes ?? {}) as Record<string, string>;
-      const email = notes.email;
+      const email = notes.email?.toLowerCase();
       const planId = notes.planId;
       if (!email || !planId) break;
 

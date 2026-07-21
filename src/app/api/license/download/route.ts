@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createFoundryZipStream, foundryKitExists } from "@/lib/foundry-pack";
+import { readJsonLimited } from "@/lib/secure";
 import { Readable } from "stream";
 
 const bodySchema = z.object({
@@ -30,7 +31,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Kit temporarily unavailable. Email support." }, { status: 503 });
   }
 
-  const parsed = bodySchema.safeParse(await req.json());
+  const body = await readJsonLimited(req);
+  if (!body.ok) {
+    return NextResponse.json({ error: body.error }, { status: 400 });
+  }
+
+  const parsed = bodySchema.safeParse(body.data);
   if (!parsed.success) {
     return NextResponse.json({ error: "Enter the email and license key from your receipt." }, { status: 400 });
   }
@@ -43,7 +49,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "License not found for that email + key." }, { status: 404 });
   }
 
-  // Cap abuse: 50 downloads per license is plenty for a real buyer
   if (license.downloadCount >= 50) {
     return NextResponse.json(
       { error: "Download limit reached. Contact support with your license key." },

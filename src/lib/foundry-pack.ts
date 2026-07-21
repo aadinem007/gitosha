@@ -44,7 +44,7 @@ Issued by: Shipyard
 ${rights}
 
 ## What you received
-A production Next.js SaaS scaffold with auth, Postgres/Prisma, Razorpay checkout + webhooks, rate limits, and security headers.
+A production Next.js SaaS scaffold with auth, Postgres/Prisma, Razorpay checkout + webhooks, and deploy-ready defaults.
 
 ## Support
 Contact the email on https://shipyard-omega-opal.vercel.app (Contact in footer).

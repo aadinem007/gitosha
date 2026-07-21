@@ -1,25 +1,25 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
+import Link from "next/link";
 import { FOUNDRY_PLANS } from "@/lib/pricing";
 
 const STACK = [
   "Next.js App Router + TypeScript",
-  "Tailwind CSS design tokens",
-  "Postgres via Prisma (subscribers, licenses, ideas)",
+  "Tailwind design tokens",
+  "Postgres via Prisma",
   "Magic-link authentication",
   "Razorpay checkout + signed webhooks",
-  "Rate-limited APIs + CSP / HSTS headers",
-  "Honeypot waitlist + server-side amount locking",
+  "Waitlist + server-side amount locking",
   "Docker + CI pipeline",
+  "Architecture docs + module map",
 ];
 
 const WHY = [
   "Module layout you can extend without guessing",
-  "Architecture docs that map every concern",
-  "Billing and unlock logic already proven on this site",
-  "You inherit the same payment path customers just used",
-  "Security defaults included — not bolted on later",
+  "Billing path already proven on this site",
+  "Instant zip delivery after payment",
+  "Solo or Agency licensing — pick your lane",
 ];
 
 export default function FoundryKitPage() {
@@ -31,35 +31,36 @@ export default function FoundryKitPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="mx-auto max-w-4xl px-6 py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">
+        <section className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
             Production scaffold
           </p>
-          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight">Foundry</h1>
-          <p className="mt-4 max-w-2xl text-[var(--muted)]">
-            The undifferentiated work behind every SaaS — auth, database, billing, webhooks, deploy —
-            packaged so you spend weeks on the product, not the plumbing. After payment you get an
-            automatic zip download (license-gated). No waiting on us.
+          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">Foundry</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
+            Auth, database, billing, webhooks, deploy — packaged so you build the product, not the
+            plumbing. Pay once. Download the zip instantly from your license portal.
           </p>
-          <p className="mt-3 text-sm text-[var(--muted)]">
+          <p className="mt-4 text-sm text-[var(--muted)]">
             Already paid?{" "}
-            <a href="/license" className="font-semibold text-[var(--brass)] underline">
+            <Link href="/license" className="font-semibold text-[var(--brass)] underline-offset-4 hover:underline">
               Open license portal →
-            </a>
+            </Link>
           </p>
 
-          <div className="mt-12 grid gap-10 sm:grid-cols-2">
+          <div className="mt-14 grid gap-12 sm:grid-cols-2">
             <div>
+              <div className="rule mb-5 max-w-[6rem]" />
               <h2 className="font-display text-sm font-semibold text-[var(--fog)]">What ships</h2>
-              <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
+              <ul className="mt-4 space-y-2.5 text-sm text-[var(--muted)]">
                 {STACK.map((item) => (
                   <li key={item}>— {item}</li>
                 ))}
               </ul>
             </div>
             <div>
+              <div className="rule mb-5 max-w-[6rem]" />
               <h2 className="font-display text-sm font-semibold text-[var(--fog)]">Why it holds up</h2>
-              <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
+              <ul className="mt-4 space-y-2.5 text-sm text-[var(--muted)]">
                 {WHY.map((item) => (
                   <li key={item}>— {item}</li>
                 ))}
@@ -67,19 +68,14 @@ export default function FoundryKitPage() {
             </div>
           </div>
 
-          <div className="mt-14 grid gap-5 sm:grid-cols-3">
+          <div className="mt-16 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[solo, agency, bundle].map((plan) => (
-              <div
-                key={plan.id}
-                className={`flex flex-col rounded-lg border p-5 ${
-                  plan.highlight ? "border-[var(--brass)]" : "border-[var(--line)]"
-                }`}
-              >
+              <div key={plan.id} className={`plan-shell isolate overflow-hidden ${plan.highlight ? "is-hot" : ""}`}>
                 <p className="font-display font-semibold">{plan.name}</p>
                 <p className="mt-2 font-display text-2xl font-bold">{plan.price}</p>
                 <p className="mt-1 text-xs text-[var(--muted)]">{plan.cadence}</p>
-                <p className="mt-3 flex-1 text-sm text-[var(--muted)]">{plan.description}</p>
-                <div className="mt-5">
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--muted)]">{plan.description}</p>
+                <div className="relative z-10 mt-5 min-w-0">
                   <CheckoutButton planId={plan.id} label={plan.cta} primary={!!plan.highlight} />
                 </div>
               </div>

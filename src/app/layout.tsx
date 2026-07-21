@@ -1,29 +1,29 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Unbounded, Manrope, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const display = Syne({
+const display = Unbounded({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["500", "600", "700", "800"],
 });
 
-const body = DM_Sans({
+const body = Manrope({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const mono = IBM_Plex_Mono({
+const mono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Shipyard — Opportunity research & production scaffolds for builders",
+  title: "Shipyard — Know what to build. Ship it properly.",
   description:
-    "Shipyard scores real software businesses on a public 10-dimension rubric, then sells the production scaffold you need to ship the winners. Honest research. Working payments. No hype listicles.",
+    "Honest opportunity research scored on a public 10-dimension rubric, plus the production scaffold to launch winners. Built for Indian operators. Pay with UPI.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard-omega-opal.vercel.app"),
 };
 

@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { fulfillPurchase } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { readJsonLimited, safeEqual } from "@/lib/secure";
 
 const bodySchema = z.object({
   mode: z.enum(["payment", "subscription"]),
@@ -24,7 +25,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  const parsed = bodySchema.safeParse(await req.json());
+  const body = await readJsonLimited(req);
+  if (!body.ok) {
+    return NextResponse.json({ error: body.error }, { status: 400 });
+  }
+
+  const parsed = bodySchema.safeParse(body.data);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
@@ -50,12 +56,12 @@ export async function POST(req: NextRequest) {
   }
 
   const expected = createHmac("sha256", secret).update(expectedPayload).digest("hex");
-  if (expected !== data.razorpay_signature) {
+  if (!safeEqual(expected, data.razorpay_signature)) {
     return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
   }
 
   const result = await fulfillPurchase({
-    email: data.email,
+    email: data.email.toLowerCase(),
     planId: data.planId,
     paymentId: data.razorpay_payment_id,
     orderId: data.razorpay_order_id,
@@ -65,7 +71,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     product: result.product,
-    email: data.email,
+    email: data.email.toLowerCase(),
     licenseKey: result.licenseKey,
   });
 }

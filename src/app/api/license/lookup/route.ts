@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { readJsonLimited } from "@/lib/secure";
 
 const bodySchema = z.object({
   email: z.string().email().max(254),
@@ -18,7 +19,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Too many attempts" }, { status: 429 });
   }
 
-  const parsed = bodySchema.safeParse(await req.json());
+  const body = await readJsonLimited(req);
+  if (!body.ok) {
+    return NextResponse.json({ error: body.error }, { status: 400 });
+  }
+
+  const parsed = bodySchema.safeParse(body.data);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid email or key" }, { status: 400 });
   }

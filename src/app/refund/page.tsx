@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { LegalShell } from "@/components/LegalShell";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Refund Policy — Shipyard",
-  description: "Refund rules for Shipyard Vault subscriptions and Foundry licenses.",
+  title: `Refund Policy — ${BRAND.name}`,
+  description: `Refund rules for ${BRAND.name} Vault subscriptions and Foundry licenses.`,
 };
 
 export default function RefundPage() {
   return (
     <LegalShell title="Refund Policy" updated="21 July 2026">
       <p>
-        This Refund Policy applies to purchases made on Shipyard (INR via Razorpay). Please read it
+        This Refund Policy applies to purchases made on {BRAND.name} (INR via Razorpay). Please read it
         before buying digital products.
       </p>
 

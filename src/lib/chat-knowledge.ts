@@ -13,7 +13,7 @@ export type KnowledgeEntry = {
 };
 
 export const CHAT_GREETING: ChatReply = {
-  text: "Hey — I'm Yardhand. Tell me what you want: cheaper Operator access, Foundry download after pay, or why studios pick Agency at ₹29,999. I'll be blunt.",
+  text: "Hey — I'm Gita. Tell me what you want: cheaper Operator access, Foundry download after pay, or why studios pick Agency at ₹29,999. I'll be blunt.",
   suggestions: [
     "Why pay ₹29,999 for Agency?",
     "Show pricing",
@@ -27,6 +27,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     id: "what",
     keywords: [
       "what is",
+      "gitosha",
       "shipyard",
       "about",
       "who are you",
@@ -35,7 +36,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       "overview",
     ],
     reply: {
-      text: "Shipyard helps builders decide what software business to build — then ship it. Two products: The Vault (scored opportunity research) and Foundry (a production SaaS starter kit with auth + Razorpay). Honest scores. Instant kit download after payment.",
+      text: "Gitosha helps builders know what to build — then ship it. Two products: The Vault (scored opportunity research) and Foundry (a production SaaS starter kit with auth + Razorpay). Honest scores. Instant kit download after payment.",
       links: [
         { label: "See the method", href: "/method" },
         { label: "Pricing", href: "/pricing" },
@@ -231,7 +232,7 @@ export const CHAT_FALLBACK: ChatReply = {
     { label: "Contact", href: "mailto:aaditya.shah8005@gmail.com" },
   ],
   suggestions: [
-    "What is Shipyard?",
+    "What is Gitosha?",
     "Show pricing",
     "How do I get Foundry after paying?",
     "Solo vs Agency",

@@ -1,7 +1,8 @@
 import { SEED_IDEAS, totalScore } from "@/lib/ideas-data";
+import { siteUrl } from "@/lib/brand";
 
 export default function sitemap() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard-omega-opal.vercel.app";
+  const base = siteUrl();
   const staticRoutes = [
     "",
     "/pricing",

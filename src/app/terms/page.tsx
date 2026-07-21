@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import { LegalShell } from "@/components/LegalShell";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — Shipyard",
-  description: "Terms governing use of Shipyard Vault subscriptions and Foundry licenses.",
+  title: `Terms of Service — ${BRAND.name}`,
+  description: `Terms governing use of ${BRAND.name} Vault subscriptions and Foundry licenses.`,
 };
 
 export default function TermsPage() {
   return (
     <LegalShell title="Terms of Service" updated="21 July 2026">
       <p>
-        These Terms of Service (&quot;Terms&quot;) govern access to and use of Shipyard websites,
-        products, and services operated from India (&quot;Shipyard,&quot; &quot;we,&quot;
+        These Terms of Service (&quot;Terms&quot;) govern access to and use of {BRAND.name} websites,
+        products, and services operated from India (&quot;{BRAND.name},&quot; &quot;we,&quot;
         &quot;us&quot;). By creating an account, joining the waitlist, or purchasing a plan, you
         agree to these Terms.
       </p>
@@ -76,20 +77,20 @@ export default function TermsPage() {
       <h2>7. Acceptable use</h2>
       <p>
         Do not attempt to break, scrape abusively, reverse-engineer payment flows, share license
-        keys, or use Shipyard to distribute malware or illegal content. We may rate-limit or block
+        keys, or use {BRAND.name} to distribute malware or illegal content. We may rate-limit or block
         traffic that threatens service stability.
       </p>
 
       <h2>8. Intellectual property</h2>
       <p>
-        Shipyard branding, site design, Vault research text, and scoring methodology remain our
+        {BRAND.name} branding, site design, Vault research text, and scoring methodology remain our
         property. Foundry source is licensed to you under these Terms and the in-package license —
-        ownership of the kit IP remains with Shipyard except for the rights expressly granted.
+        ownership of the kit IP remains with {BRAND.name} except for the rights expressly granted.
       </p>
 
       <h2>9. Limitation of liability</h2>
       <p>
-        To the maximum extent permitted by law, Shipyard is not liable for indirect, incidental, or
+        To the maximum extent permitted by law, {BRAND.name} is not liable for indirect, incidental, or
         consequential damages, lost profits, or business interruption arising from use of the
         site, Vault, or Foundry. Our total liability for any claim related to a purchase is limited
         to the amount you paid us for that purchase in the three months before the claim.

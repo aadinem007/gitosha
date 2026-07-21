@@ -2,7 +2,7 @@
 
 Production SaaS scaffold: Next.js + TypeScript + Tailwind + Prisma + Supabase Auth + Razorpay.
 
-Licensed to you by Shipyard. Your license key is on the purchase success page and at `/license` on shipyard.
+Licensed to you by Gitosha. Your license key is on the purchase success page and at `/license` on the Gitosha site.
 
 ## Quick start
 

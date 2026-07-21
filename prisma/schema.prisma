@@ -1,4 +1,4 @@
-// Shipyard data model.
+// Gitosha data model.
 // Two products share one subscriber base:
 //  - Build-Intel Vault: the research/scoring subscription (Subscriber + Idea)
 //  - Foundry Kit: the starter-kit product (LicenseKey)

@@ -3,6 +3,7 @@ import path from "path";
 import { Readable } from "stream";
 import { ZipArchive } from "archiver";
 import type { LicenseTier } from "@prisma/client";
+import { BRAND, siteUrl } from "@/lib/brand";
 
 const KIT_ROOT = path.join(process.cwd(), "kits", "foundry");
 
@@ -24,9 +25,9 @@ function tierLicense(tier: LicenseTier, email: string, key: string): string {
   const rights =
     tier === "AGENCY"
       ? [
-          "- Unlimited client projects",
-          "- White-label rights (remove Shipyard / Foundry marks)",
-          "- Do not resell this kit as a competing starter product",
+          `- Unlimited client projects`,
+          `- White-label rights (remove ${BRAND.name} / Foundry marks)`,
+          `- Do not resell this kit as a competing starter product`,
         ].join("\n")
       : [
           "- One commercial product you own or operate",
@@ -38,7 +39,7 @@ function tierLicense(tier: LicenseTier, email: string, key: string): string {
 
 Issued to: ${email}
 License key: ${key}
-Issued by: Shipyard
+Issued by: ${BRAND.name}
 
 ## Rights
 ${rights}
@@ -47,7 +48,7 @@ ${rights}
 A production Next.js SaaS scaffold with auth, Postgres/Prisma, Razorpay checkout + webhooks, and deploy-ready defaults.
 
 ## Support
-Contact the email on https://shipyard-omega-opal.vercel.app (Contact in footer).
+Contact the email on ${siteUrl()} (Contact in footer).
 
 No warranty. Provided as-is.
 `;
@@ -60,7 +61,7 @@ Thanks for purchasing Foundry (${tier}).
 
 - Buyer email: ${email}
 - License key: ${key}
-- Re-download anytime: open /license on the Shipyard site and enter this email + key
+- Re-download anytime: open /license on the ${BRAND.name} site and enter this email + key
 
 ## Start in 5 minutes
 
@@ -104,7 +105,7 @@ export function createFoundryZipStream(opts: {
   archive.append(deliveryReadme(opts.tier, opts.email, opts.key), {
     name: "foundry-kit/DELIVERY.md",
   });
-  archive.append(`${opts.key}\n`, { name: "foundry-kit/.shipyard-license" });
+  archive.append(`${opts.key}\n`, { name: "foundry-kit/.gitosha-license" });
 
   void archive.finalize();
 

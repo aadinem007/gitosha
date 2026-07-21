@@ -1,6 +1,8 @@
 # DO THIS TODAY — make money (I already did the product work)
 
+Brand: **Gitosha** — Know what to build. Then ship it.
 Your live site: https://shipyard-omega-opal.vercel.app
+(Use this URL until gitosha.com is connected.)
 
 I already:
 - Made payments work (Razorpay tested successfully)
@@ -30,9 +32,9 @@ I scored 18 micro-SaaS ideas honestly (none hit 90/100) and built the research p
 ```
 Most "100 SaaS ideas" lists are recycled with made-up revenue numbers.
 
-I built the opposite: a public 10-dimension scoring rubric, scored 18 real ideas, published the bad scores too, and shipped two products on top of it:
+I built Gitosha — know what to build, then ship it. Public 10-dimension scoring, 18 real ideas (bad scores published too), and two products:
 
-1) Build-Intel Vault — weekly scored opportunity database (₹999/mo launch / ~$12)
+1) Vault — weekly scored opportunity database (₹999/mo launch / ~$12)
 2) Foundry — production Next.js + Razorpay SaaS scaffold (₹9,999 / ~$120)
 
 Live: https://shipyard-omega-opal.vercel.app
@@ -87,7 +89,7 @@ None cleared 90/100 honestly.
 
 The top two became real products with Razorpay checkout live:
 
-Vault (research) + Foundry Kit (starter kit)
+Gitosha: Vault (research) + Foundry (starter kit)
 https://shipyard-omega-opal.vercel.app
 ```
 
@@ -98,7 +100,7 @@ https://shipyard-omega-opal.vercel.app
 Message 10 friends / college mates / Discord people who want to build startups:
 
 ```
-Bro I built a tool that scores SaaS business ideas properly + a ready starter kit.
+Bro I built Gitosha — scores SaaS business ideas properly + a ready starter kit.
 Live site: https://shipyard-omega-opal.vercel.app
 If you know anyone building a startup, send them this. Free tier works.
 ```

@@ -1,9 +1,10 @@
 import { Resend } from "resend";
+import { BRAND, siteUrl } from "@/lib/brand";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-const FROM = process.env.EMAIL_FROM ?? "Shipyard <hello@shipyard.build>";
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard-omega-opal.vercel.app";
+const FROM = process.env.EMAIL_FROM ?? BRAND.emailFrom;
+const SITE = siteUrl();
 
 export async function sendLicenseKeyEmail(email: string, key: string, tier: string) {
   const downloadUrl = `${SITE}/license?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`;
@@ -31,7 +32,7 @@ Inside the zip:
 2. Copy env.example (or .env.example) → .env
 3. npm install && npx prisma db push && npm run dev
 
-— Shipyard`,
+— ${BRAND.name}`,
   });
 }
 
@@ -43,7 +44,7 @@ export async function sendWelcomeEmail(email: string, tier: string) {
   await resend.emails.send({
     from: FROM,
     to: email,
-    subject: "Welcome to Shipyard Vault",
+    subject: `Welcome to ${BRAND.name} Vault`,
     text: `You're in on the ${tier} tier.
 
 Sign in with this same email: ${SITE}/login
@@ -51,6 +52,6 @@ Then open the Vault: ${SITE}/vault
 
 Export the scoreboard anytime (Operator+): ${SITE}/api/vault/export
 
-— Shipyard`,
+— ${BRAND.name}`,
   });
 }

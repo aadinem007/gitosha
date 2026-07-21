@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Unbounded, Manrope, JetBrains_Mono } from "next/font/google";
 import { ChatWidget } from "@/components/ChatWidget";
+import { BRAND, siteUrl } from "@/lib/brand";
 import "./globals.css";
 
 const display = Unbounded({
@@ -22,10 +23,20 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shipyard — Stop building the wrong product",
-  description:
-    "Honest opportunity scores, kill criteria, and a production SaaS scaffold with Razorpay. Operator from ₹999/mo launch. Foundry Agency for studios at ₹29,999 one-time.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard-omega-opal.vercel.app"),
+  title: `${BRAND.name} — ${BRAND.tagline}`,
+  description: BRAND.description,
+  metadataBase: new URL(siteUrl()),
+  openGraph: {
+    title: `${BRAND.name} — ${BRAND.tagline}`,
+    description: BRAND.description,
+    siteName: BRAND.name,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND.name} — ${BRAND.tagline}`,
+    description: BRAND.description,
+  },
 };
 
 export default function RootLayout({
@@ -38,7 +49,7 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="shipyard-bg flex min-h-full flex-col text-[var(--ink)]">
+      <body className="gitosha-bg flex min-h-full flex-col text-[var(--ink)]">
         {children}
         <ChatWidget />
       </body>

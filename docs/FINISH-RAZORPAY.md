@@ -1,7 +1,9 @@
 # Finish Razorpay in 5 minutes (zero coding)
 
-Your site is already live. This turns on the pay buttons with Indian payments
+Your Gitosha site is already live. This turns on the pay buttons with Indian payments
 (UPI, cards, netbanking).
+
+Tip: in the Razorpay dashboard, set the business / checkout display name to **Gitosha**.
 
 ## A. Get your Razorpay test keys
 

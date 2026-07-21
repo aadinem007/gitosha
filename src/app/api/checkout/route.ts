@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
       planId: plan.id,
       product: plan.product,
       email,
-      name: "Shipyard",
+      name: "Gitosha",
       description: plan.name,
     });
   }
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
         planId: plan.id,
         product: plan.product,
         email,
-        name: "Shipyard",
+        name: "Gitosha",
         description: plan.name,
       });
     }
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
       planId: plan.id,
       product: plan.product,
       email,
-      name: "Shipyard",
+      name: "Gitosha",
       description: `${plan.name} (first billing period)`,
     });
   }

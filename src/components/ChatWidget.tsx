@@ -96,15 +96,15 @@ export function ChatWidget() {
         <section
           id={panelId}
           role="dialog"
-          aria-label="Yardhand chat"
+          aria-label="Gita chat"
           className="chat-panel pointer-events-auto flex w-[min(100vw-1.5rem,380px)] flex-col overflow-hidden rounded-2xl border border-[var(--line)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
         >
           <header className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--panel)] px-4 py-3">
             <div className="min-w-0">
               <p className="font-display text-sm font-semibold tracking-tight text-[var(--ink)]">
-                Yardhand
+                Gita
               </p>
-              <p className="truncate text-xs text-[var(--muted)]">Shipyard guide · usually instant</p>
+              <p className="truncate text-xs text-[var(--muted)]">Gitosha guide · usually instant</p>
             </div>
             <button
               type="button"

@@ -19,7 +19,7 @@ const STACK = [
 
 const AGENCY_EXTRAS = [
   "Unlimited client projects under one license",
-  "White-label rights (strip Shipyard marks)",
+  "White-label rights (strip Gitosha marks)",
   "Client handoff checklist (in the zip)",
   "Invoice template (in the zip)",
   "Proposal template (in the zip)",

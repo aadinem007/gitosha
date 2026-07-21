@@ -1,10 +1,13 @@
 # Launch content — ready to post
 
+Brand: **Gitosha** — Know what to build. Then ship it.
+
 I can't post to your personal Reddit/X/LinkedIn/Indie Hackers accounts (that
 needs your login), but everything below is written and ready to paste. Post
 in this order, roughly 1-2 days apart. Live site URL to use everywhere:
 
   https://shipyard-omega-opal.vercel.app
+  (swap to gitosha.com when the custom domain is live)
 
 ---
 
@@ -93,7 +96,7 @@ enough that I'm building both right now.
 4/ Free tier: weekly digest + top 3 ideas. Pro ($19/mo): full database +
 teardowns + launch kits. Building this one completely in public.
 
-5/ Link: [shipyard.build]
+5/ Link: https://shipyard-omega-opal.vercel.app (Gitosha — swap to gitosha.com when domain is live)
 
 ---
 

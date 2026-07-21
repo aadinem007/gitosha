@@ -71,7 +71,7 @@ export const SEED_IDEAS: SeedIdea[] = [
     oneLiner: "Stripe failed-payment recovery / dunning automation for subscription businesses.",
     scores: scores(8, 4, 9, 9, 9, 8, 5, 6, 8, 6),
     isPremium: false,
-    teardownMd: "Free preview: Recoverly targets the ~5-10% of subscription revenue lost to failed card payments every month. Churnkey and Stripe's own Smart Retries prove the ceiling, but the small-SaaS segment ($1M-10M ARR) is underserved by both. Next in the Shipyard build queue.",
+    teardownMd: "Free preview: Recoverly targets the ~5-10% of subscription revenue lost to failed card payments every month. Churnkey and Stripe's own Smart Retries prove the ceiling, but the small-SaaS segment ($1M-10M ARR) is underserved by both. Next in the Gitosha build queue.",
   },
   {
     slug: "bridge-integration",

@@ -7,7 +7,7 @@ Use this when delivering a product built on Foundry to a client.
 - [ ] Auth redirect URLs match production domain
 - [ ] Razorpay webhook pointed at production `/api/razorpay/webhook`
 - [ ] Test one real small payment (or Live test) end-to-end
-- [ ] Pricing copy and brand marks are client white-label (no Shipyard)
+- [ ] Pricing copy and brand marks are client white-label (no Gitosha)
 - [ ] Privacy / Terms links on client site if they collect data
 
 ## Access transfer

@@ -81,7 +81,7 @@ async function emailDigest(title: string, ideas: InputIdea[]) {
     return;
   }
   const resend = new Resend(apiKey);
-  const from = process.env.EMAIL_FROM ?? "Shipyard <hello@shipyard.build>";
+  const from = process.env.EMAIL_FROM ?? "Gitosha <hello@gitosha.com>";
 
   const subscribers = await prisma.subscriber.findMany({ where: { status: "ACTIVE" } });
   const top3 = [...ideas].sort((a, b) => totalScore(b.scores) - totalScore(a.scores)).slice(0, 3);
@@ -90,7 +90,7 @@ async function emailDigest(title: string, ideas: InputIdea[]) {
     `${title}\n`,
     ...top3.map((i) => `${i.name} — ${totalScore(i.scores)}/100\n${i.oneLiner}\n`),
     "\nFull teardowns and the rest of this week's ideas are in the Vault: " +
-      (process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard.build") +
+      (process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard-omega-opal.vercel.app") +
       "/vault",
   ].join("\n");
 

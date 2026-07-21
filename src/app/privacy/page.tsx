@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { LegalShell } from "@/components/LegalShell";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Shipyard",
-  description: "How Shipyard collects, uses, and stores personal data.",
+  title: `Privacy Policy — ${BRAND.name}`,
+  description: `How ${BRAND.name} collects, uses, and stores personal data.`,
 };
 
 export default function PrivacyPage() {
   return (
     <LegalShell title="Privacy Policy" updated="21 July 2026">
       <p>
-        This Privacy Policy explains what data Shipyard collects and how we use it when you visit
+        This Privacy Policy explains what data {BRAND.name} collects and how we use it when you visit
         our site, join the waitlist, sign in, or buy Vault / Foundry products.
       </p>
 
@@ -30,7 +31,7 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Technical:</strong> standard server logs (IP, user agent) used for abuse
-          prevention and reliability. Chat messages sent to Yardhand are processed to answer your
+          prevention and reliability. Chat messages sent to {BRAND.chatName} are processed to answer your
           question and may be rate-limited.
         </li>
       </ul>
@@ -69,7 +70,10 @@ export default function PrivacyPage() {
       </p>
 
       <h2>6. Children</h2>
-      <p>Shipyard is intended for adults building businesses. We do not knowingly collect data from children under 16.</p>
+      <p>
+        {BRAND.name} is intended for adults building businesses. We do not knowingly collect data from
+        children under 16.
+      </p>
 
       <h2>7. Changes</h2>
       <p>We may update this policy; the date at the top will change when we do.</p>

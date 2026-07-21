@@ -3,6 +3,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { SEED_IDEAS, totalScore } from "@/lib/ideas-data";
+import { BRAND } from "@/lib/brand";
 
 const TOP_IDEAS = [...SEED_IDEAS]
   .sort((a, b) => totalScore(b.scores) - totalScore(a.scores))
@@ -35,7 +36,7 @@ const STEPS = [
 
 const FEATURES = [
   {
-    t: "Yardhand — on-site guide",
+    t: `${BRAND.chatName} — on-site guide`,
     d: "Tap ASK. Instant answers on pricing, downloads, Solo vs Agency. No ticket queue.",
   },
   {
@@ -66,15 +67,12 @@ export default function Home() {
       <Nav />
       <main className="flex-1">
         <section className="hero-plane mx-auto max-w-6xl overflow-hidden px-6 pt-10 sm:pt-14">
-          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.28em] text-[var(--brass)]">
-            Stop gambling months on the wrong product
+          <h1 className="brand-mark animate-draft font-display">{BRAND.nameUpper}</h1>
+          <p className="animate-rise mt-6 max-w-2xl font-display text-2xl font-medium leading-snug text-[var(--fog)] sm:text-[2.05rem]">
+            {BRAND.tagline}
           </p>
-          <h1 className="brand-mark animate-draft mt-5 font-display">SHIPYARD</h1>
           <div className="rule animate-pulse-line mt-8 max-w-md" />
-          <p className="animate-rise-delay mt-8 max-w-2xl font-display text-2xl font-medium leading-snug text-[var(--fog)] sm:text-[2.05rem]">
-            Know the software business worth building — then ship it on a scaffold that already takes money.
-          </p>
-          <p className="animate-rise-delay-2 mt-5 max-w-xl text-base leading-relaxed text-[var(--muted)] sm:text-lg">
+          <p className="animate-rise-delay mt-8 max-w-xl text-base leading-relaxed text-[var(--muted)] sm:text-lg">
             Honest scores. Kill criteria. Instant Foundry download after UPI. Built so Indian builders
             stop drowning in fake “100 SaaS ideas” lists and start collecting revenue.
           </p>
@@ -192,10 +190,14 @@ export default function Home() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
             Products
           </p>
-          <h2 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">Two doors. Same yard.</h2>
+          <h2 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">
+            Two products. One path.
+          </h2>
           <div className="mt-10 grid gap-8 sm:grid-cols-2">
             <div className="product-panel">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">Research</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">
+                Research
+              </p>
               <h3 className="mt-3 font-display text-2xl font-semibold">The Vault</h3>
               <p className="mt-3 leading-relaxed text-[var(--muted)]">
                 From ₹999/mo launch — full teardowns, kill criteria, competitor maps, launch
@@ -206,7 +208,9 @@ export default function Home() {
               </Link>
             </div>
             <div className="product-panel product-panel-hot">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">Scaffold</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">
+                Scaffold
+              </p>
               <h3 className="mt-3 font-display text-2xl font-semibold">Foundry</h3>
               <p className="mt-3 leading-relaxed text-[var(--muted)]">
                 Solo ₹9,999 or Agency ₹29,999. Pay once. Download the zip. Studios get unlimited
@@ -229,7 +233,7 @@ export default function Home() {
             </h2>
             <p className="mt-4 max-w-lg text-sm leading-relaxed text-[var(--muted)]">
               Launch Operator is ₹999/mo for the first 100. Foundry unlocks the second you pay. Legal
-              pages are public. Ask Yardhand anything.
+              pages are public. Ask {BRAND.chatName} anything.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/pricing" className="btn-primary px-6 py-3 text-sm">

@@ -23,7 +23,7 @@ async function main() {
     period: "monthly",
     interval: 1,
     item: {
-      name: "Shipyard Vault Pro",
+      name: "Gitosha Vault Operator",
       amount: 149900,
       currency: "INR",
       description: "Full scored opportunity database + weekly teardowns",
@@ -34,7 +34,7 @@ async function main() {
     period: "monthly",
     interval: 1,
     item: {
-      name: "Shipyard Vault Team",
+      name: "Gitosha Vault Studio",
       amount: 599900,
       currency: "INR",
       description: "5 seats, private idea requests, priority queue",

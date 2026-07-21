@@ -47,8 +47,8 @@ body {
   letter-spacing: 0;
 }
 
-/* Full-bleed yard atmosphere */
-.shipyard-bg {
+/* Full-bleed hull atmosphere */
+.gitosha-bg {
   position: relative;
   background-color: var(--hull);
   background-image:
@@ -60,7 +60,7 @@ body {
   background-size: auto, auto, auto, 56px 56px, 56px 56px;
 }
 
-.shipyard-bg::after {
+.gitosha-bg::after {
   content: "";
   pointer-events: none;
   position: fixed;

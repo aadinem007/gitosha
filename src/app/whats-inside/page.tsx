@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
 
 export const metadata: Metadata = {
-  title: "What's inside — Shipyard plans & Foundry zip",
+  title: "What's inside — Gitosha plans & Foundry zip",
   description: "Feature inventory for Vault plans and the Foundry Solo / Agency zip.",
 };
 

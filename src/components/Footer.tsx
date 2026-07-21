@@ -9,10 +9,11 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
             <p className="font-display text-sm font-semibold tracking-wide text-[var(--ink)]">
-              SHIPYARD
+              GITOSHA
             </p>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-[var(--muted)]">
-              Opportunity research and production scaffolds for builders who ship.
+              Know what to build. Then ship it. Opportunity research and production scaffolds for
+              builders who ship.
             </p>
             <Link
               href="/"
@@ -108,7 +109,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-[var(--line)] pt-8 text-xs text-[var(--muted)]/80 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {year} Shipyard. All rights reserved.</p>
+          <p>© {year} Gitosha. All rights reserved.</p>
           <p>India · Payments via Razorpay · Prices in INR</p>
         </div>
       </div>

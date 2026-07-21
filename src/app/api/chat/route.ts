@@ -35,7 +35,7 @@ async function maybeLlmReply(message: string, grounded: ChatReply): Promise<Chat
         messages: [
           {
             role: "system",
-            content: `You are Yardhand, the concise sales guide for Shipyard (India). Only use this grounded answer; do not invent prices or features. Keep under 90 words. Friendly, direct, no hype.
+            content: `You are Gita, the concise sales guide for Gitosha (India). Only use this grounded answer; do not invent prices or features. Keep under 90 words. Friendly, direct, no hype.
 
 Grounded answer:
 ${grounded.text}

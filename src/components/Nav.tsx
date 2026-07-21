@@ -9,7 +9,7 @@ export function Nav() {
             href="/"
             className="font-display text-lg font-bold tracking-tight text-[var(--ink)] transition hover:text-[var(--brass)]"
           >
-            SHIPYARD
+            GITOSHA
           </Link>
           <Link
             href="/"

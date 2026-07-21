@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const idea = SEED_IDEAS.find((i) => i.slug === slug);
   if (!idea) return { title: "Opportunity not found" };
   return {
-    title: `${idea.name} — ${totalScore(idea.scores)}/100 | Shipyard`,
+    title: `${idea.name} — ${totalScore(idea.scores)}/100 | Gitosha`,
     description: idea.oneLiner,
   };
 }

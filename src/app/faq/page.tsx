@@ -4,7 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "FAQ — Shipyard",
+  title: "FAQ — Gitosha",
   description: "Answers about Vault, Foundry Solo vs Agency, downloads, payments, and refunds.",
 };
 

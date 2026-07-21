@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /vault
+Disallow: /license
+Disallow: /login
+Disallow: /checkout/
+
+Sitemap: https://shipyard-omega-opal.vercel.app/sitemap.xml

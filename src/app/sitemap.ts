@@ -10,6 +10,7 @@ export default function sitemap() {
     "/login",
     "/method",
     "/license",
+    "/faq",
     "/terms",
     "/privacy",
     "/refund",

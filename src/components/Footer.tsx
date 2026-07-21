@@ -61,6 +61,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/faq" className="hover:text-[var(--ink)]">
+                  FAQ
+                </Link>
+              </li>
+              <li>
                 <Link href="/" className="hover:text-[var(--ink)]">
                   Home
                 </Link>

@@ -239,6 +239,8 @@ export function matchKnowledge(message: string): ChatReply {
     if (entry.id === "foundry" && /\bfoundry\b/.test(q)) score += 4;
     if (entry.id === "vault" && /\bvault\b/.test(q)) score += 4;
     if (entry.id === "delivery" && /\b(download|license|paid|payment)\b/.test(q)) score += 3;
+    if (entry.id === "solo-vs-agency" && /\b(agency|solo|29999|29,?999)\b/.test(q)) score += 4;
+    if (entry.id === "legal" && /\b(refund|terms|privacy)\b/.test(q)) score += 4;
 
     if (score > 0 && (!best || score > best.score)) {
       best = { entry, score };

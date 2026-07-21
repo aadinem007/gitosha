@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { readJsonLimited } from "@/lib/secure";
+import { assertSameOrigin, readJsonLimited, safeEqualDigest } from "@/lib/secure";
 
 const bodySchema = z.object({
   email: z.string().email().max(254),
@@ -10,9 +10,13 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  if (!assertSameOrigin(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const limited = rateLimit({
     key: `license-lookup:${clientIp(req)}`,
-    limit: 15,
+    limit: 12,
     windowMs: 60_000,
   });
   if (!limited.ok) {
@@ -33,7 +37,7 @@ export async function POST(req: NextRequest) {
   const key = parsed.data.key.toUpperCase().trim();
 
   const license = await prisma.licenseKey.findUnique({ where: { key } });
-  if (!license || license.email.toLowerCase() !== email) {
+  if (!license || !safeEqualDigest(license.email.toLowerCase(), email)) {
     return NextResponse.json({ error: "No matching license" }, { status: 404 });
   }
 

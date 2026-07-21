@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createFoundryZipStream, foundryKitExists } from "@/lib/foundry-pack";
-import { readJsonLimited } from "@/lib/secure";
+import { readJsonLimited, assertSameOrigin, safeEqualDigest } from "@/lib/secure";
 import { Readable } from "stream";
 
 const bodySchema = z.object({
@@ -18,9 +18,13 @@ const bodySchema = z.object({
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
+  if (!assertSameOrigin(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const limited = rateLimit({
     key: `license-dl:${clientIp(req)}`,
-    limit: 8,
+    limit: 6,
     windowMs: 60_000,
   });
   if (!limited.ok) {
@@ -45,7 +49,7 @@ export async function POST(req: NextRequest) {
   const key = parsed.data.key.toUpperCase();
 
   const license = await prisma.licenseKey.findUnique({ where: { key } });
-  if (!license || license.email.toLowerCase() !== email) {
+  if (!license || !safeEqualDigest(license.email.toLowerCase(), email)) {
     return NextResponse.json({ error: "License not found for that email + key." }, { status: 404 });
   }
 

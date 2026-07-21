@@ -10,6 +10,7 @@ const securityHeaders = [
   { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
   { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
   { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
+  { key: "X-XSS-Protection", value: "0" },
   {
     key: "Content-Security-Policy",
     value: [

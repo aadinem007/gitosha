@@ -3,6 +3,7 @@ import { z } from "zod";
 import { razorpay, RAZORPAY_KEY_ID, PLAN_IDS } from "@/lib/razorpay";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { assertSameOrigin, readJsonLimited } from "@/lib/secure";
 
 const bodySchema = z.object({
   planId: z.string().max(64),
@@ -10,16 +11,25 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  if (!assertSameOrigin(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const limited = rateLimit({
     key: `checkout:${clientIp(req)}`,
-    limit: 10,
+    limit: 8,
     windowMs: 60_000,
   });
   if (!limited.ok) {
     return NextResponse.json({ error: "Too many checkout attempts. Wait a minute." }, { status: 429 });
   }
 
-  const parsed = bodySchema.safeParse(await req.json());
+  const body = await readJsonLimited(req);
+  if (!body.ok) {
+    return NextResponse.json({ error: body.error }, { status: 400 });
+  }
+
+  const parsed = bodySchema.safeParse(body.data);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }

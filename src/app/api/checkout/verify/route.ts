@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { fulfillPurchase } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { readJsonLimited, safeEqual } from "@/lib/secure";
+import { readJsonLimited, safeEqual, assertSameOrigin } from "@/lib/secure";
 
 const bodySchema = z.object({
   mode: z.enum(["payment", "subscription"]),
@@ -16,9 +16,13 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  if (!assertSameOrigin(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const limited = rateLimit({
     key: `verify:${clientIp(req)}`,
-    limit: 20,
+    limit: 15,
     windowMs: 60_000,
   });
   if (!limited.ok) {

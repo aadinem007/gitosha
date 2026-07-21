@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { readJsonLimited } from "@/lib/secure";
+import { assertSameOrigin, readJsonLimited, stripControlChars } from "@/lib/secure";
 import { matchKnowledge, type ChatReply } from "@/lib/chat-knowledge";
 
 const bodySchema = z.object({
@@ -63,9 +63,13 @@ Allowed links (mention only if relevant): ${(grounded.links ?? []).map((l) => l.
 }
 
 export async function POST(req: NextRequest) {
+  if (!assertSameOrigin(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const limited = rateLimit({
     key: `chat:${clientIp(req)}`,
-    limit: 30,
+    limit: 24,
     windowMs: 60_000,
   });
   if (!limited.ok) {
@@ -85,8 +89,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Send a short message." }, { status: 400 });
   }
 
-  const grounded = matchKnowledge(parsed.data.message);
-  const enhanced = await maybeLlmReply(parsed.data.message, grounded);
+  const message = stripControlChars(parsed.data.message).slice(0, 500);
+  if (!message) {
+    return NextResponse.json({ error: "Send a short message." }, { status: 400 });
+  }
+
+  const grounded = matchKnowledge(message);
+  const enhanced = await maybeLlmReply(message, grounded);
   const reply = enhanced ?? grounded;
 
   return NextResponse.json({

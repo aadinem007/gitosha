@@ -2,7 +2,18 @@ import { SEED_IDEAS, totalScore } from "@/lib/ideas-data";
 
 export default function sitemap() {
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://shipyard-omega-opal.vercel.app";
-  const staticRoutes = ["", "/pricing", "/foundry-kit", "/vault", "/login", "/method", "/license"].map((path) => ({
+  const staticRoutes = [
+    "",
+    "/pricing",
+    "/foundry-kit",
+    "/vault",
+    "/login",
+    "/method",
+    "/license",
+    "/terms",
+    "/privacy",
+    "/refund",
+  ].map((path) => ({
     url: `${base}${path}`,
     lastModified: new Date(),
   }));

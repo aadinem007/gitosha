@@ -184,6 +184,28 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       suggestions: ["What is the Vault?", "Show pricing"],
     },
   },
+  {
+    id: "legal",
+    keywords: [
+      "terms",
+      "privacy",
+      "refund",
+      "policy",
+      "legal",
+      "cancel",
+      "money back",
+      "return",
+    ],
+    reply: {
+      text: "We publish Terms of Service, Privacy Policy, and Refund Policy on the site. Foundry is a digital download — refunds are limited after download (see Refund Policy). Vault has a short unused-access review window.",
+      links: [
+        { label: "Terms", href: "/terms" },
+        { label: "Privacy", href: "/privacy" },
+        { label: "Refunds", href: "/refund" },
+      ],
+      suggestions: ["How do I get Foundry after paying?", "Show pricing", "Contact support"],
+    },
+  },
 ];
 
 export const CHAT_FALLBACK: ChatReply = {

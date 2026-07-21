@@ -78,7 +78,19 @@ export default function PricingPage() {
 
           <p className="mt-12 text-xs leading-relaxed text-[var(--muted)]">
             Operator launch price (₹999/mo) applies to the first 100 paying operators, then returns
-            to ₹1,499/mo. All prices in INR.
+            to ₹1,499/mo. All prices in INR. By purchasing you agree to our{" "}
+            <a href="/terms" className="text-[var(--brass)] hover:underline">
+              Terms
+            </a>
+            ,{" "}
+            <a href="/privacy" className="text-[var(--brass)] hover:underline">
+              Privacy
+            </a>
+            , and{" "}
+            <a href="/refund" className="text-[var(--brass)] hover:underline">
+              Refund
+            </a>{" "}
+            policies.
           </p>
         </section>
       </main>

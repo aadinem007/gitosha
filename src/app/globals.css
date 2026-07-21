@@ -240,7 +240,69 @@ body {
   animation: pulse-line 3.2s ease-in-out infinite;
 }
 
-/* Yardhand chat */
+.legal-prose h2 {
+  margin-top: 2rem;
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.legal-prose p {
+  color: var(--fog);
+}
+
+.legal-prose ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  color: var(--fog);
+}
+
+.legal-prose li {
+  margin-top: 0.45rem;
+}
+
+.legal-prose a {
+  color: var(--brass);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal-prose strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Stronger scoreboard sheen */
+.board-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(212, 160, 90, 0.05), transparent 28%),
+    rgba(10, 17, 24, 0.65);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.cta-band {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(212, 160, 90, 0.28);
+  background:
+    radial-gradient(ellipse 80% 120% at 100% 0%, rgba(212, 160, 90, 0.14), transparent 55%),
+    linear-gradient(135deg, rgba(10, 17, 24, 0.95), rgba(3, 6, 10, 0.9));
+  padding: 2.5rem 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .cta-band {
+    padding: 3rem 2.5rem;
+  }
+}
+
 .chat-panel {
   background: linear-gradient(165deg, rgba(10, 17, 24, 0.98), rgba(3, 6, 10, 0.96));
   animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;

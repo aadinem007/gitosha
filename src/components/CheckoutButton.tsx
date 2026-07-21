@@ -84,7 +84,11 @@ export function CheckoutButton({
             }),
           });
           if (verifyRes.ok) {
-            window.location.href = "/checkout/success";
+            const result = await verifyRes.json();
+            const params = new URLSearchParams({ product: result.product ?? "foundry" });
+            if (result.licenseKey) params.set("key", result.licenseKey);
+            if (result.email) params.set("email", result.email);
+            window.location.href = `/checkout/success?${params.toString()}`;
           } else {
             const err = await verifyRes.json();
             alert(err.error ?? "Payment received but verification failed. Contact support.");

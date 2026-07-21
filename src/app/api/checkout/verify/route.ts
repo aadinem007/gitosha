@@ -44,6 +44,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
   }
 
+  let licenseKey: string | undefined;
+
   if (data.planId.startsWith("vault-")) {
     await fulfillVaultSubscription({
       email: data.email,
@@ -51,7 +53,7 @@ export async function POST(req: NextRequest) {
       subscriptionId: data.razorpay_subscription_id,
     });
   } else if (data.planId.startsWith("foundry-")) {
-    await fulfillFoundryPurchase({
+    licenseKey = await fulfillFoundryPurchase({
       email: data.email,
       planId: data.planId,
       paymentId: data.razorpay_payment_id,
@@ -59,5 +61,10 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({
+    ok: true,
+    product: data.planId.startsWith("vault-") ? "vault" : "foundry",
+    email: data.email,
+    licenseKey,
+  });
 }

@@ -28,6 +28,14 @@ export default function Home() {
           </p>
           <div className="mt-8 flex flex-col gap-3">
             <WaitlistForm />
+            <div className="flex flex-wrap gap-3 text-sm">
+              <Link href="/pricing" className="font-medium text-white underline">
+                Or go Pro — ₹1,499/mo →
+              </Link>
+              <Link href="/foundry-kit" className="text-neutral-400 hover:text-white">
+                Buy Foundry Kit — ₹11,999
+              </Link>
+            </div>
             <p className="text-xs text-neutral-500">
               Free forever tier. Upgrade to Pro for the full database and launch kits.
             </p>
@@ -55,7 +63,11 @@ export default function Home() {
               <tbody>
                 {TOP_IDEAS.map((idea) => (
                   <tr key={idea.slug} className="border-t border-neutral-800">
-                    <td className="px-4 py-3 font-medium">{idea.name}</td>
+                    <td className="px-4 py-3 font-medium">
+                      <Link href={`/ideas/${idea.slug}`} className="hover:underline">
+                        {idea.name}
+                      </Link>
+                    </td>
                     <td className="px-4 py-3 text-neutral-400">{idea.category}</td>
                     <td className="hidden px-4 py-3 text-neutral-400 sm:table-cell">
                       {idea.oneLiner}

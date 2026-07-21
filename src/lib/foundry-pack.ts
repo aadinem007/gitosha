@@ -65,7 +65,7 @@ Thanks for purchasing Foundry (${tier}).
 ## Start in 5 minutes
 
 \`\`\`bash
-cp .env.example .env
+cp env.example (or .env.example) .env
 npm install
 npx prisma db push
 npm run dev

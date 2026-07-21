@@ -7,7 +7,7 @@ Licensed to you by Shipyard. Your license key is on the purchase success page an
 ## Quick start
 
 ```bash
-cp .env.example .env
+cp env.example (or .env.example) .env
 # Fill DATABASE_URL, Supabase, Razorpay keys
 
 npm install

@@ -26,7 +26,7 @@ export default async function LicensePage({
             <li>Download the zip</li>
             <li>Unzip → open the <code className="text-[var(--fog)]">foundry-kit</code> folder</li>
             <li>
-              Copy <code className="text-[var(--fog)]">.env.example</code> to{" "}
+              Copy <code className="text-[var(--fog)]">env.example (or .env.example)</code> to{" "}
               <code className="text-[var(--fog)]">.env</code> and fill your keys
             </li>
             <li>

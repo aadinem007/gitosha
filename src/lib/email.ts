@@ -28,7 +28,7 @@ Or open ${SITE}/license and paste your email + key.
 
 Inside the zip:
 1. Open the foundry-kit folder
-2. Copy .env.example → .env
+2. Copy env.example (or .env.example) → .env
 3. npm install && npx prisma db push && npm run dev
 
 — Shipyard`,

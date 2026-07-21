@@ -7,7 +7,7 @@ Two products, one audience:
 1. **Vault** — weekly scored software opportunity research (Operator from ₹999/mo launch).
 2. **Foundry** — production SaaS scaffold with auth, Razorpay billing, and deploy pipeline (Solo ₹9,999).
 
-Live site: https://shipyard-omega-opal.vercel.app  
+Live site: https://gitosha.vercel.app  
 (Custom domain `gitosha.com` can be wired later — see Vercel project settings.)
 
 ## Stack
@@ -17,7 +17,7 @@ Next.js · TypeScript · Tailwind · Prisma · Supabase · Razorpay · Resend ·
 ## Setup status
 
 Already done:
-- Code on GitHub (`aadinem007/shipyard` — repo folder name kept)
+- Code on GitHub (`aadinem007/gitosha` — repo folder name kept)
 - Live on Vercel
 - Supabase database + seeded ideas
 - Razorpay Test Mode payments verified

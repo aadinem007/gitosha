@@ -6,4 +6,4 @@ Disallow: /license
 Disallow: /login
 Disallow: /checkout/
 
-Sitemap: https://shipyard-omega-opal.vercel.app/sitemap.xml
+Sitemap: https://gitosha.vercel.app/sitemap.xml

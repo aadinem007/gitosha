@@ -30,4 +30,4 @@ Kit source of truth: `kits/foundry/`
 ## Test without real money
 
 Use an existing Test Mode license from a previous Foundry purchase:
-open `/license`, paste email + `SHIP-…` key, download zip.
+open `/license`, paste email + `GITO-…` (legacy `SHIP-…` still works) key, download zip.

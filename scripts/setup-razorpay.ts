@@ -46,9 +46,9 @@ async function main() {
   console.log(`RAZORPAY_KEY_SECRET=${keySecret}`);
   console.log(`RAZORPAY_PLAN_VAULT_PRO=${vaultPro.id}`);
   console.log(`RAZORPAY_PLAN_VAULT_TEAM=${vaultTeam.id}`);
-  console.log(`NEXT_PUBLIC_SITE_URL=https://shipyard-omega-opal.vercel.app`);
+  console.log(`NEXT_PUBLIC_SITE_URL=https://gitosha.vercel.app`);
   console.log("\nThen add webhook at:");
-  console.log("  https://shipyard-omega-opal.vercel.app/api/razorpay/webhook");
+  console.log("  https://gitosha.vercel.app/api/razorpay/webhook");
   console.log(
     "Events: payment.captured, subscription.activated, subscription.charged, subscription.cancelled, subscription.halted"
   );

@@ -6,7 +6,7 @@ I can't post to your personal Reddit/X/LinkedIn/Indie Hackers accounts (that
 needs your login), but everything below is written and ready to paste. Post
 in this order, roughly 1-2 days apart. Live site URL to use everywhere:
 
-  https://shipyard-omega-opal.vercel.app
+  https://gitosha.vercel.app
   (swap to gitosha.com when the custom domain is live)
 
 ---
@@ -37,7 +37,7 @@ scored database and teardowns. Would love brutal feedback on the scoring
 methodology from this community specifically — you're the audience who'd
 catch me if I started inflating numbers.
 
-https://shipyard-omega-opal.vercel.app
+https://gitosha.vercel.app
 
 ---
 
@@ -96,7 +96,7 @@ enough that I'm building both right now.
 4/ Free tier: weekly digest + top 3 ideas. Pro ($19/mo): full database +
 teardowns + launch kits. Building this one completely in public.
 
-5/ Link: https://shipyard-omega-opal.vercel.app (Gitosha — swap to gitosha.com when domain is live)
+5/ Link: https://gitosha.vercel.app (Gitosha — swap to gitosha.com when domain is live)
 
 ---
 

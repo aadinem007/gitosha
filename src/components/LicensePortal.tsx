@@ -109,7 +109,7 @@ export function LicensePortal({
           value={key}
           onChange={(e) => setKey(e.target.value.toUpperCase())}
           className="mt-1 w-full rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 font-mono text-sm tracking-wide text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
-          placeholder="SHIP-XXXX-XXXX-XXXX"
+          placeholder="GITO-XXXX-XXXX-XXXX"
         />
       </div>
 

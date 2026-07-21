@@ -1,7 +1,7 @@
 # DO THIS TODAY — make money (I already did the product work)
 
 Brand: **Gitosha** — Know what to build. Then ship it.
-Your live site: https://shipyard-omega-opal.vercel.app
+Your live site: https://gitosha.vercel.app
 (Use this URL until gitosha.com is connected.)
 
 I already:
@@ -37,7 +37,7 @@ I built Gitosha — know what to build, then ship it. Public 10-dimension scorin
 1) Vault — weekly scored opportunity database (₹999/mo launch / ~$12)
 2) Foundry — production Next.js + Razorpay SaaS scaffold (₹9,999 / ~$120)
 
-Live: https://shipyard-omega-opal.vercel.app
+Live: https://gitosha.vercel.app
 
 Free teardowns are public. Pro unlocks the full database.
 
@@ -66,9 +66,9 @@ Every founder falls in love with an idea before checking if it's viable.
 I force every idea through the same 10 scores (0-10): Demand, Competition, Scalability, Automation, Margin, MRR Potential, Barrier to Entry, AI Leverage, Global Reach, Time to Launch.
 
 First batch of 18 results (including the ones that scored badly):
-https://shipyard-omega-opal.vercel.app
+https://gitosha.vercel.app
 
-Example: https://shipyard-omega-opal.vercel.app/ideas/recoverly
+Example: https://gitosha.vercel.app/ideas/recoverly
 
 Curious if anyone thinks a dimension is missing or overweighted.
 ```
@@ -90,7 +90,7 @@ None cleared 90/100 honestly.
 The top two became real products with Razorpay checkout live:
 
 Gitosha: Vault (research) + Foundry (starter kit)
-https://shipyard-omega-opal.vercel.app
+https://gitosha.vercel.app
 ```
 
 ---
@@ -101,7 +101,7 @@ Message 10 friends / college mates / Discord people who want to build startups:
 
 ```
 Bro I built Gitosha — scores SaaS business ideas properly + a ready starter kit.
-Live site: https://shipyard-omega-opal.vercel.app
+Live site: https://gitosha.vercel.app
 If you know anyone building a startup, send them this. Free tier works.
 ```
 

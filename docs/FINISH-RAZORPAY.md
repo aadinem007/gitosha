@@ -24,7 +24,7 @@ RAZORPAY_KEY_ID=rzp_test_...
 RAZORPAY_KEY_SECRET=...
 RAZORPAY_PLAN_VAULT_PRO=plan_...
 RAZORPAY_PLAN_VAULT_TEAM=plan_...
-NEXT_PUBLIC_SITE_URL=https://shipyard-omega-opal.vercel.app
+NEXT_PUBLIC_SITE_URL=https://gitosha.vercel.app
 ```
 
 Also **delete** the old `STRIPE_SECRET_KEY` row if it's still there.
@@ -33,7 +33,7 @@ Also **delete** the old `STRIPE_SECRET_KEY` row if it's still there.
 
 1. Razorpay Dashboard → **Account & Settings** → **Webhooks** → **Add New Webhook**
 2. URL:
-   `https://shipyard-omega-opal.vercel.app/api/razorpay/webhook`
+   `https://gitosha.vercel.app/api/razorpay/webhook`
 3. Active events:
    - `payment.captured`
    - `subscription.activated`
@@ -49,7 +49,7 @@ Vercel → Deployments → ⋯ → Redeploy
 
 ## E. Test payment (fake money)
 
-1. Open https://shipyard-omega-opal.vercel.app/pricing
+1. Open https://gitosha.vercel.app/pricing
 2. Click **Start Pro** or **Buy Solo**
 3. Razorpay popup opens — use Razorpay test cards / UPI test flow
 4. Success → "You're in" page

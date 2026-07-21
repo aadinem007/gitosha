@@ -5,14 +5,11 @@ import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createFoundryZipStream, foundryKitExists } from "@/lib/foundry-pack";
 import { readJsonLimited, assertSameOrigin, safeEqualDigest } from "@/lib/secure";
 import { Readable } from "stream";
+import { LICENSE_KEY_PATTERN } from "@/lib/license";
 
 const bodySchema = z.object({
   email: z.string().email().max(254),
-  key: z
-    .string()
-    .min(10)
-    .max(64)
-    .regex(/^SHIP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i),
+  key: z.string().min(10).max(64).regex(LICENSE_KEY_PATTERN),
 });
 
 export const runtime = "nodejs";

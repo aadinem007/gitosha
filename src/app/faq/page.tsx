@@ -27,7 +27,7 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
   },
   {
     q: "How do I get the files after paying?",
-    a: "Checkout shows your license key (SHIP-…). Open License, enter the same email + key, download the zip. Re-download anytime (fair-use cap).",
+    a: "Checkout shows your license key (GITO-…). Open License, enter the same email + key, download the zip. Re-download anytime (fair-use cap).",
     links: [{ label: "License portal", href: "/license" }],
   },
   {

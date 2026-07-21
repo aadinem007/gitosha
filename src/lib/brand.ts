@@ -20,8 +20,8 @@ export const BRAND = {
     vaultFull: "The Vault",
     foundry: "Foundry",
   },
-  /** Live deploy until custom domain (gitosha.com) is wired */
-  defaultSiteUrl: "https://shipyard-omega-opal.vercel.app",
+  /** Live deploy until custom domain (gitosha.com) is wired — updated after Vercel rename */
+  defaultSiteUrl: "https://gitosha.vercel.app",
   /** Fallback Resend from-address; set EMAIL_FROM in Vercel for production */
   emailFrom: "Gitosha <hello@gitosha.com>",
 } as const;

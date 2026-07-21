@@ -28,6 +28,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     keywords: [
       "what is",
       "gitosha",
+      // Internal alias: old product name — not shown in user-facing copy
       "shipyard",
       "about",
       "who are you",
@@ -127,12 +128,13 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       "receive",
       "deliver",
       "license",
+      "gito-",
       "ship-",
       "download",
       "where is my",
     ],
     reply: {
-      text: "Right after payment you'll see your license key (SHIP-XXXX-…). Open License, enter the same email + key, then Download Foundry zip. You can re-download anytime. Vault access: sign in with the same email you paid with.",
+      text: "Right after payment you'll see your license key (GITO-XXXX-…). Open License, enter the same email + key, then Download Foundry zip. You can re-download anytime. Vault access: sign in with the same email you paid with.",
       links: [
         { label: "License portal", href: "/license" },
         { label: "Sign in", href: "/login" },

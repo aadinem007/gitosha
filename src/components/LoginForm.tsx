@@ -22,7 +22,7 @@ export function LoginForm({ next }: { next: string }) {
 
   if (status === "sent") {
     return (
-      <p className="text-sm text-emerald-400">
+      <p className="text-sm text-[var(--signal)]">
         Check your inbox for a magic link to finish signing in.
       </p>
     );
@@ -36,12 +36,12 @@ export function LoginForm({ next }: { next: string }) {
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-neutral-500 focus:outline-none"
+        className="rounded-md border border-[var(--line)] bg-[var(--panel)] px-4 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
       />
       <button
         type="submit"
         disabled={status === "loading"}
-        className="rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-neutral-950 hover:bg-neutral-200 disabled:opacity-60"
+        className="rounded-md bg-[var(--brass)] px-4 py-2.5 text-sm font-semibold text-[var(--hull)] hover:brightness-110 disabled:opacity-60"
       >
         {status === "loading" ? "Sending…" : "Email me a magic link"}
       </button>

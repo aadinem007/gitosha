@@ -2,38 +2,44 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { razorpay, RAZORPAY_KEY_ID, PLAN_IDS } from "@/lib/razorpay";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 const bodySchema = z.object({
-  planId: z.string(),
-  email: z.string().email(),
+  planId: z.string().max(64),
+  email: z.string().email().max(254),
 });
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimit({
+    key: `checkout:${clientIp(req)}`,
+    limit: 10,
+    windowMs: 60_000,
+  });
+  if (!limited.ok) {
+    return NextResponse.json({ error: "Too many checkout attempts. Wait a minute." }, { status: 429 });
+  }
+
   const parsed = bodySchema.safeParse(await req.json());
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
   if (!RAZORPAY_KEY_ID || RAZORPAY_KEY_ID.includes("placeholder")) {
-    return NextResponse.json(
-      { error: "Razorpay is not configured yet. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Payments are temporarily unavailable." }, { status: 500 });
   }
 
   const { planId, email } = parsed.data;
   const plan = [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
 
   if (!plan || plan.mode === "none" || !plan.amountPaise) {
-    return NextResponse.json({ error: "Unknown or free plan" }, { status: 400 });
+    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
   }
 
-  // One-time Foundry Kit purchase → Razorpay Order
   if (plan.mode === "payment") {
     const order = await razorpay.orders.create({
       amount: plan.amountPaise,
       currency: "INR",
-      receipt: `foundry_${Date.now()}`.slice(0, 40),
+      receipt: `sy_${Date.now()}`.slice(0, 40),
       notes: { planId: plan.id, product: plan.product, email },
     });
 
@@ -51,8 +57,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Vault: prefer Razorpay Subscriptions when plan IDs exist; otherwise
-  // fall back to a one-time Order (same unlock, no auto-renew yet).
   if (plan.mode === "subscription") {
     const planIdRzp = plan.planEnvVar ? PLAN_IDS[plan.planEnvVar] : "";
 
@@ -76,11 +80,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Fallback: one-time Order for first month (works without Subscriptions product)
     const order = await razorpay.orders.create({
       amount: plan.amountPaise,
       currency: "INR",
-      receipt: `vault_${Date.now()}`.slice(0, 40),
+      receipt: `sy_${Date.now()}`.slice(0, 40),
       notes: { planId: plan.id, product: plan.product, email },
     });
 
@@ -94,9 +97,9 @@ export async function POST(req: NextRequest) {
       product: plan.product,
       email,
       name: "Shipyard",
-      description: `${plan.name} (first month)`,
+      description: `${plan.name} (first billing period)`,
     });
   }
 
-  return NextResponse.json({ error: "Unsupported plan mode" }, { status: 400 });
+  return NextResponse.json({ error: "Unsupported plan" }, { status: 400 });
 }

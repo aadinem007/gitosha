@@ -12,7 +12,6 @@ export default async function VaultPage() {
     : null;
 
   const isPro = subscriber?.tier === "PRO" || subscriber?.tier === "TEAM";
-
   const ideas = await prisma.idea.findMany({ orderBy: { totalScore: "desc" } });
 
   return (
@@ -21,14 +20,14 @@ export default async function VaultPage() {
       <main className="flex-1">
         <section className="mx-auto max-w-6xl px-6 py-16">
           <div className="flex items-baseline justify-between">
-            <h1 className="text-3xl font-semibold tracking-tight">The Vault</h1>
-            <span className="text-sm text-neutral-500">{ideas.length} ideas scored</span>
+            <h1 className="font-display text-3xl font-bold tracking-tight">The Vault</h1>
+            <span className="text-sm text-[var(--muted)]">{ideas.length} opportunities scored</span>
           </div>
           {!isPro && (
-            <div className="mt-4 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-neutral-300">
-              You&apos;re on the Free tier — full teardowns are Pro-only.{" "}
-              <a href="/pricing" className="font-medium text-white underline">
-                Upgrade for $19/mo
+            <div className="mt-4 rounded-md border border-[var(--line)] bg-[var(--panel)] px-4 py-3 text-sm text-[var(--fog)]">
+              You&apos;re on Scout (free). Full teardowns unlock on Operator.{" "}
+              <a href="/pricing" className="font-semibold text-[var(--brass)] underline">
+                Upgrade — ₹999/mo launch price
               </a>
             </div>
           )}
@@ -36,20 +35,18 @@ export default async function VaultPage() {
             {ideas.map((idea) => {
               const locked = idea.isPremium && !isPro;
               return (
-                <div key={idea.id} className="rounded-xl border border-neutral-800 p-5">
-                  <div className="flex items-baseline justify-between">
-                    <p className="font-medium">{idea.name}</p>
-                    <span className="font-mono text-sm text-emerald-400">{idea.totalScore}/100</span>
+                <div key={idea.id} className="rounded-lg border border-[var(--line)] bg-[var(--panel)]/40 p-5">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="font-display font-semibold">{idea.name}</p>
+                    <span className="font-mono text-sm text-[var(--signal)]">{idea.totalScore}/100</span>
                   </div>
-                  <p className="mt-1 text-sm text-neutral-500">{idea.category}</p>
-                  <p className="mt-2 text-sm text-neutral-400">{idea.oneLiner}</p>
+                  <p className="mt-1 text-sm text-[var(--muted)]">{idea.category}</p>
+                  <p className="mt-2 text-sm text-[var(--fog)]">{idea.oneLiner}</p>
                   {locked ? (
-                    <p className="mt-3 text-xs text-neutral-500">
-                      Full teardown locked — Pro subscribers only.
-                    </p>
+                    <p className="mt-3 text-xs text-[var(--muted)]">Full teardown locked — Operator only.</p>
                   ) : (
                     idea.teardownMd && (
-                      <p className="mt-3 text-sm text-neutral-300">{idea.teardownMd}</p>
+                      <p className="mt-3 text-sm text-[var(--ink)]/90">{idea.teardownMd}</p>
                     )
                   )}
                 </div>

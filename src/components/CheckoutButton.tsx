@@ -44,7 +44,7 @@ export function CheckoutButton({
     try {
       const ready = await loadRazorpayScript();
       if (!ready || !window.Razorpay) {
-        alert("Could not load Razorpay checkout. Check your internet and try again.");
+        alert("Could not load checkout. Check your connection and try again.");
         setLoading(false);
         return;
       }
@@ -56,7 +56,7 @@ export function CheckoutButton({
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error ?? "Checkout is not configured yet.");
+        alert(data.error ?? "Checkout unavailable.");
         setLoading(false);
         return;
       }
@@ -66,7 +66,7 @@ export function CheckoutButton({
         name: data.name,
         description: data.description,
         prefill: { email: data.email },
-        theme: { color: "#171717" },
+        theme: { color: "#c9a227" },
         handler: async (response: {
           razorpay_payment_id: string;
           razorpay_order_id?: string;
@@ -91,7 +91,7 @@ export function CheckoutButton({
             window.location.href = `/checkout/success?${params.toString()}`;
           } else {
             const err = await verifyRes.json();
-            alert(err.error ?? "Payment received but verification failed. Contact support.");
+            alert(err.error ?? "Payment received but verification failed.");
             setLoading(false);
           }
         },
@@ -116,15 +116,15 @@ export function CheckoutButton({
     }
   }
 
-  const baseClasses =
-    "w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:opacity-60";
-  const styleClasses = primary
-    ? "bg-white text-neutral-950 hover:bg-neutral-200"
-    : "border border-neutral-700 text-white hover:border-neutral-500";
+  const base =
+    "w-full rounded-md px-4 py-2.5 text-sm font-semibold transition disabled:opacity-60";
+  const style = primary
+    ? "bg-[var(--brass)] text-[var(--hull)] hover:brightness-110"
+    : "border border-[var(--line)] text-[var(--ink)] hover:border-[var(--brass)]";
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className={`${baseClasses} ${styleClasses}`}>
+      <button onClick={() => setOpen(true)} className={`${base} ${style}`}>
         {label}
       </button>
     );
@@ -138,10 +138,10 @@ export function CheckoutButton({
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:border-neutral-500 focus:outline-none"
+        className="rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
       />
-      <button disabled={loading} onClick={startCheckout} className={`${baseClasses} ${styleClasses}`}>
-        {loading ? "Opening Razorpay…" : label}
+      <button disabled={loading} onClick={startCheckout} className={`${base} ${style}`}>
+        {loading ? "Opening checkout…" : label}
       </button>
     </div>
   );

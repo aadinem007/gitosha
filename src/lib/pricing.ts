@@ -1,71 +1,102 @@
 export type PricingPlan = {
-  id: "vault-free" | "vault-pro" | "vault-team" | "foundry-solo" | "foundry-agency";
-  product: "vault" | "foundry";
+  id:
+    | "vault-free"
+    | "vault-pro"
+    | "vault-pro-annual"
+    | "vault-team"
+    | "foundry-solo"
+    | "foundry-agency"
+    | "bundle-launch";
+  product: "vault" | "foundry" | "bundle";
   name: string;
   price: string;
   cadence: string;
   description: string;
   features: string[];
-  /** Amount in paise (INR × 100). Free plans omit this. */
   amountPaise?: number;
-  /** Env key for Razorpay subscription plan (vault only). */
   planEnvVar?: "vaultPro" | "vaultTeam";
   mode: "subscription" | "payment" | "none";
   cta: string;
+  badge?: string;
+  highlight?: boolean;
 };
 
 export const VAULT_PLANS: PricingPlan[] = [
   {
     id: "vault-free",
     product: "vault",
-    name: "Free",
+    name: "Scout",
     price: "₹0",
     cadence: "forever",
-    description: "The weekly digest and top-3 scored ideas, summary only.",
+    description: "Public research layer — enough to judge if we are serious.",
     features: [
-      "Weekly research digest by email",
-      "Top 3 scored ideas per issue",
-      "Public teardown archive",
+      "Weekly top-3 scored opportunities",
+      "Full public 10-dimension method",
+      "Public teardown archive (including low scores)",
+      "SEO idea pages you can cite",
     ],
     mode: "none",
-    cta: "Join free",
+    cta: "Start free",
   },
   {
     id: "vault-pro",
     product: "vault",
-    name: "Pro",
-    price: "₹1,499",
+    name: "Operator",
+    price: "₹999",
     cadence: "/month",
-    description: "The full scored database, every teardown, launch-kit templates.",
+    description: "Launch price for the first 100 operators. Then ₹1,499/mo.",
     features: [
-      "Everything in Free",
-      "All 18+ scored ideas with full teardowns",
-      "Launch-kit templates per idea",
-      "CSV export of the scoring database",
-      "10% off Foundry Kit",
+      "Full scored database + every teardown",
+      "Kill criteria & anti-portfolio (what NOT to build)",
+      "Financial model + 14-day launch checklist per idea",
+      "Competitor map + positioning wedge",
+      "CSV export of the live scoreboard",
+      "15% off Foundry forever",
+      "Cancel anytime",
     ],
-    amountPaise: 149900,
+    amountPaise: 99900,
     planEnvVar: "vaultPro",
     mode: "subscription",
-    cta: "Start Pro",
+    cta: "Get Operator access",
+    badge: "Launch price",
+    highlight: true,
+  },
+  {
+    id: "vault-pro-annual",
+    product: "vault",
+    name: "Operator Annual",
+    price: "₹9,999",
+    cadence: "/year",
+    description: "Pay once. ~2 months free vs monthly launch price.",
+    features: [
+      "Everything in Operator",
+      "Priority research queue (1 niche / quarter)",
+      "Annual invoice for accounting",
+      "Early access to new research formats",
+    ],
+    amountPaise: 999900,
+    mode: "payment",
+    cta: "Lock annual access",
+    badge: "Best value",
   },
   {
     id: "vault-team",
     product: "vault",
-    name: "Team",
-    price: "₹5,999",
+    name: "Studio",
+    price: "₹4,999",
     cadence: "/month",
-    description: "5 seats, private idea requests, priority research queue.",
+    description: "For studios shipping multiple products in parallel.",
     features: [
-      "Everything in Pro",
-      "5 team seats",
-      "Submit a niche for custom scoring",
-      "Priority research queue",
+      "Everything in Operator",
+      "5 seats under one invoice",
+      "Private niche scoring requests",
+      "Shared workspace notes",
+      "Quarterly strategy call (30 min)",
     ],
-    amountPaise: 599900,
+    amountPaise: 499900,
     planEnvVar: "vaultTeam",
     mode: "subscription",
-    cta: "Start Team",
+    cta: "Start Studio",
   },
 ];
 
@@ -73,35 +104,60 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
   {
     id: "foundry-solo",
     product: "foundry",
-    name: "Solo",
-    price: "₹11,999",
+    name: "Foundry Solo",
+    price: "₹9,999",
     cadence: "one-time",
-    description: "Full source, single project license, community support.",
+    description: "Production SaaS scaffold — auth, billing, DB, deploy — ready to customize.",
     features: [
-      "Next.js + TypeScript + Tailwind scaffold",
-      "Prisma + Supabase auth wired up",
-      "Razorpay billing + webhook handlers pre-built",
-      "Agent-native architecture docs",
+      "Next.js + TypeScript + Tailwind production scaffold",
+      "Postgres + Prisma schema (subscriptions, licenses, waitlist)",
+      "Magic-link auth pre-wired",
+      "Razorpay checkout, verify, signed webhooks",
+      "Rate limits, CSP, HSTS, honeypot patterns included",
+      "Docker + CI deploy pipeline",
+      "Architecture docs + module map",
+      "90 days of Operator Vault included",
     ],
-    amountPaise: 1199900,
+    amountPaise: 999900,
     mode: "payment",
-    cta: "Buy Solo",
+    cta: "Buy Foundry Solo",
+    highlight: true,
   },
   {
     id: "foundry-agency",
     product: "foundry",
-    name: "Agency",
-    price: "₹39,999",
+    name: "Foundry Agency",
+    price: "₹29,999",
     cadence: "one-time",
-    description: "Unlimited client projects, white-label rights, priority support.",
+    description: "Unlimited client builds. White-label. Priority support.",
     features: [
       "Everything in Solo",
       "Unlimited client projects",
-      "White-label rights",
-      "Priority support",
+      "White-label rights (remove Shipyard marks)",
+      "Priority support channel",
+      "Client handoff checklist + invoice templates",
+      "1 year of Studio Vault included",
     ],
-    amountPaise: 3999900,
+    amountPaise: 2999900,
     mode: "payment",
-    cta: "Buy Agency",
+    cta: "Buy Agency license",
+  },
+  {
+    id: "bundle-launch",
+    product: "bundle",
+    name: "Launch Bundle",
+    price: "₹14,999",
+    cadence: "one-time",
+    description: "Foundry Solo + 1 year Operator. Research + scaffold in one checkout.",
+    features: [
+      "Foundry Solo source license",
+      "12 months Operator Vault",
+      "Save vs buying separately",
+      "Single payment, instant unlock",
+    ],
+    amountPaise: 1499900,
+    mode: "payment",
+    cta: "Get the Launch Bundle",
+    badge: "Most chosen",
   },
 ];

@@ -1,19 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import { z } from "zod";
-import { fulfillFoundryPurchase, fulfillVaultSubscription } from "@/lib/fulfill";
+import { fulfillPurchase } from "@/lib/fulfill";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 const bodySchema = z.object({
   mode: z.enum(["payment", "subscription"]),
-  planId: z.string(),
-  email: z.string().email(),
-  razorpay_payment_id: z.string(),
-  razorpay_order_id: z.string().optional(),
-  razorpay_subscription_id: z.string().optional(),
-  razorpay_signature: z.string(),
+  planId: z.string().max(64),
+  email: z.string().email().max(254),
+  razorpay_payment_id: z.string().max(128),
+  razorpay_order_id: z.string().max(128).optional(),
+  razorpay_subscription_id: z.string().max(128).optional(),
+  razorpay_signature: z.string().max(256),
 });
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimit({
+    key: `verify:${clientIp(req)}`,
+    limit: 20,
+    windowMs: 60_000,
+  });
+  if (!limited.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const parsed = bodySchema.safeParse(await req.json());
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -21,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   const secret = process.env.RAZORPAY_KEY_SECRET;
   if (!secret) {
-    return NextResponse.json({ error: "Razorpay secret not configured" }, { status: 500 });
+    return NextResponse.json({ error: "Payment verification unavailable" }, { status: 500 });
   }
 
   const data = parsed.data;
@@ -44,27 +54,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
   }
 
-  let licenseKey: string | undefined;
-
-  if (data.planId.startsWith("vault-")) {
-    await fulfillVaultSubscription({
-      email: data.email,
-      planId: data.planId,
-      subscriptionId: data.razorpay_subscription_id,
-    });
-  } else if (data.planId.startsWith("foundry-")) {
-    licenseKey = await fulfillFoundryPurchase({
-      email: data.email,
-      planId: data.planId,
-      paymentId: data.razorpay_payment_id,
-      orderId: data.razorpay_order_id,
-    });
-  }
+  const result = await fulfillPurchase({
+    email: data.email,
+    planId: data.planId,
+    paymentId: data.razorpay_payment_id,
+    orderId: data.razorpay_order_id,
+    subscriptionId: data.razorpay_subscription_id,
+  });
 
   return NextResponse.json({
     ok: true,
-    product: data.planId.startsWith("vault-") ? "vault" : "foundry",
+    product: result.product,
     email: data.email,
-    licenseKey,
+    licenseKey: result.licenseKey,
   });
 }

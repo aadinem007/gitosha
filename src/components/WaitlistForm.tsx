@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export function WaitlistForm({ cta = "Get the free issue" }: { cta?: string }) {
   const [email, setEmail] = useState("");
+  const [company, setCompany] = useState(""); // honeypot
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -13,7 +14,7 @@ export function WaitlistForm({ cta = "Get the free issue" }: { cta?: string }) {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, company }),
       });
       if (!res.ok) throw new Error();
       setStatus("done");
@@ -24,26 +25,36 @@ export function WaitlistForm({ cta = "Get the free issue" }: { cta?: string }) {
 
   if (status === "done") {
     return (
-      <p className="text-sm font-medium text-emerald-400">
-        You&apos;re in. First issue lands this week — check your inbox.
+      <p className="text-sm font-medium text-[var(--brass)]">
+        You&apos;re on the list. First issue lands this week.
       </p>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-md gap-2">
+    <form onSubmit={handleSubmit} className="relative flex w-full max-w-md gap-2">
+      {/* Honeypot — hidden from humans */}
+      <label className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+        Company
+        <input
+          tabIndex={-1}
+          autoComplete="off"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+      </label>
       <input
         type="email"
         required
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="flex-1 rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:border-neutral-500 focus:outline-none"
+        className="flex-1 rounded-md border border-[var(--line)] bg-[var(--panel)] px-4 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
       />
       <button
         type="submit"
         disabled={status === "loading"}
-        className="whitespace-nowrap rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-neutral-950 hover:bg-neutral-200 disabled:opacity-60"
+        className="whitespace-nowrap rounded-md bg-[var(--brass)] px-4 py-2.5 text-sm font-semibold text-[var(--hull)] hover:brightness-110 disabled:opacity-60"
       >
         {status === "loading" ? "Joining…" : cta}
       </button>

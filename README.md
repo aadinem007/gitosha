@@ -1,27 +1,27 @@
 # Shipyard
 
-Two products, one audience, ₹0 required to launch:
+Two products, one audience:
 
-1. **Build-Intel Vault** — weekly scored micro-SaaS opportunity research (₹1,499/mo Pro).
-2. **Foundry Kit** — AI-agent-native SaaS starter kit (₹11,999 one-time Solo).
+1. **Build-Intel Vault** — weekly scored software opportunity research (Operator from ₹999/mo launch).
+2. **Foundry** — production SaaS scaffold with auth, Razorpay billing, and deploy pipeline (Solo ₹9,999).
 
 Live site: https://shipyard-omega-opal.vercel.app
 
 ## Stack
 
-Next.js · TypeScript · Tailwind · Prisma · Supabase · **Razorpay** · Resend · Docker · GitHub Actions.
+Next.js · TypeScript · Tailwind · Prisma · Supabase · Razorpay · Resend · Docker · GitHub Actions.
 
 ## Setup status
 
 Already done:
 - Code on GitHub (`aadinem007/shipyard`)
 - Live on Vercel
-- Supabase database + 18 seeded ideas
+- Supabase database + seeded ideas
+- Razorpay Test Mode payments verified
 
-Still needed (you + me):
-1. **Razorpay** test keys → see `docs/FINISH-RAZORPAY.md`
-2. Paste keys into Vercel, run `npm run setup-razorpay` (or let me run it), redeploy
-3. Optional later: Resend for fancy emails (Supabase already handles login magic links)
+Still needed for real money:
+1. Razorpay Live keys + KYC (see `docs/FINISH-RAZORPAY.md`)
+2. Optional: Resend for license emails (success page already shows keys)
 
 ## Local commands
 
@@ -29,7 +29,7 @@ Still needed (you + me):
 npm install
 npm run db:push
 npm run db:seed
-npm run setup-razorpay   # needs RAZORPAY_KEY_ID + RAZORPAY_KEY_SECRET
+npm run setup-razorpay
 npm run generate-issue -- --input scripts/issues/your-file.json
 npm run dev
 ```

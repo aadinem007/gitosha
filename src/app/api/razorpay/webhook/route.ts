@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import { prisma } from "@/lib/prisma";
-import { fulfillFoundryPurchase, fulfillVaultSubscription } from "@/lib/fulfill";
+import { fulfillPurchase } from "@/lib/fulfill";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 type RazorpayWebhookBody = {
   event: string;
@@ -18,6 +19,15 @@ function verifySignature(rawBody: string, signature: string | null, secret: stri
 }
 
 export async function POST(req: NextRequest) {
+  const limited = rateLimit({
+    key: `webhook:${clientIp(req)}`,
+    limit: 120,
+    windowMs: 60_000,
+  });
+  if (!limited.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
   if (!webhookSecret) {
     return NextResponse.json({ error: "Missing webhook secret" }, { status: 400 });
@@ -27,7 +37,6 @@ export async function POST(req: NextRequest) {
   const signature = req.headers.get("x-razorpay-signature");
 
   if (!verifySignature(rawBody, signature, webhookSecret)) {
-    console.error("Razorpay webhook signature verification failed");
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -42,16 +51,12 @@ export async function POST(req: NextRequest) {
       const planId = notes.planId;
       if (!email || !planId) break;
 
-      if (planId.startsWith("foundry-")) {
-        await fulfillFoundryPurchase({
-          email,
-          planId,
-          paymentId: String(payment.id),
-          orderId: payment.order_id ? String(payment.order_id) : undefined,
-        });
-      } else if (planId.startsWith("vault-")) {
-        await fulfillVaultSubscription({ email, planId });
-      }
+      await fulfillPurchase({
+        email,
+        planId,
+        paymentId: String(payment.id),
+        orderId: payment.order_id ? String(payment.order_id) : undefined,
+      });
       break;
     }
 
@@ -64,11 +69,10 @@ export async function POST(req: NextRequest) {
       const planId = notes.planId;
       if (!email || !planId) break;
 
-      await fulfillVaultSubscription({
+      await fulfillPurchase({
         email,
         planId,
         subscriptionId: String(sub.id),
-        customerId: sub.customer_id ? String(sub.customer_id) : undefined,
       });
       break;
     }

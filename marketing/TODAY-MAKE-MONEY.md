@@ -32,8 +32,8 @@ Most "100 SaaS ideas" lists are recycled with made-up revenue numbers.
 
 I built the opposite: a public 10-dimension scoring rubric, scored 18 real ideas, published the bad scores too, and shipped two products on top of it:
 
-1) Build-Intel Vault — weekly scored opportunity database (₹1,499/mo / ~$19)
-2) Foundry Kit — AI-agent-native Next.js + Razorpay SaaS starter (₹11,999 / ~$149)
+1) Build-Intel Vault — weekly scored opportunity database (₹999/mo launch / ~$12)
+2) Foundry — production Next.js + Razorpay SaaS scaffold (₹9,999 / ~$120)
 
 Live: https://shipyard-omega-opal.vercel.app
 

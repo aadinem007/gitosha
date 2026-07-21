@@ -13,66 +13,90 @@ export default function Home() {
     <>
       <Nav />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="mx-auto max-w-6xl px-6 pt-20 pb-16">
-          <p className="mb-4 text-sm font-medium uppercase tracking-widest text-neutral-500">
-            Weekly issue #0 · Free
+        <section className="hero-plane mx-auto max-w-6xl overflow-hidden px-6 pb-16 pt-16 sm:pb-24 sm:pt-28">
+          <p className="animate-draft font-display text-5xl font-extrabold tracking-tight text-[var(--ink)] sm:text-7xl md:text-8xl">
+            SHIPYARD
           </p>
-          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
-            Stop guessing which micro-SaaS idea is worth building.
+          <h1 className="animate-rise-delay mt-6 max-w-2xl font-display text-2xl font-semibold leading-snug text-[var(--fog)] sm:text-3xl">
+            Know which software business is worth building — then ship it on a production scaffold.
           </h1>
-          <p className="mt-5 max-w-2xl text-lg text-neutral-400">
-            Every week Shipyard pressure-tests 15-20 real business ideas against live demand
-            signals, competitor teardowns, and pricing benchmarks — then scores each one on a
-            public 10-dimension rubric. No inflated scores, no recycled listicles.
+          <p className="animate-rise-delay-2 mt-5 max-w-xl text-base text-[var(--muted)] sm:text-lg">
+            Every week we pressure-test real opportunities on a public 10-dimension rubric. We publish
+            the weak scores too. Paying operators get the full vault; builders get Foundry — the same
+            stack this product runs on.
           </p>
-          <div className="mt-8 flex flex-col gap-3">
-            <WaitlistForm />
-            <div className="flex flex-wrap gap-3 text-sm">
-              <Link href="/pricing" className="font-medium text-white underline">
-                Or go Pro — ₹1,499/mo →
+          <div className="animate-rise-delay-2 mt-9 flex flex-col gap-4">
+            <WaitlistForm cta="Get the free weekly issue" />
+            <div className="flex flex-wrap gap-4 text-sm">
+              <Link
+                href="/pricing"
+                className="font-semibold text-[var(--brass)] underline-offset-4 hover:underline"
+              >
+                Operator — ₹999/mo launch price →
               </Link>
-              <Link href="/foundry-kit" className="text-neutral-400 hover:text-white">
-                Buy Foundry Kit — ₹11,999
+              <Link href="/foundry-kit" className="text-[var(--muted)] hover:text-[var(--ink)]">
+                Foundry Solo — ₹9,999
               </Link>
             </div>
-            <p className="text-xs text-neutral-500">
-              Free forever tier. Upgrade to Pro for the full database and launch kits.
-            </p>
           </div>
         </section>
 
-        {/* Live scoreboard teaser */}
-        <section className="mx-auto max-w-6xl px-6 pb-16">
-          <div className="flex items-baseline justify-between">
-            <h2 className="text-xl font-semibold">This week&apos;s top-scored ideas</h2>
-            <Link href="/vault" className="text-sm text-neutral-400 hover:text-white">
-              View full database →
+        <section className="border-y border-[var(--line)]/80 bg-[var(--panel)]/30">
+          <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 sm:grid-cols-3">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--brass)]">01</p>
+              <p className="mt-2 font-display text-lg font-semibold">Honest scores</p>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                No vanity 90+/100s. Round one: zero concepts cleared that bar.
+              </p>
+            </div>
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--brass)]">02</p>
+              <p className="mt-2 font-display text-lg font-semibold">Kill criteria</p>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                Operators get what to avoid — not just what to chase.
+              </p>
+            </div>
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--brass)]">03</p>
+              <p className="mt-2 font-display text-lg font-semibold">Scaffold included</p>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                Research alone is cheap. Foundry is the same billing stack we run in production.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className="font-display text-xl font-semibold">Live scoreboard</h2>
+            <Link href="/method" className="text-sm text-[var(--muted)] hover:text-[var(--ink)]">
+              How scoring works →
             </Link>
           </div>
-          <div className="mt-6 overflow-hidden rounded-xl border border-neutral-800">
+          <div className="mt-5 overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--panel)]/60">
             <table className="w-full text-sm">
-              <thead className="bg-neutral-900 text-left text-neutral-400">
+              <thead className="border-b border-[var(--line)] text-left text-[var(--muted)]">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Idea</th>
+                  <th className="px-4 py-3 font-medium">Opportunity</th>
                   <th className="px-4 py-3 font-medium">Category</th>
-                  <th className="hidden px-4 py-3 font-medium sm:table-cell">One-liner</th>
+                  <th className="hidden px-4 py-3 font-medium sm:table-cell">Thesis</th>
                   <th className="px-4 py-3 text-right font-medium">Score</th>
                 </tr>
               </thead>
               <tbody>
                 {TOP_IDEAS.map((idea) => (
-                  <tr key={idea.slug} className="border-t border-neutral-800">
+                  <tr key={idea.slug} className="border-t border-[var(--line)]">
                     <td className="px-4 py-3 font-medium">
-                      <Link href={`/ideas/${idea.slug}`} className="hover:underline">
+                      <Link href={`/ideas/${idea.slug}`} className="hover:text-[var(--brass)]">
                         {idea.name}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-neutral-400">{idea.category}</td>
-                    <td className="hidden px-4 py-3 text-neutral-400 sm:table-cell">
+                    <td className="px-4 py-3 text-[var(--muted)]">{idea.category}</td>
+                    <td className="hidden px-4 py-3 text-[var(--muted)] sm:table-cell">
                       {idea.oneLiner}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-emerald-400">
+                    <td className="px-4 py-3 text-right font-mono text-[var(--signal)]">
                       {totalScore(idea.scores)}/100
                     </td>
                   </tr>
@@ -80,77 +104,51 @@ export default function Home() {
               </tbody>
             </table>
           </div>
-          <p className="mt-3 text-xs text-neutral-500">
-            Scored on demand, competition, scalability, automation, margin, MRR potential, barrier
-            to entry, AI leverage, global reach, and time to launch. Full teardowns for Pro
-            subscribers.
-          </p>
         </section>
 
-        {/* Two products */}
-        <section className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div className="rounded-xl border border-neutral-800 p-6">
-              <p className="text-xs font-medium uppercase tracking-widest text-emerald-400">
+        <section className="mx-auto max-w-6xl px-6 pb-24">
+          <h2 className="font-display text-xl font-semibold">Two products. One yard.</h2>
+          <div className="mt-6 grid gap-8 sm:grid-cols-2">
+            <div className="border-t border-[var(--brass)]/40 pt-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">
                 Research
               </p>
-              <h3 className="mt-2 text-lg font-semibold">Build-Intel Vault</h3>
-              <p className="mt-2 text-sm text-neutral-400">
-                The full scored opportunity database, updated weekly, with financial models and
-                launch kits for every idea that clears the bar.
+              <h3 className="mt-2 font-display text-lg font-semibold">The Vault</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Scored opportunities, teardowns, kill criteria, launch checklists, and exportable
+                score data — updated weekly against live market signals.
               </p>
               <Link
                 href="/pricing"
-                className="mt-4 inline-block text-sm font-medium text-white hover:underline"
+                className="mt-4 inline-block text-sm font-semibold text-[var(--ink)] hover:text-[var(--brass)]"
               >
-                See pricing →
+                See Operator pricing →
               </Link>
             </div>
-            <div className="rounded-xl border border-neutral-800 p-6">
-              <p className="text-xs font-medium uppercase tracking-widest text-sky-400">
-                Starter kit
+            <div className="border-t border-[var(--brass)]/40 pt-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">
+                Scaffold
               </p>
-              <h3 className="mt-2 text-lg font-semibold">Foundry Kit</h3>
-              <p className="mt-2 text-sm text-neutral-400">
-                An AI-agent-native SaaS starter kit — Next.js, Prisma, Supabase, Razorpay billing
-                pre-wired, and architecture docs written for coding agents, not just humans.
+              <h3 className="mt-2 font-display text-lg font-semibold">Foundry</h3>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Auth, database, Razorpay billing, webhooks, rate limits, and deploy pipeline — so you
+                build the product, not the plumbing.
               </p>
               <Link
                 href="/foundry-kit"
-                className="mt-4 inline-block text-sm font-medium text-white hover:underline"
+                className="mt-4 inline-block text-sm font-semibold text-[var(--ink)] hover:text-[var(--brass)]"
               >
-                See what&apos;s inside →
+                Inspect Foundry →
               </Link>
             </div>
           </div>
-        </section>
-
-        {/* Why not another idea list */}
-        <section className="mx-auto max-w-6xl px-6 pb-24">
-          <h2 className="text-xl font-semibold">Why this isn&apos;t another idea listicle</h2>
-          <div className="mt-6 grid gap-6 text-sm text-neutral-400 sm:grid-cols-3">
-            <div>
-              <p className="font-medium text-white">Scored, not vibes</p>
-              <p className="mt-1">
-                Every idea gets the same 10-dimension rubric, published in full — including the
-                ones that score badly.
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-white">Re-scored weekly</p>
-              <p className="mt-1">
-                Static listicles rot. We re-run the research pipeline every week against current
-                competitor and pricing data.
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-white">Honest about the bar</p>
-              <p className="mt-1">
-                We don&apos;t inflate scores to make every idea look like a unicorn. Most don&apos;t
-                clear a strict bar — that&apos;s the point.
-              </p>
-            </div>
-          </div>
+          <p className="mt-12 max-w-2xl text-sm text-[var(--muted)]">
+            Built for Indian builders first — UPI and cards via Razorpay.{" "}
+            <Link href="/security" className="text-[var(--brass)] hover:underline">
+              Security posture
+            </Link>{" "}
+            is public on purpose.
+          </p>
         </section>
       </main>
       <Footer />

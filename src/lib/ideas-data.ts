@@ -185,7 +185,7 @@ export const SEED_IDEAS: SeedIdea[] = [
     slug: "micro-directory",
     name: "Micro Directory",
     category: "Marketplace",
-    oneLiner: "Directory/marketplace of small AI-built micro-SaaS apps.",
+    oneLiner: "Directory/marketplace of small micro-SaaS apps for niche workflows.",
     scores: scores(4, 2, 7, 6, 7, 3, 8, 5, 7, 8),
     isPremium: true,
     teardownMd: "Pro teardown: why generic directories struggle and the vertical-specific twist that could work.",

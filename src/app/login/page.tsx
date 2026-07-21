@@ -13,9 +13,9 @@ export default async function LoginPage({
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-sm px-6 py-24">
-          <h1 className="text-2xl font-semibold">Sign in</h1>
-          <p className="mt-2 text-sm text-neutral-400">
-            No password — we&apos;ll email you a magic link.
+          <h1 className="font-display text-2xl font-bold">Sign in</h1>
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            No password — we email you a one-time magic link.
           </p>
           <div className="mt-6">
             <LoginForm next={next ?? "/vault"} />

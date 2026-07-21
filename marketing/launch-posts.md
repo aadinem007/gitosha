@@ -66,9 +66,9 @@ business in public — $0 spent so far
 **Body:**
 
 Starting a build-in-public thread for a two-product venture: a scored
-opportunity-research subscription (Build-Intel Vault) and an AI-agent-native
-SaaS starter kit (Foundry Kit). Total spend so far: $0 — everything's on free
-tiers (Vercel, Supabase, Stripe test mode, Resend free tier) until there's
+opportunity-research subscription (Build-Intel Vault) and a production SaaS
+scaffold (Foundry). Total spend so far: $0 — everything's on free
+tiers (Vercel, Supabase, Razorpay test mode) until there's
 revenue to justify a real domain and paid infra.
 
 Will post weekly updates here with actual subscriber/revenue numbers, good or

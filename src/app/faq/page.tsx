@@ -10,9 +10,20 @@ export const metadata: Metadata = {
 
 const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[] = [
   {
+    q: "What do I get on Operator (₹999/mo launch)?",
+    a: "Everything in free Scout, plus every premium teardown, kill criteria, financial sketch, 14-day launch checklist, competitor map, CSV export, magic-link Vault access, and 15% off Foundry forever. Cancel anytime.",
+    links: [
+      { label: "See all Operator features", href: "/whats-inside" },
+      { label: "Pricing", href: "/pricing" },
+    ],
+  },
+  {
     q: "What am I buying with Foundry Agency (₹29,999)?",
-    a: "The same production SaaS kit as Solo, plus an Agency license: unlimited client projects, white-label rights, priority support, client handoff + invoice + proposal templates in the zip, and 1 year of Studio Vault. It is not a custom build of your client's product — it is the scaffold you reuse for every engagement.",
-    links: [{ label: "Inspect Foundry", href: "/foundry-kit" }],
+    a: "The Solo production zip, plus unlimited client projects, white-label rights, handoff/invoice/proposal/white-label docs in the zip, priority support, and 1 year of Studio Vault (5 seats). Not a custom build of your client’s product — the scaffold you reuse every engagement.",
+    links: [
+      { label: "Full inventory", href: "/whats-inside" },
+      { label: "Inspect Foundry", href: "/foundry-kit" },
+    ],
   },
   {
     q: "How do I get the files after paying?",
@@ -21,13 +32,13 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
   },
   {
     q: "Solo vs Agency — which should I buy?",
-    a: "Solo if you are shipping one product for yourself. Agency if you build for clients, need white-label, or want Studio Vault for a year plus priority replies.",
+    a: "Solo if you ship one product for yourself. Agency if you build for clients, need white-label, templates, priority support, or a year of Studio Vault.",
     links: [{ label: "Compare on Foundry", href: "/foundry-kit#compare" }],
   },
   {
-    q: "What is inside the Vault?",
-    a: "Scored opportunities, teardowns, kill criteria, competitor maps, launch checklists, and CSV export on Operator+. Scout is free and public.",
-    links: [{ label: "Open Vault", href: "/vault" }],
+    q: "What’s in the Launch Bundle (₹14,999)?",
+    a: "Foundry Solo + 12 months Operator in one payment — cheaper than buying Solo plus a year of monthly Operator at launch pricing separately.",
+    links: [{ label: "Pricing", href: "/pricing" }],
   },
   {
     q: "How do payments work?",

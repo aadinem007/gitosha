@@ -32,6 +32,9 @@ function PlanCard({
           </li>
         ))}
       </ul>
+      <p className="mt-3 text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
+        {plan.features.length} inclusions
+      </p>
       <div className="relative z-10 mt-6 min-w-0">
         {plan.mode === "none" ? (
           <WaitlistForm cta={plan.cta} layout="stack" />

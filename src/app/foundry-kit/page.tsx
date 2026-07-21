@@ -10,29 +10,35 @@ const STACK = [
   "Postgres via Prisma",
   "Magic-link authentication",
   "Razorpay checkout + signed webhooks",
-  "Waitlist + server-side amount locking",
+  "Server-side amount locking",
+  "Waitlist + honeypot pattern",
+  "Rate limits + production headers",
   "Docker + CI pipeline",
-  "Architecture docs + module map",
+  "Architecture + Getting Started docs",
 ];
 
 const AGENCY_EXTRAS = [
   "Unlimited client projects under one license",
   "White-label rights (strip Shipyard marks)",
   "Client handoff checklist (in the zip)",
-  "Invoice + proposal templates (in the zip)",
-  "White-label guide for agency delivery",
+  "Invoice template (in the zip)",
+  "Proposal template (in the zip)",
+  "White-label delivery playbook (in the zip)",
   "1 year Studio Vault (5 seats research)",
-  "Priority support replies",
+  "Priority support on client deadlines",
+  "Team re-download via License portal",
 ];
 
 const COMPARE = [
   { label: "Production scaffold zip", solo: true, agency: true },
   { label: "Auth + Razorpay + DB wired", solo: true, agency: true },
+  { label: "Server-side payment amounts", solo: true, agency: true },
   { label: "Commercial products allowed", solo: "1 product", agency: "Unlimited clients" },
   { label: "White-label", solo: false, agency: true },
   { label: "Handoff / invoice / proposal docs", solo: false, agency: true },
   { label: "Vault included", solo: "90 days Operator", agency: "1 year Studio" },
   { label: "Support", solo: "Standard", agency: "Priority" },
+  { label: "License portal re-download", solo: true, agency: true },
 ];
 
 export default function FoundryKitPage() {
@@ -140,9 +146,14 @@ export default function FoundryKitPage() {
                   {plan.description}
                 </p>
                 <ul className="mt-4 space-y-1.5 text-xs text-[var(--fog)]">
-                  {plan.features.slice(0, 5).map((f) => (
+                  {plan.features.slice(0, 8).map((f) => (
                     <li key={f}>— {f}</li>
                   ))}
+                  {plan.features.length > 8 && (
+                    <li className="text-[var(--brass)]">
+                      +{plan.features.length - 8} more — see Pricing / What’s inside
+                    </li>
+                  )}
                 </ul>
                 <div className="relative z-10 mt-5 min-w-0">
                   <CheckoutButton

@@ -28,12 +28,15 @@ export const VAULT_PLANS: PricingPlan[] = [
     name: "Scout",
     price: "₹0",
     cadence: "forever",
-    description: "Taste the research. No card. No trap.",
+    description: "Taste the research. No card. No trap. Decide if we’re serious before you pay.",
     features: [
-      "Weekly top-3 scored opportunities",
-      "Public 10-dimension method — fully transparent",
-      "Archive of teardowns (including the ugly scores)",
-      "Citeable SEO idea pages",
+      "Weekly top-3 scored opportunities by email / site",
+      "Full public 10-dimension scoring method",
+      "Public teardown archive — including low scores",
+      "Citeable SEO idea pages for every scored concept",
+      "Yardhand chatbot answers on the site",
+      "Live homepage scoreboard (always free to browse)",
+      "No credit card · cancel nothing · keep browsing",
     ],
     mode: "none",
     cta: "Start free — no card",
@@ -44,15 +47,19 @@ export const VAULT_PLANS: PricingPlan[] = [
     name: "Operator",
     price: "₹999",
     cadence: "/month",
-    description: "Launch lock-in for the first 100 operators. Then ₹1,499/mo. Stop guessing. Start shipping winners.",
+    description:
+      "Launch lock-in for the first 100 operators (then ₹1,499/mo). Full vault — stop guessing what to build.",
     features: [
-      "Every scored idea + every full teardown",
-      "Kill criteria — what to walk away from",
-      "Financial sketch + 14-day launch checklist",
+      "Everything in Scout",
+      "Every scored idea + every full premium teardown",
+      "Kill criteria & anti-portfolio (what NOT to build)",
+      "Financial sketch + 14-day launch checklist per idea",
       "Competitor map + positioning wedge",
-      "One-click CSV of the live scoreboard",
-      "15% off Foundry forever",
-      "Cancel in one click — keep dignity",
+      "One-click CSV export of the live scoreboard",
+      "Magic-link sign-in to the private Vault",
+      "Yardhand + FAQ for instant product answers",
+      "15% off Foundry forever (Solo / Agency / Bundle)",
+      "Cancel anytime — access through the paid period",
     ],
     amountPaise: 99900,
     planEnvVar: "vaultPro",
@@ -67,12 +74,15 @@ export const VAULT_PLANS: PricingPlan[] = [
     name: "Operator Annual",
     price: "₹9,999",
     cadence: "/year",
-    description: "Pay once. Sleep for a year. ~2 months free vs monthly launch price.",
+    description: "Pay once. ~2 months free vs monthly launch price. Lock research for the year.",
     features: [
       "Everything in Operator",
-      "Priority niche research (1 / quarter)",
-      "Clean annual invoice for books",
-      "First look at new research formats",
+      "Priority niche research queue (1 niche / quarter)",
+      "Clean annual invoice for accounting / GST books",
+      "Early access to new research formats",
+      "Same CSV export + Vault magic-link access",
+      "Foundry discount still applies all year",
+      "No monthly reminders — one decision, twelve months",
     ],
     amountPaise: 999900,
     mode: "payment",
@@ -85,13 +95,16 @@ export const VAULT_PLANS: PricingPlan[] = [
     name: "Studio",
     price: "₹4,999",
     cadence: "/month",
-    description: "Your studio’s shared brain for what to build next — five seats, one invoice.",
+    description: "Shared research brain for studios shipping multiple products — five seats, one invoice.",
     features: [
       "Everything in Operator",
-      "5 seats · one invoice",
-      "Private niche scoring on request",
-      "Shared workspace notes",
+      "5 seats under one studio invoice",
+      "Private niche scoring requests for your pipeline",
+      "Shared workspace notes across the team",
       "Quarterly 30-min strategy call",
+      "CSV export for partners / investors / clients",
+      "Priority Yardhand + email support path",
+      "Ideal when 2+ people decide what to build next",
     ],
     amountPaise: 499900,
     planEnvVar: "vaultTeam",
@@ -107,16 +120,22 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     name: "Foundry Solo",
     price: "₹9,999",
     cadence: "one-time",
-    description: "Stop rebuilding auth and billing. Ship your product on a stack that already takes money.",
+    description:
+      "Stop rebuilding auth and billing. Ship your product on a stack that already takes INR payments.",
     features: [
-      "Production Next.js + TypeScript + Tailwind",
+      "Production Next.js + TypeScript + Tailwind scaffold",
       "Postgres + Prisma (customers, licenses, waitlist)",
-      "Magic-link auth — ready day one",
-      "Razorpay checkout, verify, signed webhooks",
-      "Abuse guards + production headers baked in",
-      "Docker + CI deploy path",
-      "Architecture map so you never get lost",
-      "90 days Operator Vault included",
+      "Magic-link auth pre-wired (Supabase)",
+      "Razorpay checkout + signature verify + webhooks",
+      "Server-side amount locking (no client price hacks)",
+      "Rate limits + honeypot waitlist patterns included",
+      "Production security headers / CSP patterns included",
+      "Docker + CI deploy pipeline starter",
+      "Architecture map + Getting Started docs",
+      "env.example for Supabase + Razorpay + DB",
+      "Instant zip via License portal after payment",
+      "90 days of Operator Vault included",
+      "Re-download zip anytime (fair-use cap)",
     ],
     amountPaise: 999900,
     mode: "payment",
@@ -128,16 +147,21 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     name: "Foundry Agency",
     price: "₹29,999",
     cadence: "one-time",
-    description: "One license. Unlimited client SaaS builds. White-label. Studio research for a year. This is how serious studios stop reinventing the wheel every engagement.",
+    description:
+      "One license. Unlimited client SaaS builds. White-label. Studio research for a year. Built so studios stop restarting from zero every engagement.",
     features: [
-      "Everything in Solo — same battle-tested zip",
-      "Unlimited client projects · one license",
-      "Full white-label rights",
-      "Client handoff + invoice + proposal templates",
-      "White-label delivery playbook in the zip",
-      "Priority support when you’re on a deadline",
-      "1 year Studio Vault (5 seats) included",
-      "Re-download anytime from License portal",
+      "Everything in Solo — same production zip",
+      "Unlimited client projects under one license",
+      "Full white-label rights (remove Shipyard marks)",
+      "Client handoff checklist (in the zip)",
+      "Invoice template for client billing (in the zip)",
+      "Proposal template for win-more pitches (in the zip)",
+      "White-label delivery playbook (in the zip)",
+      "Priority support when you’re on a client deadline",
+      "1 year Studio Vault included (5 seats)",
+      "Commercial rights for agency resale of *your builds*",
+      "License portal re-download for every machine on the team",
+      "Clear Solo vs Agency comparison on-site before you buy",
     ],
     amountPaise: 2999900,
     mode: "payment",
@@ -151,12 +175,16 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     name: "Launch Bundle",
     price: "₹14,999",
     cadence: "one-time",
-    description: "Research + scaffold in one hit. Foundry Solo + 12 months Operator — the cleanest path from idea to live checkout.",
+    description:
+      "Research + scaffold in one checkout. Foundry Solo + 12 months Operator — cleaner and cheaper than buying both apart (~₹21,987).",
     features: [
-      "Foundry Solo source license",
-      "12 months Operator Vault",
-      "Beat buying both separately",
-      "One payment · instant unlock",
+      "Foundry Solo source license (full zip)",
+      "12 months Operator Vault access",
+      "Save ~₹7,000 vs Solo + monthlies at launch price",
+      "Single Razorpay payment · one receipt",
+      "Instant Foundry download + Vault sign-in unlock",
+      "15% Foundry discount not needed — already bundled",
+      "Best path if you want idea research AND a ship kit",
     ],
     amountPaise: 1499900,
     mode: "payment",
@@ -164,3 +192,27 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     badge: "Most chosen",
   },
 ];
+
+/** Invariants used by smoke tests */
+export function assertPricingInvariants(): string[] {
+  const errors: string[] = [];
+  const all = [...VAULT_PLANS, ...FOUNDRY_PLANS];
+  const ids = new Set<string>();
+  for (const p of all) {
+    if (ids.has(p.id)) errors.push(`Duplicate plan id: ${p.id}`);
+    ids.add(p.id);
+    if (p.features.length < 4) errors.push(`${p.id} needs richer features`);
+    if (p.mode !== "none" && (!p.amountPaise || p.amountPaise <= 0)) {
+      errors.push(`${p.id} missing amountPaise`);
+    }
+    if (new Set(p.features).size !== p.features.length) {
+      errors.push(`${p.id} has duplicate feature lines`);
+    }
+  }
+  const solo = FOUNDRY_PLANS.find((p) => p.id === "foundry-solo")!;
+  const agency = FOUNDRY_PLANS.find((p) => p.id === "foundry-agency")!;
+  const bundle = FOUNDRY_PLANS.find((p) => p.id === "bundle-launch")!;
+  if (agency.amountPaise! <= solo.amountPaise!) errors.push("Agency must cost more than Solo");
+  if (bundle.amountPaise! <= solo.amountPaise!) errors.push("Bundle should exceed Solo alone");
+  return errors;
+}

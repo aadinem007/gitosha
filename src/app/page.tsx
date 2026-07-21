@@ -36,6 +36,10 @@ export default function Home() {
               <Link href="/foundry-kit" className="text-[var(--muted)] transition hover:text-[var(--ink)]">
                 Foundry Solo — ₹9,999
               </Link>
+              <span className="hidden text-[var(--muted)]/50 sm:inline">·</span>
+              <span className="text-[var(--muted)]">
+                Stuck? Tap <span className="text-[var(--brass)]">ASK</span> bottom-right
+              </span>
             </div>
           </div>
         </section>

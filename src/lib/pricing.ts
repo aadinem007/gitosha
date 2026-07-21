@@ -113,7 +113,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
       "Postgres + Prisma schema (subscriptions, licenses, waitlist)",
       "Magic-link auth pre-wired",
       "Razorpay checkout, verify, signed webhooks",
-      "Rate limits, CSP, HSTS, honeypot patterns included",
+      "Rate limits, honeypot patterns, production-ready headers included",
       "Docker + CI deploy pipeline",
       "Architecture docs + module map",
       "90 days of Operator Vault included",

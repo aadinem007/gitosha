@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Unbounded, Manrope, JetBrains_Mono } from "next/font/google";
+import { ChatWidget } from "@/components/ChatWidget";
 import "./globals.css";
 
 const display = Unbounded({
@@ -37,7 +38,10 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="shipyard-bg flex min-h-full flex-col text-[var(--ink)]">{children}</body>
+      <body className="shipyard-bg flex min-h-full flex-col text-[var(--ink)]">
+        {children}
+        <ChatWidget />
+      </body>
     </html>
   );
 }

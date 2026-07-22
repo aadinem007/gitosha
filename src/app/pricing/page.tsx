@@ -13,15 +13,15 @@ function PlanCard({
   return (
     <div className={`plan-shell isolate overflow-hidden ${plan.highlight ? "is-hot" : ""}`}>
       <div className="flex min-w-0 items-start justify-between gap-2">
-        <p className="font-display text-lg font-semibold leading-tight">{plan.name}</p>
+        <p className="font-display text-xl leading-tight tracking-wide">{plan.name}</p>
         {plan.badge && (
-          <span className="shrink-0 rounded bg-[var(--brass)]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--brass)]">
+          <span className="shrink-0 border border-[var(--brass)]/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--brass)]">
             {plan.badge}
           </span>
         )}
       </div>
       <p className="mt-3">
-        <span className="font-display text-3xl font-bold tracking-tight">{plan.price}</span>{" "}
+        <span className="font-display text-3xl tracking-wide">{plan.price}</span>{" "}
         <span className="text-sm text-[var(--muted)]">{plan.cadence}</span>
       </p>
       <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{plan.description}</p>
@@ -51,21 +51,19 @@ export default function PricingPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
-          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
-            Pricing that respects your time
-          </p>
-          <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+        <section className="page-hero">
+          <p className="page-kicker animate-rise">Pricing</p>
+          <h1 className="animate-rise-delay mt-3">
             Pay once you believe.
             <span className="block text-[var(--brass)]">Not before.</span>
           </h1>
-          <div className="rule animate-pulse-line mt-6 max-w-[8rem]" />
+          <div className="rule mt-6 max-w-[8rem]" />
           <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
             Scout is free. Operator is ₹999/mo while the first 100 seats last. Foundry is a one-time
             download — Agency is the studio license that pays for itself on the second client build.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-3 text-sm">
+          <div className="mt-8 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
             <Link href="/faq" className="text-[var(--brass)] hover:underline">
               FAQ →
             </Link>
@@ -76,17 +74,19 @@ export default function PricingPage() {
               Terms
             </Link>
           </div>
+        </section>
 
-          <h2 className="mt-16 font-display text-lg font-semibold text-[var(--fog)]">
+        <section className="mx-auto max-w-6xl px-6 pb-8">
+          <h2 className="font-display text-2xl tracking-wide text-[var(--fog)]">
             The Vault — research
           </h2>
-          <div className="mt-5 grid items-stretch gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-5 grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {VAULT_PLANS.map((plan) => (
               <PlanCard key={plan.id} plan={plan} />
             ))}
           </div>
 
-          <h2 className="mt-20 font-display text-lg font-semibold text-[var(--fog)]">
+          <h2 className="mt-20 font-display text-2xl tracking-wide text-[var(--fog)]">
             Foundry — scaffold &amp; studio license
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
@@ -94,21 +94,21 @@ export default function PricingPage() {
             priority support, and a year of Studio Vault — so your next three client SaaS builds
             don’t restart from zero.
           </p>
-          <div className="mt-5 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-5 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FOUNDRY_PLANS.map((plan) => (
               <PlanCard key={plan.id} plan={plan} />
             ))}
           </div>
 
           <div className="cta-band mt-16">
-            <p className="font-display text-xl font-semibold sm:text-2xl">
-              Still deciding? Tap ASK bottom-right — or start free as Scout.
+            <p className="font-display text-2xl tracking-wide sm:text-3xl">
+              Still deciding? Tap ASK — or start free as Scout.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link href="/" className="btn-ghost px-5 py-2.5 text-sm text-[var(--fog)]">
+              <Link href="/" className="btn-ghost">
                 Back home
               </Link>
-              <Link href="/foundry-kit#compare" className="btn-primary px-5 py-2.5 text-sm">
+              <Link href="/foundry-kit#compare" className="btn-primary">
                 Compare Solo vs Agency
               </Link>
             </div>

@@ -20,7 +20,7 @@ export default async function LicensePage({
           <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
             Your license
           </h1>
-          <div className="animate-pulse-line rule mt-6 max-w-xs" />
+          <div className="rule mt-6 max-w-xs" />
           <p className="animate-rise-delay-2 mt-6 leading-relaxed text-[var(--muted)]">
             Enter the email and license key from checkout. Download Foundry as a zip — no manual email
             from us required. You can re-download anytime.

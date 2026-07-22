@@ -27,7 +27,7 @@ export default async function VaultPage() {
               <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
                 The Vault
               </h1>
-              <div className="animate-pulse-line rule mt-5 max-w-xs" />
+              <div className="rule mt-5 max-w-xs" />
             </div>
             <div className="flex items-center gap-4 text-sm text-[var(--muted)]">
               <span className="font-mono text-xs tracking-wide">

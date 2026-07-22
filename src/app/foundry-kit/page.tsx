@@ -50,20 +50,16 @@ export default function FoundryKitPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
-          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
-            Production scaffold
-          </p>
-          <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
-            Foundry
-          </h1>
-          <div className="animate-pulse-line rule mt-6 max-w-xs" />
+        <section className="page-hero">
+          <p className="page-kicker animate-rise">Production scaffold</p>
+          <h1 className="animate-rise-delay mt-3">Foundry</h1>
+          <div className="rule mt-6 max-w-xs" />
           <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
             Auth, database, billing, webhooks, deploy — packaged so you build the product, not the
             plumbing. Pay once. Download the zip instantly. Agency is built for studios shipping
             many client products from one license.
           </p>
-          <div className="mt-6 flex flex-wrap gap-4 text-sm">
+          <div className="mt-6 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
             <Link href="/license" className="font-semibold text-[var(--brass)] hover:underline">
               Already paid? License portal →
             </Link>
@@ -77,11 +73,15 @@ export default function FoundryKitPage() {
               Solo vs Agency
             </a>
           </div>
+        </section>
 
-          <div className="mt-14 grid gap-12 sm:grid-cols-2">
+        <section className="mx-auto max-w-5xl px-6 pb-20">
+          <div className="mt-6 grid gap-12 border-t border-[var(--line)] pt-12 sm:grid-cols-2">
             <div>
               <div className="rule mb-5 max-w-[6rem]" />
-              <h2 className="font-display text-sm font-semibold text-[var(--fog)]">What ships in every zip</h2>
+              <h2 className="font-display text-lg tracking-wide text-[var(--fog)]">
+                What ships in every zip
+              </h2>
               <ul className="mt-4 space-y-2.5 text-sm text-[var(--muted)]">
                 {STACK.map((item) => (
                   <li key={item}>— {item}</li>
@@ -90,7 +90,7 @@ export default function FoundryKitPage() {
             </div>
             <div>
               <div className="rule mb-5 max-w-[6rem]" />
-              <h2 className="font-display text-sm font-semibold text-[var(--fog)]">
+              <h2 className="font-display text-lg tracking-wide text-[var(--fog)]">
                 Agency extras (₹29,999)
               </h2>
               <ul className="mt-4 space-y-2.5 text-sm text-[var(--muted)]">
@@ -102,7 +102,7 @@ export default function FoundryKitPage() {
           </div>
 
           <div id="compare" className="mt-20 scroll-mt-28">
-            <h2 className="font-display text-2xl font-semibold">Solo vs Agency</h2>
+            <h2 className="font-display text-3xl tracking-wide">Solo vs Agency</h2>
             <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
               Same codebase. Different rights and studio tooling — so Agency feels worth ₹29,999 when
               you run client work.
@@ -133,14 +133,14 @@ export default function FoundryKitPage() {
             </div>
           </div>
 
-          <div className="mt-16 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[solo, agency, bundle].map((plan) => (
               <div
                 key={plan.id}
                 className={`plan-shell isolate overflow-hidden ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
               >
-                <p className="font-display font-semibold">{plan.name}</p>
-                <p className="mt-2 font-display text-2xl font-bold">{plan.price}</p>
+                <p className="font-display text-xl tracking-wide">{plan.name}</p>
+                <p className="mt-2 font-display text-3xl tracking-wide">{plan.price}</p>
                 <p className="mt-1 text-xs text-[var(--muted)]">{plan.cadence}</p>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--muted)]">
                   {plan.description}

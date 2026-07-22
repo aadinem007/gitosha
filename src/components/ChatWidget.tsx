@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { ChatLink, ChatReply } from "@/lib/chat-knowledge";
 import { CHAT_GREETING } from "@/lib/chat-knowledge";
 
@@ -18,10 +19,13 @@ function uid() {
 }
 
 export function ChatWidget() {
+  const pathname = usePathname();
   const panelId = useId();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const isHome = pathname === "/";
+  const [homePastHero, setHomePastHero] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
     {
       id: "greet",
@@ -32,6 +36,20 @@ export function ChatWidget() {
   ]);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Keep ASK out of the home first viewport — reveal after the hero.
+  useEffect(() => {
+    if (!isHome) return;
+    const onScroll = () => {
+      setHomePastHero(window.scrollY > Math.min(window.innerHeight * 0.72, 640));
+    };
+    const id = requestAnimationFrame(onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [isHome]);
 
   useEffect(() => {
     if (open) {
@@ -90,6 +108,8 @@ export function ChatWidget() {
     }
   }
 
+  if (isHome && !homePastHero && !open) return null;
+
   return (
     <div className="chat-root pointer-events-none fixed bottom-5 right-5 z-[80] flex flex-col items-end gap-3 sm:bottom-7 sm:right-7">
       {open && (
@@ -97,20 +117,18 @@ export function ChatWidget() {
           id={panelId}
           role="dialog"
           aria-label="Gita chat"
-          className="chat-panel pointer-events-auto flex w-[min(100vw-1.5rem,380px)] flex-col overflow-hidden rounded-2xl border border-[var(--line)] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
+          className="chat-panel pointer-events-auto flex w-[min(100vw-1.5rem,380px)] flex-col overflow-hidden border border-[var(--line)]"
         >
-          <header className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--panel)] px-4 py-3">
+          <header className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--hull)] px-4 py-3">
             <div className="min-w-0">
-              <p className="font-display text-sm font-semibold tracking-tight text-[var(--ink)]">
-                Gita
-              </p>
+              <p className="font-display text-base tracking-wide text-[var(--ink)]">Gita</p>
               <p className="truncate text-xs text-[var(--muted)]">Gitosha guide · usually instant</p>
             </div>
             <button
               type="button"
               aria-label="Close chat"
               onClick={() => setOpen(false)}
-              className="rounded-md px-2 py-1 text-sm text-[var(--muted)] hover:bg-white/5 hover:text-[var(--ink)]"
+              className="px-2 py-1 text-sm text-[var(--muted)] hover:text-[var(--ink)]"
             >
               ✕
             </button>
@@ -214,9 +232,8 @@ export function ChatWidget() {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="chat-launcher pointer-events-auto group relative flex h-14 w-14 items-center justify-center rounded-full bg-[var(--brass)] text-[var(--hull)] shadow-[0_12px_40px_rgba(212,160,90,0.35)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hull)]"
+        className="chat-launcher pointer-events-auto group relative flex h-12 w-12 items-center justify-center bg-[var(--brass)] text-[var(--hull)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hull)]"
       >
-        <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-[var(--signal)] ring-2 ring-[var(--hull)]" />
         {open ? (
           <span className="font-display text-lg leading-none">✕</span>
         ) : (

@@ -27,7 +27,7 @@ export default function MethodPage() {
           <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
             The method
           </h1>
-          <div className="animate-pulse-line rule mt-6 max-w-xs" />
+          <div className="rule mt-6 max-w-xs" />
           <p className="animate-rise-delay-2 mt-6 text-lg leading-relaxed text-[var(--muted)]">
             Gitosha does not invent unicorns. We score opportunities the same way every week, publish
             the bad scores too, and refuse to inflate totals to hit a vanity bar.

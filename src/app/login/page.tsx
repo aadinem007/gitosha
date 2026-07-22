@@ -20,7 +20,7 @@ export default async function LoginPage({
           <h1 className="animate-rise-delay mt-3 font-display text-3xl font-bold tracking-tight">
             Sign in
           </h1>
-          <div className="animate-pulse-line rule mt-5 max-w-[7rem]" />
+          <div className="rule mt-5 max-w-[7rem]" />
           <p className="animate-rise-delay-2 mt-5 text-sm leading-relaxed text-[var(--muted)]">
             No password — we email you a one-time magic link.
           </p>

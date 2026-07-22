@@ -201,6 +201,12 @@ export async function proxy(request: NextRequest) {
   });
   response = withSecurityHeaders(response, requestId);
 
+  // Marketing + legal are always public. Auth wall ONLY for /vault app routes.
+  // Login lives at /login — never treat `/` as the sign-in experience.
+  if (isPublicMarketingPath(path)) {
+    return response;
+  }
+
   if (path.startsWith("/vault")) {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -231,6 +237,28 @@ export async function proxy(request: NextRequest) {
   }
 
   return response;
+}
+
+/** Public marketing / legal — never gated behind session. */
+function isPublicMarketingPath(path: string): boolean {
+  if (path === "/") return true;
+  const exact = new Set([
+    "/pricing",
+    "/foundry-kit",
+    "/faq",
+    "/whats-inside",
+    "/method",
+    "/terms",
+    "/privacy",
+    "/refund",
+    "/login",
+    "/license",
+    "/security",
+    "/checkout/success",
+  ]);
+  if (exact.has(path)) return true;
+  if (path.startsWith("/ideas/")) return true;
+  return false;
 }
 
 export const config = {

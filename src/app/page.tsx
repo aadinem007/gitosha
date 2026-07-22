@@ -30,7 +30,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="chapter chapter-vault">
+        <section className="chapter chapter-vault" id="vault">
+          <div className="chapter-atmosphere" aria-hidden="true" />
           <div className="chapter-inner">
             <p className="chapter-index">01</p>
             <p className="chapter-eyebrow">{BRAND.products.vault}</p>
@@ -39,13 +40,14 @@ export default function Home() {
               Honest opportunity scores and kill criteria — so you stop drowning in vanity idea
               lists and start filtering for revenue.
             </p>
-            <Link href="/vault" className="chapter-link">
-              Enter {BRAND.products.vault} →
+            <Link href="/pricing" className="chapter-link">
+              See {BRAND.products.vault} plans →
             </Link>
           </div>
         </section>
 
-        <section className="chapter chapter-foundry">
+        <section className="chapter chapter-foundry" id="foundry">
+          <div className="chapter-atmosphere chapter-atmosphere-alt" aria-hidden="true" />
           <div className="chapter-inner chapter-inner-end">
             <p className="chapter-index">02</p>
             <p className="chapter-eyebrow">{BRAND.products.foundry}</p>

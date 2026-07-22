@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { TrackField } from "@/components/TrackField";
 import { LoginForm } from "@/components/LoginForm";
 import { safeRedirectPath } from "@/lib/secure";
 
@@ -12,8 +14,12 @@ export default async function LoginPage({
   return (
     <>
       <Nav />
-      <main className="flex-1">
-        <section className="mx-auto flex max-w-sm flex-col justify-center px-6 py-20 sm:min-h-[70vh] sm:py-24">
+      <main className="flex-1 relative overflow-hidden">
+        <TrackField intensity="quiet" />
+        <section className="login-stage">
+          <Link href="/" className="login-back">
+            ← Home
+          </Link>
           <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
             Access
           </p>
@@ -24,7 +30,7 @@ export default async function LoginPage({
           <p className="animate-rise-delay-2 mt-5 text-sm leading-relaxed text-[var(--muted)]">
             No password — we email you a one-time magic link.
           </p>
-          <div className="mt-8 rounded-xl border border-[var(--line)] bg-[var(--panel)]/50 p-5">
+          <div className="login-panel mt-8">
             <LoginForm next={safeRedirectPath(next, "/vault")} />
           </div>
         </section>

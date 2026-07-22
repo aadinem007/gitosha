@@ -32,10 +32,12 @@ That's not a bug — a "perfect 10 on everything" idea doesn't really exist.
 The top two (84 and 81) were genuinely strong though, and I'm building both
 right now.
 
-Free tier gets the weekly digest + top 3 ideas. Pro ($19/mo) gets the full
-scored database and teardowns. Would love brutal feedback on the scoring
-methodology from this community specifically — you're the audience who'd
-catch me if I started inflating numbers.
+Free tier (Scout) gets the weekly digest + top 3 ideas. Operator is ₹999/mo
+for the first 100 seats (then ₹1,499) — full scored database + teardowns.
+Foundry Solo is ₹9,999 one-time (production Next.js + Razorpay scaffold).
+Would love brutal feedback on the scoring methodology from this community
+specifically — you're the audience who'd catch me if I started inflating
+numbers.
 
 https://gitosha.vercel.app
 
@@ -93,8 +95,9 @@ potential, Barrier to entry, AI leverage, Global reach, Time to launch.
 real idea wins on all 10 axes at once. The top two (84, 81) were strong
 enough that I'm building both right now.
 
-4/ Free tier: weekly digest + top 3 ideas. Pro ($19/mo): full database +
-teardowns + launch kits. Building this one completely in public.
+4/ Free Scout: weekly digest + top 3. Operator ₹999/mo (first 100): full
+database + teardowns. Foundry Solo ₹9,999 one-time: production scaffold.
+Building this one completely in public.
 
 5/ Link: https://gitosha.vercel.app (Gitosha — swap to gitosha.com when domain is live)
 
@@ -115,6 +118,66 @@ writing, why most ideas *don't* clear a strict bar. That's the discipline
 most of us skip when we're excited about something.
 
 Sharing the first batch of scored results, free: [link]
+
+---
+
+## 6. Warm DMs — WhatsApp / Instagram / Discord (paste as-is)
+
+Pick 10 people who have said they want to build a startup, ship a side project,
+or charge clients for SaaS. Do **not** spray strangers. Personal first line +
+one of these.
+
+### A — Friend who wants to ship a product (sell Foundry Solo)
+
+```
+Bhai — short ask.
+
+I shipped Gitosha: scored SaaS ideas + a production Next.js/Razorpay starter
+(Foundry Solo, ₹9,999 one-time). Checkout is live:
+
+https://gitosha.vercel.app/pricing
+
+If you're about to rebuild auth + billing again, this saves weeks. If not,
+ignore. If you know one person who is building right now, forward this.
+```
+
+### B — Someone stuck on "what should I build" (sell Bundle)
+
+```
+Yaar I built the thing I wished I had — Gitosha.
+
+Honest scored ideas (public, including bad scores) + Foundry scaffold so you
+don't start from zero. Launch Bundle is ₹14,999 one-time (Solo + 12 mo Vault):
+
+https://gitosha.vercel.app/pricing
+
+No pressure. If you're still picking an idea this week, look at the free
+scoreboard first: https://gitosha.vercel.app
+```
+
+### C — X / Twitter DM (short)
+
+```
+Hey — built Gitosha (idea scoring + Next.js/Razorpay kit). Foundry Solo is
+₹9,999 one-time: https://gitosha.vercel.app/pricing
+
+If you're shipping something this month and don't want to rewire billing,
+worth 2 mins. If not, all good.
+```
+
+### After they pay (copy this back to them)
+
+```
+Payment landed. Two links:
+
+1) License / zip download: https://gitosha.vercel.app/license
+   (use the same email + the key shown after checkout)
+
+2) Vault login (magic link): https://gitosha.vercel.app/login
+   then open https://gitosha.vercel.app/vault
+
+Stuck? Reply with a screenshot — I'll unblock you same day.
+```
 
 ---
 

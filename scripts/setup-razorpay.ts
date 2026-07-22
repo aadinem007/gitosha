@@ -24,7 +24,7 @@ async function main() {
     interval: 1,
     item: {
       name: "Gitosha Vault Operator",
-      amount: 149900,
+      amount: 99900,
       currency: "INR",
       description: "Full scored opportunity database + weekly teardowns",
     },
@@ -35,7 +35,7 @@ async function main() {
     interval: 1,
     item: {
       name: "Gitosha Vault Studio",
-      amount: 599900,
+      amount: 499900,
       currency: "INR",
       description: "5 seats, private idea requests, priority queue",
     },

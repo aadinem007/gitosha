@@ -4,16 +4,34 @@ Brand: **Gitosha** — Know what to build. Then ship it.
 Your live site: https://gitosha.vercel.app
 (Use this URL until gitosha.com is connected.)
 
+**→ Today’s single playbook: [`marketing/FIRST-MONEY.md`](./FIRST-MONEY.md)**  
+**→ Live payments gate: [`marketing/RAZORPAY-LIVE-5MIN.md`](./RAZORPAY-LIVE-5MIN.md)**
+
+Sell **Foundry Solo ₹9,999** (or Bundle ₹14,999) first — one-time, no plan IDs.
+Vault ₹999/mo after Live plans exist.
+
 I already:
 - Made payments work (Razorpay tested successfully)
 - Show license key on screen after payment (no email needed)
 - Added SEO pages for every scored idea (Google can find them)
 - Added buy links on the homepage
 
-Your only job that makes money right now: **put the product in front of buyers**.
+Your only job that makes money right now: **Live keys + put the product in front of buyers**.
 I cannot log into your Reddit / Indie Hackers / X account. You paste. That's it.
 
 Do these **in order**. Each takes ~5 minutes.
+
+---
+
+## ACTION 0 — Live Razorpay (before any public post)
+
+Follow `RAZORPAY-LIVE-5MIN.md` click-by-click. Webhook URL:
+
+```
+https://gitosha.vercel.app/api/razorpay/webhook
+```
+
+Then send the 10 warm DMs in `FIRST-MONEY.md`. Public posts below are secondary today.
 
 ---
 
@@ -97,12 +115,13 @@ https://gitosha.vercel.app
 
 ## ACTION 4 — Tell 10 real people (fastest ₹)
 
-Message 10 friends / college mates / Discord people who want to build startups:
+Message 10 friends / college mates / Discord people who want to build startups.
+Prefer the scripts in `FIRST-MONEY.md`. Short version:
 
 ```
-Bro I built Gitosha — scores SaaS business ideas properly + a ready starter kit.
-Live site: https://gitosha.vercel.app
-If you know anyone building a startup, send them this. Free tier works.
+Bro — Foundry Solo (Next.js + Razorpay kit) is live, ₹9,999 one-time.
+https://gitosha.vercel.app/pricing
+If you're shipping something, this saves weeks. Else ignore / forward.
 ```
 
 ---

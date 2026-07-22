@@ -3,7 +3,7 @@ import { z } from "zod";
 import { razorpay, RAZORPAY_KEY_ID, PLAN_IDS } from "@/lib/razorpay";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { assertSameOrigin, readJsonLimited } from "@/lib/secure";
+import { assertSameOrigin, readJsonLimited, requireJsonContentType, securityLog } from "@/lib/secure";
 
 const bodySchema = z.object({
   planId: z.string().max(64),
@@ -12,12 +12,16 @@ const bodySchema = z.object({
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
+    securityLog("checkout_origin_blocked", { ip: clientIp(req) });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (!requireJsonContentType(req)) {
+    return NextResponse.json({ error: "Unsupported media type" }, { status: 415 });
   }
 
   const limited = rateLimit({
     key: `checkout:${clientIp(req)}`,
-    limit: 8,
+    limit: 6,
     windowMs: 60_000,
   });
   if (!limited.ok) {

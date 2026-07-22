@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { LoginForm } from "@/components/LoginForm";
+import { safeRedirectPath } from "@/lib/secure";
 
 export default async function LoginPage({
   searchParams,
@@ -24,7 +25,7 @@ export default async function LoginPage({
             No password — we email you a one-time magic link.
           </p>
           <div className="mt-8 rounded-xl border border-[var(--line)] bg-[var(--panel)]/50 p-5">
-            <LoginForm next={next ?? "/vault"} />
+            <LoginForm next={safeRedirectPath(next, "/vault")} />
           </div>
         </section>
       </main>

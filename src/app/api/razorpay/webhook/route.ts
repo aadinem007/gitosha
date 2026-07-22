@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { fulfillPurchase } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { safeEqual } from "@/lib/secure";
+import { safeEqual, securityLog } from "@/lib/secure";
 
 type RazorpayWebhookBody = {
   event: string;
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
 
   const signature = req.headers.get("x-razorpay-signature");
   if (!verifySignature(rawBody, signature, webhookSecret)) {
+    securityLog("webhook_bad_signature", { ip: clientIp(req) });
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 

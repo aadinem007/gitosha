@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { assertSameOrigin, readJsonLimited, stripControlChars } from "@/lib/secure";
+import { assertSameOrigin, readJsonLimited, requireJsonContentType, stripControlChars } from "@/lib/secure";
 import { matchKnowledge, type ChatReply } from "@/lib/chat-knowledge";
 
 const bodySchema = z.object({
@@ -66,10 +66,13 @@ export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+  if (!requireJsonContentType(req)) {
+    return NextResponse.json({ error: "Unsupported media type" }, { status: 415 });
+  }
 
   const limited = rateLimit({
     key: `chat:${clientIp(req)}`,
-    limit: 24,
+    limit: 18,
     windowMs: 60_000,
   });
   if (!limited.ok) {

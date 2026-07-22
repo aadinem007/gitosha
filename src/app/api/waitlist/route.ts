@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { assertSameOrigin, readJsonLimited } from "@/lib/secure";
+import { assertSameOrigin, readJsonLimited, requireJsonContentType, securityLog } from "@/lib/secure";
 
 const bodySchema = z.object({
   email: z.string().email().max(254),
@@ -13,10 +13,13 @@ export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+  if (!requireJsonContentType(req)) {
+    return NextResponse.json({ error: "Unsupported media type" }, { status: 415 });
+  }
 
   const limited = rateLimit({
     key: `waitlist:${clientIp(req)}`,
-    limit: 5,
+    limit: 4,
     windowMs: 60_000,
   });
   if (!limited.ok) {
@@ -33,7 +36,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Enter a valid email" }, { status: 400 });
   }
 
+  // Honeypot: bots fill hidden "company" — pretend success, write nothing
   if (parsed.data.company && parsed.data.company.trim().length > 0) {
+    securityLog("waitlist_honeypot", { ip: clientIp(req) });
     return NextResponse.json({ ok: true });
   }
 

@@ -32,7 +32,7 @@ src/
     email.ts             All outbound email in one place
     license.ts           License-key generation
     supabase/            Server + browser Supabase clients
-  middleware.ts         Session refresh + /vault auth gate
+  proxy.ts              Edge WAF-ish layer + /vault auth gate (Next proxy, not middleware.ts)
 prisma/
   schema.prisma          Data model
   seed.ts                 Seeds the initial 18 scored ideas
@@ -52,7 +52,7 @@ hardcode a price or Stripe price ID anywhere else.
 — it drafts the teardown with an LLM, upserts it, and emails subscribers, with
 zero manual steps in between.
 
-**New gated page?** Add the path to the `matcher` array in `src/middleware.ts`.
+**New gated page?** Add the path to the `matcher` array in `src/proxy.ts`.
 
 ## Data flow for a Vault subscription
 

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createFoundryZipStream, foundryKitExists } from "@/lib/foundry-pack";
-import { readJsonLimited, assertSameOrigin, safeEqualDigest } from "@/lib/secure";
+import { readJsonLimited, assertSameOrigin, requireJsonContentType, safeEqualDigest, securityLog } from "@/lib/secure";
 import { Readable } from "stream";
 import { LICENSE_KEY_PATTERN } from "@/lib/license";
 
@@ -16,12 +16,16 @@ export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
+    securityLog("license_dl_origin_blocked", { ip: clientIp(req) });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (!requireJsonContentType(req)) {
+    return NextResponse.json({ error: "Unsupported media type" }, { status: 415 });
   }
 
   const limited = rateLimit({
     key: `license-dl:${clientIp(req)}`,
-    limit: 6,
+    limit: 5,
     windowMs: 60_000,
   });
   if (!limited.ok) {

@@ -70,6 +70,55 @@ export function assertSameOrigin(req: Request): boolean {
   return true;
 }
 
+/** Require JSON Content-Type on browser JSON APIs (allows charset suffix). */
+export function requireJsonContentType(req: Request): boolean {
+  const ct = req.headers.get("content-type");
+  if (!ct) return false;
+  return ct.toLowerCase().includes("application/json");
+}
+
+/**
+ * Allow only same-origin relative paths for post-auth redirects.
+ * Blocks open redirects (//evil, https://evil, /\evil, etc.).
+ */
+export function safeRedirectPath(next: string | null | undefined, fallback = "/vault"): string {
+  if (!next) return fallback;
+  const trimmed = next.trim();
+  if (!trimmed.startsWith("/")) return fallback;
+  if (trimmed.startsWith("//")) return fallback;
+  if (trimmed.includes("://")) return fallback;
+  if (trimmed.includes("\\")) return fallback;
+  if (/[\u0000-\u001F\u007F]/.test(trimmed)) return fallback;
+  // Keep it on-site and short
+  if (trimmed.length > 200) return fallback;
+  return trimmed;
+}
+
 export function stripControlChars(input: string): string {
   return input.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim();
+}
+
+/** Redact common secret-looking substrings before logging. */
+export function redactSecrets(value: string): string {
+  return value
+    .replace(/(Bearer\s+)[A-Za-z0-9._\-+=/]+/gi, "$1[REDACTED]")
+    .replace(
+      /(razorpay[_-]?(key|secret|webhook)|supabase[_-]?(service|anon)|api[_-]?key|password|authorization)["'\s:=]+[^\s"',}]+/gi,
+      "$1=[REDACTED]"
+    )
+    .replace(/\bGITO-[A-Z0-9-]{8,}\b/g, "GITO-[REDACTED]")
+    .replace(/\bSHIP-[A-Z0-9-]{8,}\b/g, "SHIP-[REDACTED]");
+}
+
+/** Server-console-only security events (no public page / no PII dumps). */
+export function securityLog(
+  event: string,
+  detail: Record<string, string | number | boolean | undefined> = {}
+): void {
+  const safe: Record<string, string | number | boolean> = {};
+  for (const [k, v] of Object.entries(detail)) {
+    if (v === undefined) continue;
+    safe[k] = typeof v === "string" ? redactSecrets(v).slice(0, 200) : v;
+  }
+  console.info(`[security] ${event}`, safe);
 }

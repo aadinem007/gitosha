@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { fulfillPurchase } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { readJsonLimited, safeEqual, assertSameOrigin } from "@/lib/secure";
+import { readJsonLimited, safeEqual, assertSameOrigin, requireJsonContentType, securityLog } from "@/lib/secure";
 
 const bodySchema = z.object({
   mode: z.enum(["payment", "subscription"]),
@@ -17,12 +17,16 @@ const bodySchema = z.object({
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
+    securityLog("verify_origin_blocked", { ip: clientIp(req) });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (!requireJsonContentType(req)) {
+    return NextResponse.json({ error: "Unsupported media type" }, { status: 415 });
   }
 
   const limited = rateLimit({
     key: `verify:${clientIp(req)}`,
-    limit: 15,
+    limit: 10,
     windowMs: 60_000,
   });
   if (!limited.ok) {
@@ -61,6 +65,7 @@ export async function POST(req: NextRequest) {
 
   const expected = createHmac("sha256", secret).update(expectedPayload).digest("hex");
   if (!safeEqual(expected, data.razorpay_signature)) {
+    securityLog("verify_bad_signature", { ip: clientIp(req), mode: data.mode });
     return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
   }
 

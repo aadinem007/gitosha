@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { assertSameOrigin, readJsonLimited, safeEqualDigest } from "@/lib/secure";
+import { assertSameOrigin, readJsonLimited, requireJsonContentType, safeEqualDigest, securityLog } from "@/lib/secure";
 
 const bodySchema = z.object({
   email: z.string().email().max(254),
@@ -11,12 +11,16 @@ const bodySchema = z.object({
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
+    securityLog("license_lookup_origin_blocked", { ip: clientIp(req) });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (!requireJsonContentType(req)) {
+    return NextResponse.json({ error: "Unsupported media type" }, { status: 415 });
   }
 
   const limited = rateLimit({
     key: `license-lookup:${clientIp(req)}`,
-    limit: 12,
+    limit: 8,
     windowMs: 60_000,
   });
   if (!limited.ok) {

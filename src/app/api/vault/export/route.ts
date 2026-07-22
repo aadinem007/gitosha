@@ -6,7 +6,7 @@ import { clientIp, rateLimit } from "@/lib/rate-limit";
 export async function GET(req: Request) {
   const limited = rateLimit({
     key: `vault-export:${clientIp(req)}`,
-    limit: 10,
+    limit: 8,
     windowMs: 60_000,
   });
   if (!limited.ok) {

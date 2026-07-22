@@ -1,5 +1,6 @@
 import { assertPricingInvariants, VAULT_PLANS, FOUNDRY_PLANS } from "../src/lib/pricing";
 import { matchKnowledge, KNOWLEDGE, CHAT_GREETING } from "../src/lib/chat-knowledge";
+import { safeRedirectPath } from "../src/lib/secure";
 import { existsSync } from "fs";
 import path from "path";
 
@@ -49,6 +50,21 @@ for (const [q, expectId] of samples) {
   // Reply should not be empty and should share some text with expected entry or be specific
   if (!reply.text || reply.text.length < 40) fail(`weak reply for: ${q}`);
   else ok(`chat match: "${q}"`);
+}
+
+// Auth redirect hardening
+const redirectCases: [string, string][] = [
+  ["/vault", "/vault"],
+  ["/vault/ideas", "/vault/ideas"],
+  ["//evil.com", "/vault"],
+  ["https://evil.com", "/vault"],
+  ["/\\evil", "/vault"],
+  ["vault", "/vault"],
+];
+for (const [input, expect] of redirectCases) {
+  const got = safeRedirectPath(input, "/vault");
+  if (got === expect) ok(`safeRedirectPath: ${JSON.stringify(input)}`);
+  else fail(`safeRedirectPath: ${JSON.stringify(input)}`, `got ${got}, want ${expect}`);
 }
 
 // Kit files Agency buyers are promised

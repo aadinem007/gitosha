@@ -37,7 +37,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       "overview",
     ],
     reply: {
-      text: "Gitosha helps builders know what to build — then ship it. Two products: The Vault (scored opportunity research) and Foundry (a production SaaS starter kit with auth + Razorpay). Honest scores. Instant kit download after payment.",
+      text: "Gitosha helps builders know what to build — then ship it. Two products: The Vault (scored opportunity research) and Foundry (a production SaaS starter kit with auth + checkout). Honest scores. Instant kit download after payment.",
       links: [
         { label: "See the method", href: "/method" },
         { label: "Pricing", href: "/pricing" },

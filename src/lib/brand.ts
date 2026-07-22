@@ -12,7 +12,7 @@ export const BRAND = {
   tagline: "Know what to build. Then ship it.",
   /** Slightly longer meta / footer line */
   description:
-    "Honest opportunity scores, kill criteria, and a production SaaS scaffold with Razorpay. Built for Indian operators first.",
+    "Honest opportunity scores, kill criteria, and a production SaaS scaffold. Built for global builders and operators shipping real products.",
   chatName: "Gita",
   chatRole: "Gitosha guide",
   products: {

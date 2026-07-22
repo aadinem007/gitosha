@@ -42,7 +42,7 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
   },
   {
     q: "How do payments work?",
-    a: "Razorpay in INR — UPI, cards, netbanking. Amounts are set on the server. Test Mode may still be active until Live KYC is finished.",
+    a: "Pay by card or UPI at checkout (processed securely). Amounts are set on the server. Prices shown in ₹.",
     links: [{ label: "Pricing", href: "/pricing" }],
   },
   {

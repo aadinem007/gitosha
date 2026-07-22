@@ -8,17 +8,25 @@ const CinematicTrack = dynamic(
   { ssr: false, loading: () => null }
 );
 
-function StaticTrackFallback() {
+function StaticTrackFallback({ rich }: { rich?: boolean }) {
   return (
     <>
       <div className="track-vanish" />
+      <div className="track-horizon" />
+      <div className="track-grain" />
       <div className="track-sweep" />
+      <div className="track-sweep track-sweep-2" />
+      <div className="track-dashes" />
+      {rich ? <div className="track-ribbons" /> : null}
       <svg className="track-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M48 0 L18 100" />
+        <path d="M48 0 L12 100" />
+        <path d="M49 0 L30 100" />
         <path d="M50 0 L50 100" />
-        <path d="M52 0 L82 100" />
-        <path d="M45 0 L5 100" />
-        <path d="M55 0 L95 100" />
+        <path d="M51 0 L70 100" />
+        <path d="M52 0 L88 100" />
+        <path d="M45 0 L2 100" />
+        <path d="M55 0 L98 100" />
+        <path className="track-line-hot" d="M50 8 L50 100" />
       </svg>
     </>
   );
@@ -26,9 +34,13 @@ function StaticTrackFallback() {
 
 /**
  * Abstract vanishing-track atmosphere.
- * WebGL when motion is allowed; CSS/SVG fallback for reduced-motion / no-JS.
+ * WebGL when motion is allowed; rich CSS/SVG fallback otherwise.
  */
-export function TrackField({ intensity = "full" }: { intensity?: "full" | "quiet" }) {
+export function TrackField({
+  intensity = "full",
+}: {
+  intensity?: "full" | "quiet";
+}) {
   const [allowWebGL, setAllowWebGL] = useState(false);
 
   useEffect(() => {
@@ -44,8 +56,8 @@ export function TrackField({ intensity = "full" }: { intensity?: "full" | "quiet
       className={`track-field${intensity === "quiet" ? " track-field-quiet" : ""}`}
       aria-hidden="true"
     >
-      <StaticTrackFallback />
-      {allowWebGL ? <CinematicTrack /> : null}
+      <StaticTrackFallback rich={intensity === "full"} />
+      {allowWebGL ? <CinematicTrack intensity={intensity} /> : null}
       <div className="track-fog" />
       <div className="track-vignette" />
     </div>

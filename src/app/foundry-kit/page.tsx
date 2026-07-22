@@ -9,7 +9,7 @@ const STACK = [
   "Tailwind design tokens",
   "Postgres via Prisma",
   "Magic-link authentication",
-  "Razorpay checkout + signed webhooks",
+  "Checkout + signed webhooks",
   "Server-side amount locking",
   "Waitlist + honeypot pattern",
   "Rate limits + production headers",
@@ -31,7 +31,7 @@ const AGENCY_EXTRAS = [
 
 const COMPARE = [
   { label: "Production scaffold zip", solo: true, agency: true },
-  { label: "Auth + Razorpay + DB wired", solo: true, agency: true },
+  { label: "Auth + payments + DB wired", solo: true, agency: true },
   { label: "Server-side payment amounts", solo: true, agency: true },
   { label: "Commercial products allowed", solo: "1 product", agency: "Unlimited clients" },
   { label: "White-label", solo: false, agency: true },

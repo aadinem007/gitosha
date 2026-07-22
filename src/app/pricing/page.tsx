@@ -3,6 +3,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { TrackField } from "@/components/TrackField";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 
 function PlanCard({
@@ -51,28 +52,40 @@ export default function PricingPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="page-hero">
-          <p className="page-kicker animate-rise">Pricing</p>
-          <h1 className="animate-rise-delay mt-3">
-            Pay once you believe.
-            <span className="block text-[var(--brass)]">Not before.</span>
-          </h1>
-          <div className="rule mt-6 max-w-[8rem]" />
-          <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
-            Scout is free. Operator is ₹999/mo while the first 100 seats last. Foundry is a one-time
-            download — Agency is the studio license that pays for itself on the second client build.
-          </p>
+        <section className="page-hero page-hero-atmos">
+          <TrackField intensity="quiet" />
+          <div className="page-hero-content">
+            <p className="page-kicker animate-rise">
+              <Link href="/" className="page-crumb">
+                Home
+              </Link>
+              <span aria-hidden="true"> / </span>
+              Pricing
+            </p>
+            <h1 className="animate-rise-delay mt-3">
+              Pay once you believe.
+              <span className="block text-[var(--brass)]">Not before.</span>
+            </h1>
+            <div className="rule mt-6 max-w-[8rem]" />
+            <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
+              Scout is free. Operator is ₹999/mo while the first 100 seats last. Foundry is a one-time
+              download — Agency is the studio license that pays for itself on the second client build.
+            </p>
 
-          <div className="mt-8 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
-            <Link href="/faq" className="text-[var(--brass)] hover:underline">
-              FAQ →
-            </Link>
-            <Link href="/refund" className="text-[var(--muted)] hover:text-[var(--ink)]">
-              Refunds
-            </Link>
-            <Link href="/terms" className="text-[var(--muted)] hover:text-[var(--ink)]">
-              Terms
-            </Link>
+            <div className="mt-8 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
+              <Link href="/foundry-kit" className="text-[var(--brass)] hover:underline">
+                Buy Foundry →
+              </Link>
+              <Link href="/faq" className="text-[var(--muted)] hover:text-[var(--ink)]">
+                FAQ
+              </Link>
+              <Link href="/refund" className="text-[var(--muted)] hover:text-[var(--ink)]">
+                Refunds
+              </Link>
+              <Link href="/terms" className="text-[var(--muted)] hover:text-[var(--ink)]">
+                Terms
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -102,21 +115,24 @@ export default function PricingPage() {
 
           <div className="cta-band mt-16">
             <p className="font-display text-2xl tracking-wide sm:text-3xl">
-              Still deciding? Tap ASK — or start free as Scout.
+              Ready to ship? Get pricing clear — then buy Foundry.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link href="/" className="btn-ghost">
-                Back home
+              <Link href="/foundry-kit" className="btn-primary">
+                Open Foundry
               </Link>
-              <Link href="/foundry-kit#compare" className="btn-primary">
-                Compare Solo vs Agency
+              <Link href="/" className="btn-ghost">
+                Home
+              </Link>
+              <Link href="/refund" className="btn-ghost">
+                Refunds
               </Link>
             </div>
           </div>
 
           <p className="mt-10 text-xs leading-relaxed text-[var(--muted)]">
-            Operator launch price (₹999/mo) applies to the first 100 paying operators, then returns
-            to ₹1,499/mo. All prices in INR via Razorpay. By purchasing you agree to{" "}
+            Operator launch price (₹999/mo) applies to the first 100 paying seats, then returns to
+            ₹1,499/mo. Prices shown in ₹. Checkout accepts card and UPI. By purchasing you agree to{" "}
             <a href="/terms" className="text-[var(--brass)] hover:underline">
               Terms
             </a>

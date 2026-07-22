@@ -4,6 +4,33 @@ import { Footer } from "@/components/Footer";
 import { TrackField } from "@/components/TrackField";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { BRAND } from "@/lib/brand";
+import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
+
+const OPERATOR = VAULT_PLANS.find((p) => p.id === "vault-pro")!;
+const SOLO = FOUNDRY_PLANS.find((p) => p.id === "foundry-solo")!;
+
+const PROOF_COMPARE = [
+  {
+    label: "Decide what to ship",
+    scout: "Public scores + method",
+    operator: "Full teardowns + kill criteria",
+  },
+  {
+    label: "Ship the product",
+    scout: "—",
+    operator: "15% off Foundry forever",
+  },
+  {
+    label: "Export & share",
+    scout: "Browse scoreboard",
+    operator: "CSV export + private Vault",
+  },
+  {
+    label: "Support",
+    scout: "Gita on-site",
+    operator: "Gita + email for access & billing",
+  },
+];
 
 export default function Home() {
   return (
@@ -16,8 +43,8 @@ export default function Home() {
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
             <p className="hero-support animate-rise">
-              Honest opportunity scores, kill criteria, and a production SaaS scaffold — for
-              builders and operators shipping real products.
+              Scored opportunities with kill criteria — plus a production scaffold that already takes
+              payments. Built for operators who ship.
             </p>
             <div className="hero-cta animate-rise-delay">
               <Link href="/pricing" className="btn-primary">
@@ -48,10 +75,10 @@ export default function Home() {
           <div className="chapter-inner">
             <p className="chapter-index">01</p>
             <p className="chapter-eyebrow">{BRAND.products.vault}</p>
-            <h2 className="chapter-title">Know what to build.</h2>
+            <h2 className="chapter-title">Kill bad ideas early.</h2>
             <p className="chapter-copy">
-              Honest opportunity scores and kill criteria — so you stop drowning in vanity idea
-              lists and start filtering for revenue.
+              Ten dimensions. Honest scores. Kill criteria that tell you what not to build — so your
+              next quarter isn’t spent on vanity lists.
             </p>
             <Link href="/pricing" className="chapter-link">
               See {BRAND.products.vault} plans →
@@ -63,10 +90,10 @@ export default function Home() {
           <div className="chapter-inner">
             <p className="chapter-index">02</p>
             <p className="chapter-eyebrow">{BRAND.products.foundry}</p>
-            <h2 className="chapter-title">Then ship it.</h2>
+            <h2 className="chapter-title">Ship on day one.</h2>
             <p className="chapter-copy">
-              Production SaaS scaffold with auth, database, and checkout. Pay once — Solo or Agency —
-              download the zip the same minute.
+              Auth, database, checkout, webhooks, deploy docs — one zip. Pay once. Download the same
+              minute. Solo for your product. Agency for every client after.
             </p>
             <Link href="/foundry-kit" className="chapter-link">
               Open {BRAND.products.foundry} →
@@ -82,6 +109,72 @@ export default function Home() {
                 <li>Deploy docs</li>
                 <li>Instant zip</li>
               </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="proof-plane" id="proof">
+          <div className="proof-inner">
+            <p className="proof-kicker">What you get</p>
+            <h2 className="proof-title">Operator and Foundry, unpacked.</h2>
+            <p className="proof-lede">
+              Dense enough to justify the price. Clear enough to decide in one scroll.
+            </p>
+
+            <div className="proof-grid">
+              <div className="proof-col">
+                <div className="proof-col-head">
+                  <p className="proof-col-name">Operator · ₹999/mo</p>
+                  <p className="proof-col-sub">First 100 seats at launch price</p>
+                </div>
+                <ul className="proof-list">
+                  {OPERATOR.features.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+                <Link href="/pricing" className="proof-link">
+                  Unlock Operator →
+                </Link>
+              </div>
+
+              <div className="proof-col proof-col-hot">
+                <div className="proof-col-head">
+                  <p className="proof-col-name">Foundry Solo · ₹9,999</p>
+                  <p className="proof-col-sub">One-time · instant zip</p>
+                </div>
+                <ul className="proof-list">
+                  {SOLO.features.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+                <Link href="/foundry-kit" className="proof-link">
+                  Open Foundry →
+                </Link>
+              </div>
+            </div>
+
+            <div className="proof-compare">
+              <h3 className="proof-compare-title">Scout vs Operator</h3>
+              <div className="proof-table-wrap">
+                <table className="proof-table">
+                  <thead>
+                    <tr>
+                      <th>Outcome</th>
+                      <th>Scout</th>
+                      <th>Operator</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PROOF_COMPARE.map((row) => (
+                      <tr key={row.label}>
+                        <td>{row.label}</td>
+                        <td>{row.scout}</td>
+                        <td>{row.operator}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>

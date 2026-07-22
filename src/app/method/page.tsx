@@ -20,7 +20,7 @@ export default function MethodPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
+        <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
           <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
             Rubric
           </p>

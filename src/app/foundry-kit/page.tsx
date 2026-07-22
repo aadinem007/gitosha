@@ -5,16 +5,19 @@ import Link from "next/link";
 import { FOUNDRY_PLANS } from "@/lib/pricing";
 
 const STACK = [
-  "Next.js App Router + TypeScript",
-  "Tailwind design tokens",
-  "Postgres via Prisma",
-  "Magic-link authentication",
-  "Checkout + signed webhooks",
+  "Next.js App Router + TypeScript + Tailwind",
+  "Postgres via Prisma (customers, licenses, waitlist)",
+  "Magic-link authentication (Supabase)",
+  "Checkout + signature verify + webhook unlock",
   "Server-side amount locking",
-  "Waitlist + honeypot pattern",
-  "Rate limits + production headers",
-  "Docker + CI pipeline",
-  "Architecture + Getting Started docs",
+  "Rate limits + honeypot waitlist",
+  "Production security headers / CSP patterns",
+  "Auth-gated dashboard route pattern",
+  "Docker + CI deploy pipeline",
+  "Architecture map + Getting Started docs",
+  "env.example for auth, payments, database",
+  "License portal re-download (fair-use)",
+  "90 days Operator Vault included (Solo)",
 ];
 
 const AGENCY_EXTRAS = [
@@ -27,6 +30,8 @@ const AGENCY_EXTRAS = [
   "1 year Studio Vault (5 seats research)",
   "Priority support on client deadlines",
   "Team re-download via License portal",
+  "Studio research so pitches start scored",
+  "Commercial rights for agency resale of your builds",
 ];
 
 const COMPARE = [
@@ -55,9 +60,9 @@ export default function FoundryKitPage() {
           <h1 className="animate-rise-delay mt-3">Foundry</h1>
           <div className="rule mt-6 max-w-xs" />
           <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
-            Auth, database, billing, webhooks, deploy — packaged so you build the product, not the
-            plumbing. Pay once. Download the zip instantly. Agency is built for studios shipping
-            many client products from one license.
+            Auth, database, checkout, webhooks, security headers, deploy docs — packaged so you build
+            the product, not the plumbing. Pay once. Download the zip the same minute. Agency is built
+            for studios shipping many client products from one license.
           </p>
           <div className="mt-6 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
             <Link href="/license" className="font-semibold text-[var(--brass)] hover:underline">
@@ -145,13 +150,13 @@ export default function FoundryKitPage() {
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--muted)]">
                   {plan.description}
                 </p>
-                <ul className="mt-4 space-y-1.5 text-xs text-[var(--fog)]">
-                  {plan.features.slice(0, 8).map((f) => (
+                <ul className="mt-4 space-y-1.5 text-sm text-[var(--fog)]">
+                  {plan.features.slice(0, 12).map((f) => (
                     <li key={f}>— {f}</li>
                   ))}
-                  {plan.features.length > 8 && (
+                  {plan.features.length > 12 && (
                     <li className="text-[var(--brass)]">
-                      +{plan.features.length - 8} more — see Pricing / What’s inside
+                      +{plan.features.length - 12} more — see Pricing / What’s inside
                     </li>
                   )}
                 </ul>

@@ -33,31 +33,34 @@ function StaticTrackFallback({ rich }: { rich?: boolean }) {
 }
 
 /**
- * Abstract vanishing-track atmosphere.
- * WebGL when motion is allowed; rich CSS/SVG fallback otherwise.
+ * Full-bleed 3D track atmosphere.
+ * WebGL always mounts (including reduced-motion → static rich frame).
+ * CSS/SVG underlay only until the canvas is ready — never the hero itself.
  */
 export function TrackField({
   intensity = "full",
 }: {
   intensity?: "full" | "quiet";
 }) {
-  const [allowWebGL, setAllowWebGL] = useState(false);
+  const [webglReady, setWebglReady] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setAllowWebGL(!mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    // Give the dynamic chunk a beat, then fade CSS fallback so WebGL owns the frame
+    const t = window.setTimeout(() => setWebglReady(true), 80);
+    return () => window.clearTimeout(t);
   }, []);
 
   return (
     <div
-      className={`track-field${intensity === "quiet" ? " track-field-quiet" : ""}`}
+      className={`track-field${intensity === "quiet" ? " track-field-quiet" : ""}${
+        webglReady ? " track-field-live" : ""
+      }`}
       aria-hidden="true"
     >
-      <StaticTrackFallback rich={intensity === "full"} />
-      {allowWebGL ? <CinematicTrack intensity={intensity} /> : null}
+      <div className="track-fallback">
+        <StaticTrackFallback rich={intensity === "full"} />
+      </div>
+      <CinematicTrack intensity={intensity} />
       <div className="track-fog" />
       <div className="track-vignette" />
     </div>

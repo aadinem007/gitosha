@@ -18,28 +18,29 @@ export default function WhatsInsidePage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
+        <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
             Inventory
           </p>
-          <h1 className="mt-3 font-display text-4xl font-bold tracking-tight">
+          <h1 className="mt-3 font-display text-5xl font-bold tracking-tight">
             What’s included — no mystery box
           </h1>
-          <p className="mt-4 leading-relaxed text-[var(--muted)]">
-            Every line below matches what we sell on Pricing. If it’s listed here, it’s part of the
-            product or the downloadable zip.
+          <p className="mt-4 text-lg leading-relaxed text-[var(--muted)]">
+            Every line below matches Pricing. If it’s listed here, it’s in the product or the zip —
+            scored research, kill criteria, export, Foundry kit contents, agency templates, license,
+            and support scope.
           </p>
           <div className="rule mt-8 max-w-[6rem]" />
 
           <h2 className="mt-12 font-display text-xl font-semibold">Operator (Vault)</h2>
-          <ul className="mt-4 space-y-2 text-sm text-[var(--fog)]">
+          <ul className="mt-4 space-y-2.5 text-base text-[var(--fog)]">
             {operator.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
           </ul>
 
           <h2 className="mt-12 font-display text-xl font-semibold">Foundry Solo zip</h2>
-          <ul className="mt-4 space-y-2 text-sm text-[var(--fog)]">
+          <ul className="mt-4 space-y-2.5 text-base text-[var(--fog)]">
             {solo.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
@@ -48,7 +49,7 @@ export default function WhatsInsidePage() {
           <h2 className="mt-12 font-display text-xl font-semibold text-[var(--brass)]">
             Agency adds on top of Solo
           </h2>
-          <ul className="mt-4 space-y-2 text-sm text-[var(--fog)]">
+          <ul className="mt-4 space-y-2.5 text-base text-[var(--fog)]">
             {agency.features
               .filter((f) => !f.startsWith("Everything in Solo"))
               .map((f) => (

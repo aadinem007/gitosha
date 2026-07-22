@@ -18,7 +18,7 @@ export default async function VaultPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+        <section className="mx-auto max-w-6xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">

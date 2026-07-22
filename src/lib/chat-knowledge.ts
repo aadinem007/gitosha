@@ -60,7 +60,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       "opportunities",
     ],
     reply: {
-      text: "The Vault is our scored opportunity database. Scout (free) shows public research. Operator (₹999/mo launch) unlocks full teardowns, kill criteria, competitor maps, launch checklists, and CSV export. Studio (₹4,999/mo) adds seats + private niche scoring.",
+      text: "The Vault is our scored opportunity database. Scout (free) shows public research. Operator (₹999/mo launch) unlocks full teardowns, kill criteria, anti-portfolio, financial sketches, competitor maps, 14-day launch checklists, CSV export, and 15% off Foundry. Studio (₹4,999/mo) adds 5 seats + private niche scoring.",
       links: [
         { label: "Open Vault", href: "/vault" },
         { label: "Operator pricing", href: "/pricing" },
@@ -95,7 +95,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       "29,999",
     ],
     reply: {
-      text: "Foundry is a one-time SaaS starter kit (Next.js, auth, Prisma, Razorpay, deploy docs). After you pay, you download the zip instantly from the License page — no waiting on us. Solo ₹9,999 (one product). Agency ₹29,999 (unlimited clients + white-label + priority support). Launch Bundle ₹14,999 = Solo + 1 year Operator.",
+      text: "Foundry is a one-time SaaS starter kit (Next.js, auth, Prisma, checkout, webhooks, deploy docs — same patterns Gitosha runs). Download the zip instantly from License after pay. Solo ₹9,999 (one product + 90 days Operator). Agency ₹29,999 (unlimited clients + white-label + templates + 1yr Studio Vault). Launch Bundle ₹14,999 = Solo + 1 year Operator.",
       links: [
         { label: "Inspect Foundry", href: "/foundry-kit" },
         { label: "License / download", href: "/license" },

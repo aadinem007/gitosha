@@ -13,6 +13,8 @@ export default function WhatsInsidePage() {
   const solo = FOUNDRY_PLANS.find((p) => p.id === "foundry-solo")!;
   const agency = FOUNDRY_PLANS.find((p) => p.id === "foundry-agency")!;
   const operator = VAULT_PLANS.find((p) => p.id === "vault-pro")!;
+  const studio = VAULT_PLANS.find((p) => p.id === "vault-team")!;
+  const bundle = FOUNDRY_PLANS.find((p) => p.id === "bundle-launch")!;
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function WhatsInsidePage() {
           <h1 className="mt-3 font-display text-5xl font-bold tracking-tight">
             What’s included — no mystery box
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-[var(--muted)]">
+          <p className="mt-4 text-lg leading-relaxed text-[var(--support)]">
             Every line below matches Pricing. If it’s listed here, it’s in the product or the zip —
             scored research, kill criteria, export, Foundry kit contents, agency templates, license,
             and support scope.
@@ -33,14 +35,21 @@ export default function WhatsInsidePage() {
           <div className="rule mt-8 max-w-[6rem]" />
 
           <h2 className="mt-12 font-display text-xl font-semibold">Operator (Vault)</h2>
-          <ul className="mt-4 space-y-2.5 text-base text-[var(--fog)]">
+          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
             {operator.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
           </ul>
 
+          <h2 className="mt-12 font-display text-xl font-semibold">Studio (Vault)</h2>
+          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+            {studio.features.map((f) => (
+              <li key={f}>— {f}</li>
+            ))}
+          </ul>
+
           <h2 className="mt-12 font-display text-xl font-semibold">Foundry Solo zip</h2>
-          <ul className="mt-4 space-y-2.5 text-base text-[var(--fog)]">
+          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
             {solo.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
@@ -49,12 +58,19 @@ export default function WhatsInsidePage() {
           <h2 className="mt-12 font-display text-xl font-semibold text-[var(--brass)]">
             Agency adds on top of Solo
           </h2>
-          <ul className="mt-4 space-y-2.5 text-base text-[var(--fog)]">
+          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
             {agency.features
               .filter((f) => !f.startsWith("Everything in Solo"))
               .map((f) => (
                 <li key={f}>— {f}</li>
               ))}
+          </ul>
+
+          <h2 className="mt-12 font-display text-xl font-semibold">Launch Bundle</h2>
+          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+            {bundle.features.map((f) => (
+              <li key={f}>— {f}</li>
+            ))}
           </ul>
 
           <div className="mt-12 flex flex-wrap gap-3">

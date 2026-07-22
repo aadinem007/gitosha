@@ -23,17 +23,17 @@ function PlanCard({
       </div>
       <p className="mt-3">
         <span className="font-display text-3xl tracking-wide">{plan.price}</span>{" "}
-        <span className="text-sm text-[var(--muted)]">{plan.cadence}</span>
+        <span className="text-sm text-[var(--support)]">{plan.cadence}</span>
       </p>
-      <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--muted)]">{plan.description}</p>
-      <ul className="mt-4 flex-1 space-y-2 text-[0.95rem] leading-snug text-[var(--fog)]">
+      <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--support)]">{plan.description}</p>
+      <ul className="mt-4 flex-1 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
         {plan.features.map((f) => (
           <li key={f} className="leading-snug">
             — {f}
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
+      <p className="mt-3 text-[10px] uppercase tracking-[0.14em] text-[var(--support)]">
         {plan.features.length} inclusions
       </p>
       <div className="relative z-10 mt-6 min-w-0">
@@ -67,7 +67,7 @@ export default function PricingPage() {
               <span className="block text-[var(--brass)]">Packed value.</span>
             </h1>
             <div className="rule mt-6 max-w-[8rem]" />
-            <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
+            <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
               Scout is free forever. Operator unlocks the full research vault. Foundry is a one-time
               production scaffold — Agency is the studio license that pays for itself on the second
               client build.
@@ -77,13 +77,13 @@ export default function PricingPage() {
               <Link href="/foundry-kit" className="text-[var(--brass)] hover:underline">
                 Buy Foundry →
               </Link>
-              <Link href="/faq" className="text-[var(--muted)] hover:text-[var(--ink)]">
+              <Link href="/faq" className="text-[var(--support)] hover:text-[var(--ink)]">
                 FAQ
               </Link>
-              <Link href="/refund" className="text-[var(--muted)] hover:text-[var(--ink)]">
+              <Link href="/refund" className="text-[var(--support)] hover:text-[var(--ink)]">
                 Refunds
               </Link>
-              <Link href="/terms" className="text-[var(--muted)] hover:text-[var(--ink)]">
+              <Link href="/terms" className="text-[var(--support)] hover:text-[var(--ink)]">
                 Terms
               </Link>
             </div>
@@ -103,7 +103,7 @@ export default function PricingPage() {
           <h2 className="mt-20 font-display text-3xl tracking-wide text-[var(--fog)]">
             Foundry — ship kit &amp; studio license
           </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--support)]">
             Agency at ₹29,999 is not “more code.” It’s unlimited client use, white-label, templates,
             priority support, and a year of Studio Vault — so your next three client SaaS builds
             don’t restart from zero.
@@ -131,7 +131,7 @@ export default function PricingPage() {
             </div>
           </div>
 
-          <p className="mt-10 text-xs leading-relaxed text-[var(--muted)]">
+          <p className="mt-10 text-xs leading-relaxed text-[var(--support)]">
             Operator launch price (₹999/mo) applies to the first 100 paying seats, then returns to
             ₹1,499/mo. Prices shown in ₹. Checkout accepts card and UPI. By purchasing you agree to{" "}
             <a href="/terms" className="text-[var(--brass)] hover:underline">

@@ -19,6 +19,9 @@ export function Nav() {
           <Link href="/#foundry" className="site-nav-link">
             {BRAND.products.foundry}
           </Link>
+          <Link href="/method" className="site-nav-link">
+            Method
+          </Link>
           <Link href="/pricing" className="site-nav-link">
             Pricing
           </Link>

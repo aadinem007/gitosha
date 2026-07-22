@@ -28,7 +28,7 @@ export default function MethodPage() {
             The method
           </h1>
           <div className="rule mt-6 max-w-xs" />
-          <p className="animate-rise-delay-2 mt-6 text-lg leading-relaxed text-[var(--muted)]">
+          <p className="animate-rise-delay-2 mt-6 text-lg leading-relaxed text-[var(--support)]">
             Gitosha does not invent unicorns. We score opportunities the same way every week, publish
             the bad scores too, and refuse to inflate totals to hit a vanity bar.
           </p>
@@ -43,13 +43,13 @@ export default function MethodPage() {
                   </span>
                   <p className="font-display font-semibold text-[var(--ink)]">{d.name}</p>
                 </div>
-                <p className="mt-1 pl-9 text-sm leading-relaxed text-[var(--muted)]">{d.detail}</p>
+                <p className="mt-1 pl-9 text-sm leading-relaxed text-[var(--support)]">{d.detail}</p>
               </div>
             ))}
           </div>
 
           <h2 className="mt-14 font-display text-xl font-semibold">What operators also get</h2>
-          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+          <p className="mt-3 text-sm leading-relaxed text-[var(--support)]">
             Kill criteria for each idea, an anti-portfolio of concepts we reject, competitor maps, and a
             14-day launch checklist. Research that only celebrates winners is marketing. We sell judgment.
           </p>

@@ -27,10 +27,10 @@ export default async function LoginPage({
             Sign in
           </h1>
           <div className="rule mt-5 max-w-[7rem]" />
-          <p className="animate-rise-delay-2 mt-5 text-sm leading-relaxed text-[var(--muted)]">
+          <p className="animate-rise-delay-2 mt-5 text-base leading-relaxed text-[var(--support)]">
             No password — we email you a one-time magic link.
           </p>
-          <div className="login-panel mt-8">
+          <div className="login-panel copy-scrim mt-8">
             <LoginForm next={safeRedirectPath(next, "/vault")} />
           </div>
         </section>

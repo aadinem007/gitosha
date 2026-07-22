@@ -7,7 +7,7 @@ type Intensity = "full" | "quiet";
 
 /**
  * Interactive 3D track world — lit road plane, barriers, floating score slabs.
- * Pointer parallax rotates the camera; scroll dollies depth. Reduced-motion
+ * Pointer parallax + drag-to-orbit; scroll dollies depth. Reduced-motion
  * still paints one rich static frame (never an empty mount).
  */
 export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }) {
@@ -34,7 +34,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = quiet ? 1.05 : 1.2;
     renderer.domElement.style.cssText =
-      "position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;";
+      "position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:auto;touch-action:none;";
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -372,15 +372,59 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     let parallaxY = 0;
     let scrollT = 0;
     let targetScrollT = 0;
+    let orbitX = 0;
+    let orbitY = 0;
+    let targetOrbitX = 0;
+    let targetOrbitY = 0;
+    let dragging = false;
+    let lastPtrX = 0;
+    let lastPtrY = 0;
 
     const lookTarget = new THREE.Vector3(0, 1.1, -18);
+    const canvas = renderer.domElement;
 
     const onPointer = (e: PointerEvent) => {
-      const nx = (e.clientX / window.innerWidth) * 2 - 1;
-      const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      // Strong enough to read in screenshots / feel interactive
-      targetParallaxX = nx * (quiet ? 0.55 : 1.05);
-      targetParallaxY = ny * (quiet ? 0.28 : 0.55);
+      const rect = mount.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+      const ny = ((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
+      // Strong pointer response — readable depth shift, not wallpaper
+      const gain = quiet ? 0.7 : 1.45;
+      targetParallaxX = nx * gain;
+      targetParallaxY = ny * (quiet ? 0.38 : 0.72);
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (reduced) return;
+      dragging = true;
+      lastPtrX = e.clientX;
+      lastPtrY = e.clientY;
+      canvas.classList.add("is-dragging");
+      try {
+        canvas.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    };
+
+    const onPointerUp = (e: PointerEvent) => {
+      dragging = false;
+      canvas.classList.remove("is-dragging");
+      try {
+        canvas.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    };
+
+    const onPointerDrag = (e: PointerEvent) => {
+      onPointer(e);
+      if (!dragging) return;
+      const dx = (e.clientX - lastPtrX) / Math.max(1, window.innerWidth);
+      const dy = (e.clientY - lastPtrY) / Math.max(1, window.innerHeight);
+      lastPtrX = e.clientX;
+      lastPtrY = e.clientY;
+      targetOrbitX = Math.max(-1.2, Math.min(1.2, targetOrbitX + dx * (quiet ? 2.4 : 3.6)));
+      targetOrbitY = Math.max(-0.55, Math.min(0.55, targetOrbitY + dy * (quiet ? 1.4 : 2.2)));
     };
 
     const onScroll = () => {
@@ -396,39 +440,45 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
       renderer.setSize(nw, nh, false);
     };
 
+    canvas.addEventListener("pointermove", onPointerDrag, { passive: true });
+    canvas.addEventListener("pointerdown", onPointerDown, { passive: true });
+    canvas.addEventListener("pointerup", onPointerUp, { passive: true });
+    canvas.addEventListener("pointercancel", onPointerUp, { passive: true });
     window.addEventListener("pointermove", onPointer, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     onScroll();
 
     const paintFrame = (t: number, animate: boolean) => {
-      parallaxX += (targetParallaxX - parallaxX) * (animate ? 0.07 : 1);
-      parallaxY += (targetParallaxY - parallaxY) * (animate ? 0.07 : 1);
+      parallaxX += (targetParallaxX - parallaxX) * (animate ? 0.09 : 1);
+      parallaxY += (targetParallaxY - parallaxY) * (animate ? 0.09 : 1);
+      orbitX += (targetOrbitX - orbitX) * (animate ? 0.1 : 1);
+      orbitY += (targetOrbitY - orbitY) * (animate ? 0.1 : 1);
       scrollT += (targetScrollT - scrollT) * (animate ? 0.08 : 1);
 
       // Differential layer parallax — near reacts hardest
-      nearLayer.position.x = parallaxX * 0.55;
-      nearLayer.position.y = -parallaxY * 0.22;
-      midLayer.position.x = parallaxX * 0.28;
-      midLayer.position.y = -parallaxY * 0.12;
-      farLayer.position.x = parallaxX * 0.1;
-      farLayer.position.y = -parallaxY * 0.04;
+      nearLayer.position.x = parallaxX * 0.75 + orbitX * 0.35;
+      nearLayer.position.y = -parallaxY * 0.32 - orbitY * 0.2;
+      midLayer.position.x = parallaxX * 0.38 + orbitX * 0.18;
+      midLayer.position.y = -parallaxY * 0.16 - orbitY * 0.1;
+      farLayer.position.x = parallaxX * 0.14 + orbitX * 0.06;
+      farLayer.position.y = -parallaxY * 0.06 - orbitY * 0.04;
 
       // Camera orbit + scroll dolly into the track
-      camera.position.x = camBase.x + parallaxX * 1.35;
-      camera.position.y = camBase.y + parallaxY * 0.55 + scrollT * 0.85;
-      camera.position.z = camBase.z - scrollT * 4.8;
+      camera.position.x = camBase.x + parallaxX * 1.85 + orbitX * 2.4;
+      camera.position.y = camBase.y + parallaxY * 0.75 + orbitY * 1.1 + scrollT * 0.85;
+      camera.position.z = camBase.z - scrollT * 5.2 - Math.abs(orbitX) * 0.6;
 
       lookTarget.set(
-        parallaxX * 1.8,
-        1.15 + parallaxY * 0.35 + scrollT * 0.4,
-        -18 - scrollT * 6
+        parallaxX * 2.35 + orbitX * 3.2,
+        1.15 + parallaxY * 0.45 + orbitY * 0.7 + scrollT * 0.4,
+        -18 - scrollT * 6.5
       );
       camera.lookAt(lookTarget);
 
-      // Subtle root roll for presence
-      root.rotation.z = -parallaxX * 0.04;
-      root.rotation.x = parallaxY * 0.03;
+      // Root roll for presence / depth separation
+      root.rotation.z = -parallaxX * 0.055 - orbitX * 0.08;
+      root.rotation.x = parallaxY * 0.04 + orbitY * 0.06;
 
       if (animate) {
         const speed = (quiet ? 2.2 : 3.6) + scrollT * 2.4;
@@ -481,6 +531,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     return () => {
       running = false;
       cancelAnimationFrame(raf);
+      canvas.removeEventListener("pointermove", onPointerDrag);
+      canvas.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("pointerup", onPointerUp);
+      canvas.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);

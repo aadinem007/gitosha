@@ -13,9 +13,9 @@ export type KnowledgeEntry = {
 };
 
 export const CHAT_GREETING: ChatReply = {
-  text: "Hey — I'm Gita. Tell me what you want: cheaper Operator access, Foundry download after pay, or why studios pick Agency at ₹29,999. I'll be blunt.",
+  text: "Hey — I'm Gita. Tell me what you want: cheaper Operator access, Foundry download after pay, or why studios pick Agency at $249. I'll be blunt.",
   suggestions: [
-    "Why pay ₹29,999 for Agency?",
+    "Why pay $249 for Agency?",
     "Show pricing",
     "How do I get Foundry after paying?",
     "What's free?",
@@ -60,7 +60,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       "opportunities",
     ],
     reply: {
-      text: "The Vault is our scored opportunity database. Scout (free) shows public research. Operator (₹999/mo launch) unlocks full teardowns, kill criteria, anti-portfolio, financial sketches, competitor maps, 14-day launch checklists, CSV export, and 15% off Foundry. Studio (₹4,999/mo) adds 5 seats + private niche scoring.",
+      text: "The Vault is our scored opportunity database. Scout (free) shows public research. Operator ($15/mo launch) unlocks full teardowns, kill criteria, anti-portfolio, financial sketches, competitor maps, 14-day launch checklists, CSV export, and 15% off Foundry. Studio ($49/mo) adds 5 seats + private niche scoring.",
       links: [
         { label: "Open Vault", href: "/vault" },
         { label: "Operator pricing", href: "/pricing" },
@@ -89,13 +89,13 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       "zip",
       "solo",
       "agency",
-      "9999",
-      "9,999",
-      "29999",
-      "29,999",
+      "99",
+      "$99",
+      "249",
+      "$249",
     ],
     reply: {
-      text: "Foundry is a one-time SaaS starter kit (Next.js, auth, Prisma, checkout, webhooks, deploy docs — same patterns Gitosha runs). Download the zip instantly from License after pay. Solo ₹9,999 (one product + 90 days Operator). Agency ₹29,999 (unlimited clients + white-label + templates + 1yr Studio Vault). Launch Bundle ₹14,999 = Solo + 1 year Operator.",
+      text: "Foundry is a one-time SaaS starter kit (Next.js, auth, Prisma, checkout, webhooks, deploy docs — same patterns Gitosha runs). Download the zip instantly from License after pay. Solo $99 (one product + 90 days Operator). Agency $249 (unlimited clients + white-label + templates + 1yr Studio Vault). Launch Bundle $149 = Solo + 1 year Operator.",
       links: [
         { label: "Inspect Foundry", href: "/foundry-kit" },
         { label: "License / download", href: "/license" },
@@ -109,9 +109,9 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
   },
   {
     id: "solo-vs-agency",
-    keywords: ["difference", "solo vs", "vs agency", "agency vs", "which plan", "compare", "29999", "29,999", "worth"],
+    keywords: ["difference", "solo vs", "vs agency", "agency vs", "which plan", "compare", "249", "$249", "worth"],
     reply: {
-      text: "Solo (₹9,999) = one product you own. Agency (₹29,999) = unlimited client builds, white-label, handoff/invoice/proposal templates, priority support, and 1 year Studio Vault. If you ship for clients, Agency usually pays for itself by the second engagement — same zip, wider rights.",
+      text: "Solo ($99) = one product you own. Agency ($249) = unlimited client builds, white-label, handoff/invoice/proposal templates, priority support, and 1 year Studio Vault. If you ship for clients, Agency usually pays for itself by the second engagement — same zip, wider rights.",
       links: [
         { label: "Compare table", href: "/foundry-kit#compare" },
         { label: "Pricing", href: "/pricing" },
@@ -144,18 +144,18 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
   },
   {
     id: "pricing",
-    keywords: ["price", "pricing", "cost", "how much", "rupee", "₹", "cheap", "plan"],
+    keywords: ["price", "pricing", "cost", "how much", "dollar", "usd", "$", "cheap", "plan"],
     reply: {
-      text: "Vault: Scout free · Operator ₹999/mo launch (then ₹1,499) · Operator Annual ₹9,999/yr · Studio ₹4,999/mo. Foundry: Solo ₹9,999 · Agency ₹29,999 · Launch Bundle ₹14,999. Pay with UPI, cards, or netbanking via Razorpay.",
+      text: "Vault: Scout free · Operator $15/mo launch (then $19) · Operator Annual $149/yr · Studio $49/mo. Foundry: Solo $99 · Agency $249 · Launch Bundle $149. Checkout via Stripe (cards worldwide).",
       links: [{ label: "Full pricing", href: "/pricing" }],
       suggestions: ["Operator details", "Foundry Solo details", "Launch Bundle"],
     },
   },
   {
     id: "payment",
-    keywords: ["razorpay", "upi", "pay", "payment", "card", "checkout", "refund", "test"],
+    keywords: ["stripe", "razorpay", "upi", "pay", "payment", "card", "checkout", "refund", "test"],
     reply: {
-      text: "Checkout runs on Razorpay (UPI / cards / netbanking). Amounts are set server-side. After a successful payment, Foundry buyers get a license key on-screen; Vault buyers sign in with the same email. For billing issues, use Contact in the footer.",
+      text: "Checkout runs on Stripe Checkout (cards and local methods where Stripe supports them). Amounts are set server-side in USD. After a successful payment, Foundry buyers get a license key on-screen; Vault buyers sign in with the same email. For billing issues, use Contact in the footer.",
       links: [
         { label: "Pricing", href: "/pricing" },
         { label: "Contact", href: "mailto:aaditya.shah8005@gmail.com" },
@@ -165,9 +165,9 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
   },
   {
     id: "bundle",
-    keywords: ["bundle", "14999", "14,999", "launch bundle", "combo"],
+    keywords: ["bundle", "149", "$149", "launch bundle", "combo"],
     reply: {
-      text: "Launch Bundle (₹14,999) is Foundry Solo + 12 months Operator Vault in one checkout — usually the best value if you want research and the scaffold together.",
+      text: "Launch Bundle ($149) is Foundry Solo + 12 months Operator Vault in one checkout — usually the best value if you want research and the scaffold together.",
       links: [{ label: "Buy on Pricing", href: "/pricing" }],
       suggestions: ["How do I download after payment?", "Solo vs Agency"],
     },
@@ -192,14 +192,14 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
   },
   {
     id: "free",
-    keywords: ["free", "scout", "₹0", "no card", "what's free", "whats free"],
+    keywords: ["free", "scout", "$0", "no card", "what's free", "whats free"],
     reply: {
-      text: "Scout is free forever — weekly top-3, public method, teardown archive. No card. Operator is ₹999/mo launch for the full vault. Foundry is paid one-time with instant zip download.",
+      text: "Scout is free forever — weekly top-3, public method, teardown archive. No card. Operator is $15/mo launch for the full vault. Foundry is paid one-time with instant zip download.",
       links: [
         { label: "Start on homepage", href: "/" },
         { label: "Pricing", href: "/pricing" },
       ],
-      suggestions: ["Show pricing", "Why pay ₹29,999 for Agency?"],
+      suggestions: ["Show pricing", "Why pay $249 for Agency?"],
     },
   },
   {
@@ -253,11 +253,11 @@ export function matchKnowledge(message: string): ChatReply {
       if (q.includes(kw)) score += kw.length > 6 ? 3 : 2;
     }
     // Boost exact-ish topic hits
-    if (entry.id === "pricing" && /\b(price|pricing|cost|₹|rs\.?)\b/.test(q)) score += 4;
+    if (entry.id === "pricing" && /\b(price|pricing|cost|\$|usd|dollar)\b/.test(q)) score += 4;
     if (entry.id === "foundry" && /\bfoundry\b/.test(q)) score += 4;
     if (entry.id === "vault" && /\bvault\b/.test(q)) score += 4;
     if (entry.id === "delivery" && /\b(download|license|paid|payment)\b/.test(q)) score += 3;
-    if (entry.id === "solo-vs-agency" && /\b(agency|solo|29999|29,?999)\b/.test(q)) score += 4;
+    if (entry.id === "solo-vs-agency" && /\b(agency|solo|249|\$249)\b/.test(q)) score += 4;
     if (entry.id === "legal" && /\b(refund|terms|privacy)\b/.test(q)) score += 4;
 
     if (score > 0 && (!best || score > best.score)) {

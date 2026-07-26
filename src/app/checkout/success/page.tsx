@@ -2,13 +2,86 @@ import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { LicensePortal } from "@/components/LicensePortal";
+import { fulfillPurchase } from "@/lib/fulfill";
+import { getStripe, isStripeConfigured } from "@/lib/stripe";
+
+async function resolveStripeSession(sessionId: string): Promise<{
+  product?: string;
+  email?: string;
+  licenseKey?: string;
+}> {
+  if (!isStripeConfigured()) return {};
+
+  try {
+    const stripe = getStripe();
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status !== "paid" && session.status !== "complete") {
+      return {};
+    }
+
+    const email = (
+      session.metadata?.email ||
+      session.customer_email ||
+      session.customer_details?.email ||
+      ""
+    ).toLowerCase();
+    const planId = session.metadata?.planId;
+    if (!email || !planId) return {};
+
+    const paymentIntent =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : session.payment_intent?.id;
+    const subscriptionId =
+      typeof session.subscription === "string"
+        ? session.subscription
+        : session.subscription?.id;
+    const customerId =
+      typeof session.customer === "string" ? session.customer : session.customer?.id;
+
+    const result = await fulfillPurchase({
+      email,
+      planId,
+      paymentId: paymentIntent ?? session.id,
+      orderId: session.id,
+      subscriptionId,
+      customerId,
+      provider: "stripe",
+    });
+
+    return {
+      product: result.product,
+      email,
+      licenseKey: result.licenseKey,
+    };
+  } catch {
+    return {};
+  }
+}
 
 export default async function CheckoutSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ key?: string; email?: string; product?: string }>;
+  searchParams: Promise<{
+    key?: string;
+    email?: string;
+    product?: string;
+    session_id?: string;
+  }>;
 }) {
-  const { key = "", email = "", product } = await searchParams;
+  const params = await searchParams;
+  let key = params.key ?? "";
+  let email = params.email ?? "";
+  let product = params.product;
+
+  if (params.session_id && !key) {
+    const resolved = await resolveStripeSession(params.session_id);
+    if (resolved.licenseKey) key = resolved.licenseKey;
+    if (resolved.email) email = resolved.email;
+    if (resolved.product) product = resolved.product;
+  }
+
   const isVault = product === "vault";
   const isFoundry = product === "foundry" || product === "bundle" || Boolean(key);
 
@@ -58,6 +131,16 @@ export default async function CheckoutSuccessPage({
                     sign in
                   </Link>{" "}
                   with {email || "your purchase email"}.
+                </p>
+              )}
+
+              {params.session_id && !key && !isVault && (
+                <p className="mt-6 text-center text-sm text-[var(--muted)]">
+                  If your license key does not appear yet, check your email or open the{" "}
+                  <Link href="/license" className="underline">
+                    License portal
+                  </Link>{" "}
+                  in a minute — webhook fulfillment may still be finishing.
                 </p>
               )}
             </div>

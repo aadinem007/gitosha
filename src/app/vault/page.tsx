@@ -51,7 +51,7 @@ export default async function VaultPage() {
                 href="/pricing"
                 className="font-semibold text-[var(--brass)] underline-offset-4 hover:underline"
               >
-                Upgrade — ₹999/mo launch price
+                Upgrade — $15/mo launch price
               </a>
             </div>
           )}

@@ -287,7 +287,7 @@ export default function Home() {
             <div className="proof-grid">
               <div className="proof-col">
                 <div className="proof-col-head">
-                  <p className="proof-col-name">Operator · ₹999/mo</p>
+                  <p className="proof-col-name">Operator · $15/mo</p>
                   <p className="proof-col-sub">First 100 seats at launch price</p>
                 </div>
                 <ul className="proof-list">
@@ -302,7 +302,7 @@ export default function Home() {
 
               <div className="proof-col proof-col-hot">
                 <div className="proof-col-head">
-                  <p className="proof-col-name">Foundry Solo · ₹9,999</p>
+                  <p className="proof-col-name">Foundry Solo · $99</p>
                   <p className="proof-col-sub">One-time · instant zip</p>
                 </div>
                 <ul className="proof-list">

@@ -5,30 +5,30 @@ Your live site: https://gitosha.vercel.app
 (Use this URL until gitosha.com is connected.)
 
 **→ Today’s single playbook: [`marketing/FIRST-MONEY.md`](./FIRST-MONEY.md)**  
-**→ Live payments gate: [`marketing/RAZORPAY-LIVE-5MIN.md`](./RAZORPAY-LIVE-5MIN.md)**
+**→ Live payments gate: [`marketing/STRIPE-LIVE-SETUP.md`](./STRIPE-LIVE-SETUP.md)**
 
-Sell **Foundry Solo ₹9,999** (or Bundle ₹14,999) first — one-time, no plan IDs.
-Vault ₹999/mo after Live plans exist.
+Sell **Foundry Solo $99** (or Bundle $149) first — one-time.
+Vault $15/mo launch after Stripe Prices exist (`npm run setup-stripe`).
 
 I already:
-- Made payments work (Razorpay tested successfully)
+- Wired Stripe Checkout (USD) as the default payment path
 - Show license key on screen after payment (no email needed)
 - Added SEO pages for every scored idea (Google can find them)
 - Added buy links on the homepage
 
-Your only job that makes money right now: **Live keys + put the product in front of buyers**.
+Your only job that makes money right now: **Live Stripe keys + put the product in front of buyers**.
 I cannot log into your Reddit / Indie Hackers / X account. You paste. That's it.
 
 Do these **in order**. Each takes ~5 minutes.
 
 ---
 
-## ACTION 0 — Live Razorpay (before any public post)
+## ACTION 0 — Live Stripe (before any public post)
 
-Follow `RAZORPAY-LIVE-5MIN.md` click-by-click. Webhook URL:
+Follow `STRIPE-LIVE-SETUP.md` click-by-click. Webhook URL:
 
 ```
-https://gitosha.vercel.app/api/razorpay/webhook
+https://gitosha.vercel.app/api/stripe/webhook
 ```
 
 Then send the 10 warm DMs in `FIRST-MONEY.md`. Public posts below are secondary today.
@@ -52,12 +52,12 @@ Most "100 SaaS ideas" lists are recycled with made-up revenue numbers.
 
 I built Gitosha — know what to build, then ship it. Public 10-dimension scoring, 18 real ideas (bad scores published too), and two products:
 
-1) Vault — weekly scored opportunity database (₹999/mo launch / ~$12)
-2) Foundry — production Next.js + Razorpay SaaS scaffold (₹9,999 / ~$120)
+1) Vault — weekly scored opportunity database ($15/mo launch, then $19)
+2) Foundry — production Next.js + Stripe SaaS scaffold ($99)
 
 Live: https://gitosha.vercel.app
 
-Free teardowns are public. Pro unlocks the full database.
+Free teardowns are public. Operator unlocks the full database.
 
 Would love brutal feedback on the scoring methodology from this community.
 ```
@@ -105,7 +105,7 @@ I scored 18 micro-SaaS ideas across 10 dimensions and refused to inflate the res
 
 None cleared 90/100 honestly.
 
-The top two became real products with Razorpay checkout live:
+The top two became real products with Stripe checkout live:
 
 Gitosha: Vault (research) + Foundry (starter kit)
 https://gitosha.vercel.app
@@ -113,13 +113,13 @@ https://gitosha.vercel.app
 
 ---
 
-## ACTION 4 — Tell 10 real people (fastest ₹)
+## ACTION 4 — Tell 10 real people (fastest $)
 
 Message 10 friends / college mates / Discord people who want to build startups.
 Prefer the scripts in `FIRST-MONEY.md`. Short version:
 
 ```
-Bro — Foundry Solo (Next.js + Razorpay kit) is live, ₹9,999 one-time.
+Hey — Foundry Solo (Next.js + Stripe kit) is live, $99 one-time.
 https://gitosha.vercel.app/pricing
 If you're shipping something, this saves weeks. Else ignore / forward.
 ```
@@ -132,6 +132,6 @@ Reply here with the post links. I will:
 - improve the pages based on comments
 - write the next week's free teardown content
 - push more SEO pages
-- help you turn on Live Razorpay so real money hits your bank
+- help you turn on Live Stripe so real money hits your bank
 
 Do Action 1 first. Don't wait for perfect. Post.

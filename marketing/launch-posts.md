@@ -32,9 +32,9 @@ That's not a bug — a "perfect 10 on everything" idea doesn't really exist.
 The top two (84 and 81) were genuinely strong though, and I'm building both
 right now.
 
-Free tier (Scout) gets the weekly digest + top 3 ideas. Operator is ₹999/mo
-for the first 100 seats (then ₹1,499) — full scored database + teardowns.
-Foundry Solo is ₹9,999 one-time (production Next.js + Razorpay scaffold).
+Free tier (Scout) gets the weekly digest + top 3 ideas. Operator is $15/mo
+for the first 100 seats (then $19) — full scored database + teardowns.
+Foundry Solo is $99 one-time (production Next.js + Stripe scaffold).
 Would love brutal feedback on the scoring methodology from this community
 specifically — you're the audience who'd catch me if I started inflating
 numbers.
@@ -73,7 +73,7 @@ business in public — $0 spent so far
 Starting a build-in-public thread for a two-product venture: a scored
 opportunity-research subscription (Build-Intel Vault) and a production SaaS
 scaffold (Foundry). Total spend so far: $0 — everything's on free
-tiers (Vercel, Supabase, Razorpay test mode) until there's
+tiers (Vercel, Supabase, Stripe test mode) until there's
 revenue to justify a real domain and paid infra.
 
 Will post weekly updates here with actual subscriber/revenue numbers, good or
@@ -95,8 +95,8 @@ potential, Barrier to entry, AI leverage, Global reach, Time to launch.
 real idea wins on all 10 axes at once. The top two (84, 81) were strong
 enough that I'm building both right now.
 
-4/ Free Scout: weekly digest + top 3. Operator ₹999/mo (first 100): full
-database + teardowns. Foundry Solo ₹9,999 one-time: production scaffold.
+4/ Free Scout: weekly digest + top 3. Operator $15/mo (first 100): full
+database + teardowns. Foundry Solo $99 one-time: production scaffold.
 Building this one completely in public.
 
 5/ Link: https://gitosha.vercel.app (Gitosha — swap to gitosha.com when domain is live)
@@ -132,8 +132,8 @@ one of these.
 ```
 Bhai — short ask.
 
-I shipped Gitosha: scored SaaS ideas + a production Next.js/Razorpay starter
-(Foundry Solo, ₹9,999 one-time). Checkout is live:
+I shipped Gitosha: scored SaaS ideas + a production Next.js/Stripe starter
+(Foundry Solo, $99 one-time). Checkout is live:
 
 https://gitosha.vercel.app/pricing
 
@@ -147,7 +147,7 @@ ignore. If you know one person who is building right now, forward this.
 Yaar I built the thing I wished I had — Gitosha.
 
 Honest scored ideas (public, including bad scores) + Foundry scaffold so you
-don't start from zero. Launch Bundle is ₹14,999 one-time (Solo + 12 mo Vault):
+don't start from zero. Launch Bundle is $149 one-time (Solo + 12 mo Vault):
 
 https://gitosha.vercel.app/pricing
 
@@ -158,8 +158,8 @@ scoreboard first: https://gitosha.vercel.app
 ### C — X / Twitter DM (short)
 
 ```
-Hey — built Gitosha (idea scoring + Next.js/Razorpay kit). Foundry Solo is
-₹9,999 one-time: https://gitosha.vercel.app/pricing
+Hey — built Gitosha (idea scoring + Next.js/Stripe kit). Foundry Solo is
+$99 one-time: https://gitosha.vercel.app/pricing
 
 If you're shipping something this month and don't want to rewire billing,
 worth 2 mins. If not, all good.

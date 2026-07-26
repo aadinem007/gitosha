@@ -104,7 +104,7 @@ export default function PricingPage() {
             Foundry — ship kit &amp; studio license
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--support)]">
-            Agency at ₹29,999 is not “more code.” It’s unlimited client use, white-label, templates,
+            Agency at $249 is not “more code.” It’s unlimited client use, white-label, templates,
             priority support, and a year of Studio Vault — so your next three client SaaS builds
             don’t restart from zero.
           </p>
@@ -132,8 +132,8 @@ export default function PricingPage() {
           </div>
 
           <p className="mt-10 text-xs leading-relaxed text-[var(--support)]">
-            Operator launch price (₹999/mo) applies to the first 100 paying seats, then returns to
-            ₹1,499/mo. Prices shown in ₹. Checkout accepts card and UPI. By purchasing you agree to{" "}
+            Operator launch price ($15/mo) applies to the first 100 paying seats, then returns to
+            $19/mo. Prices shown in USD. Checkout runs on Stripe. By purchasing you agree to{" "}
             <a href="/terms" className="text-[var(--brass)] hover:underline">
               Terms
             </a>

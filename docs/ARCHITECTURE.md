@@ -7,12 +7,12 @@ Read this file first — human or coding agent. It exists so a new contributor
 
 | Layer | Choice | Why |
 |---|---|---|
-| Framework | Next.js 15, App Router | Server components by default, one deploy target (Vercel free tier) |
+| Framework | Next.js (App Router) | Server components by default, one deploy target (Vercel free tier) |
 | Language | TypeScript | Type-checked contracts between UI, API routes, and DB |
 | Styling | Tailwind CSS v4 | No CSS files to hunt for, utility classes colocated with markup |
 | DB | PostgreSQL via Prisma | Supabase's free tier gives you the Postgres instance |
 | Auth | Supabase Auth (magic link) | No password storage/reset flow to build or secure |
-| Payments | Razorpay Checkout + webhooks | Indian UPI/cards; popup checkout — no PCI scope here |
+| Payments | Stripe Checkout + webhooks (default); Razorpay optional | Global USD cards via Stripe; Razorpay kept for `PAYMENTS_PROVIDER=razorpay` |
 | Email | Resend | Free tier covers early volume; swap provider by editing `src/lib/email.ts` only |
 
 ## Directory map
@@ -20,13 +20,15 @@ Read this file first — human or coding agent. It exists so a new contributor
 ```
 src/
   app/                 Routes (App Router). One folder per URL segment.
-    api/                Route handlers (checkout, webhook, waitlist, auth callback)
+    api/                Route handlers (checkout, stripe/razorpay webhooks, waitlist, auth)
     pricing/, vault/, foundry-kit/, login/, checkout/success/
   components/          Client-interactive UI (forms, buttons). Server components stay in app/.
   lib/
     prisma.ts           Singleton Prisma client
-    razorpay.ts         Razorpay client + plan-ID env lookup
-    pricing.ts           Single source of truth for plans (INR, used by pricing page AND checkout API)
+    stripe.ts           Stripe client + price-ID env lookup + payments provider
+    razorpay.ts         Optional Razorpay client + plan-ID env lookup
+    payments.ts         Provider-aware unavailable messages
+    pricing.ts           Single source of truth for plans (USD, used by pricing page AND checkout API)
     fulfill.ts           Shared unlock logic after a successful payment
     ideas-data.ts        Seed data for the scored-idea database
     email.ts             All outbound email in one place
@@ -37,6 +39,8 @@ prisma/
   schema.prisma          Data model
   seed.ts                 Seeds the initial 18 scored ideas
 scripts/
+  setup-stripe.ts         Creates Stripe products/prices (USD)
+  setup-razorpay.ts       Optional Razorpay subscription plans
   generate-issue.ts       The weekly research-automation pipeline (see below)
 ```
 
@@ -44,7 +48,8 @@ scripts/
 
 **New plan/price?** Edit `src/lib/pricing.ts` only — the pricing page, the
 Foundry Kit page, and the checkout API all read from that one array. Never
-hardcode a price or Stripe price ID anywhere else.
+hardcode a price or Stripe price ID anywhere else (optional `STRIPE_PRICE_*`
+env vars are created by `npm run setup-stripe`).
 
 **New scored idea?** Either add it to `src/lib/ideas-data.ts` and re-run
 `npm run db:seed`, or (for a real weekly issue) create a JSON file under
@@ -54,22 +59,22 @@ zero manual steps in between.
 
 **New gated page?** Add the path to the `matcher` array in `src/proxy.ts`.
 
-## Data flow for a Vault subscription
+## Data flow for a Vault subscription (Stripe default)
 
 1. `CheckoutButton` posts `{ planId, email }` to `POST /api/checkout`.
-2. The API creates a Razorpay Subscription against the plan ID in env vars.
-3. The browser opens Razorpay Checkout with `subscription_id`.
-4. On success, the client posts to `POST /api/checkout/verify` (signature check)
-   which unlocks the subscriber; Razorpay also hits
-   `POST /api/razorpay/webhook` as a backup.
+2. The API creates a Stripe Checkout Session (`mode: subscription` or `payment`).
+3. The browser redirects to Stripe-hosted Checkout (`data.url`).
+4. On success, Stripe hits `POST /api/stripe/webhook` (`checkout.session.completed`)
+   which calls `fulfillPurchase`; the success page can also resolve `session_id`.
 5. `/vault` reads the signed-in user's email from Supabase, looks up their
    `Subscriber` row, and unlocks premium `Idea` rows accordingly.
 
 ## Data flow for a Foundry Kit purchase
 
-1. Same Razorpay Order → verify/webhook → `LicenseKey` row.
+1. Same Stripe Checkout Session → webhook / success-page resolve → `LicenseKey` row.
 2. Success page + `/license` portal call `POST /api/license/download`.
 3. Server zips `kits/foundry/` (personalized LICENSE) and streams it.
 4. Re-downloads allowed (tracked on `LicenseKey.downloadCount`).
 
-See `docs/DELIVERY.md`.
+See `docs/DELIVERY.md`. Optional Razorpay path mirrors the old popup + verify flow when
+`PAYMENTS_PROVIDER=razorpay`.

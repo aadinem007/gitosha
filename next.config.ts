@@ -16,21 +16,21 @@ const securityHeaders = [
   { key: "X-XSS-Protection", value: "0" },
   {
     key: "Content-Security-Policy",
-    // Razorpay checkout needs script + frame + connect hosts below. Do not add COEP.
-    // 'unsafe-inline'/'unsafe-eval' kept for Next/Razorpay compatibility — tighten later with nonces.
+    // Stripe Checkout (default) + optional Razorpay. Do not add COEP.
+    // 'unsafe-inline'/'unsafe-eval' kept for Next compatibility — tighten later with nonces.
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://checkout.stripe.com https://checkout.razorpay.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.supabase.co https://api.razorpay.com https://lumberjack.razorpay.com wss://*.supabase.co",
-      "frame-src https://api.razorpay.com https://checkout.razorpay.com",
-      "child-src https://api.razorpay.com https://checkout.razorpay.com",
+      "connect-src 'self' https://*.supabase.co https://api.stripe.com https://checkout.stripe.com https://api.razorpay.com https://lumberjack.razorpay.com wss://*.supabase.co",
+      "frame-src https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://api.razorpay.com https://checkout.razorpay.com",
+      "child-src https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://api.razorpay.com https://checkout.razorpay.com",
       "worker-src 'self' blob:",
       "object-src 'none'",
       "base-uri 'self'",
-      "form-action 'self'",
+      "form-action 'self' https://checkout.stripe.com",
       "frame-ancestors 'none'",
       "upgrade-insecure-requests",
     ].join("; "),

@@ -101,7 +101,7 @@ export default function FoundryKitPage() {
             <div>
               <div className="rule mb-5 max-w-[6rem]" />
               <h2 className="font-display text-lg tracking-wide text-[var(--fog)]">
-                Agency extras (₹29,999)
+                Agency extras ($249)
               </h2>
               <ul className="mt-4 space-y-2.5 text-[1.02rem] text-[var(--support)]">
                 {AGENCY_EXTRAS.map((item) => (
@@ -114,7 +114,7 @@ export default function FoundryKitPage() {
           <div id="compare" className="mt-20 scroll-mt-28">
             <h2 className="font-display text-3xl tracking-wide">Solo vs Agency</h2>
             <p className="mt-2 max-w-2xl text-sm text-[var(--support)]">
-              Same codebase. Different rights and studio tooling — so Agency feels worth ₹29,999 when
+              Same codebase. Different rights and studio tooling — so Agency feels worth $249 when
               you run client work.
             </p>
             <div className="board-shell mt-6 overflow-x-auto">

@@ -29,6 +29,8 @@ model Subscriber {
   email                   String           @unique
   tier                    SubscriberTier   @default(FREE)
   status                  SubscriberStatus @default(ACTIVE)
+  stripeCustomerId        String?          @unique
+  stripeSubscriptionId    String?          @unique
   razorpayCustomerId      String?          @unique
   razorpaySubscriptionId  String?          @unique
   createdAt               DateTime         @default(now())
@@ -44,16 +46,18 @@ enum LicenseTier {
 }
 
 model LicenseKey {
-  id                String      @id @default(cuid())
-  key               String      @unique
-  email             String
-  tier              LicenseTier
-  razorpayPaymentId String?     @unique
-  razorpayOrderId   String?
-  activatedAt       DateTime?
-  downloadCount     Int         @default(0)
-  lastDownloadedAt  DateTime?
-  createdAt         DateTime    @default(now())
+  id                       String      @id @default(cuid())
+  key                      String      @unique
+  email                    String
+  tier                     LicenseTier
+  stripePaymentId          String?     @unique
+  stripeCheckoutSessionId  String?
+  razorpayPaymentId        String?     @unique
+  razorpayOrderId          String?
+  activatedAt              DateTime?
+  downloadCount            Int         @default(0)
+  lastDownloadedAt         DateTime?
+  createdAt                DateTime    @default(now())
 
   @@index([email])
 }

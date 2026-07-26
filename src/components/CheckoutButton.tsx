@@ -42,13 +42,6 @@ export function CheckoutButton({
     }
     setLoading(true);
     try {
-      const ready = await loadRazorpayScript();
-      if (!ready || !window.Razorpay) {
-        alert("Could not load checkout. Check your connection and try again.");
-        setLoading(false);
-        return;
-      }
-
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,55 +54,75 @@ export function CheckoutButton({
         return;
       }
 
-      const options: Record<string, unknown> = {
-        key: data.keyId,
-        name: data.name,
-        description: data.description,
-        prefill: { email: data.email },
-        theme: { color: "#d4a05a" },
-        handler: async (response: {
-          razorpay_payment_id: string;
-          razorpay_order_id?: string;
-          razorpay_subscription_id?: string;
-          razorpay_signature: string;
-        }) => {
-          const verifyRes = await fetch("/api/checkout/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              mode: data.mode,
-              planId: data.planId,
-              email: data.email,
-              ...response,
-            }),
-          });
-          if (verifyRes.ok) {
-            const result = await verifyRes.json();
-            const params = new URLSearchParams({ product: result.product ?? "foundry" });
-            if (result.licenseKey) params.set("key", result.licenseKey);
-            if (result.email) params.set("email", result.email);
-            window.location.href = `/checkout/success?${params.toString()}`;
-          } else {
-            const err = await verifyRes.json();
-            alert(err.error ?? "Payment received but verification failed.");
-            setLoading(false);
-          }
-        },
-        modal: {
-          ondismiss: () => setLoading(false),
-        },
-      };
-
-      if (data.mode === "payment") {
-        options.order_id = data.orderId;
-        options.amount = data.amount;
-        options.currency = data.currency;
-      } else {
-        options.subscription_id = data.subscriptionId;
+      // Stripe Checkout (default): redirect to hosted page
+      if (data.url) {
+        window.location.href = data.url as string;
+        return;
       }
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      // Optional Razorpay path (PAYMENTS_PROVIDER=razorpay)
+      if (data.provider === "razorpay" || data.keyId) {
+        const ready = await loadRazorpayScript();
+        if (!ready || !window.Razorpay) {
+          alert("Could not load checkout. Check your connection and try again.");
+          setLoading(false);
+          return;
+        }
+
+        const options: Record<string, unknown> = {
+          key: data.keyId,
+          name: data.name,
+          description: data.description,
+          prefill: { email: data.email },
+          theme: { color: "#d4a05a" },
+          handler: async (response: {
+            razorpay_payment_id: string;
+            razorpay_order_id?: string;
+            razorpay_subscription_id?: string;
+            razorpay_signature: string;
+          }) => {
+            const verifyRes = await fetch("/api/checkout/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                provider: "razorpay",
+                mode: data.mode,
+                planId: data.planId,
+                email: data.email,
+                ...response,
+              }),
+            });
+            if (verifyRes.ok) {
+              const result = await verifyRes.json();
+              const params = new URLSearchParams({ product: result.product ?? "foundry" });
+              if (result.licenseKey) params.set("key", result.licenseKey);
+              if (result.email) params.set("email", result.email);
+              window.location.href = `/checkout/success?${params.toString()}`;
+            } else {
+              const err = await verifyRes.json();
+              alert(err.error ?? "Payment received but verification failed.");
+              setLoading(false);
+            }
+          },
+          modal: {
+            ondismiss: () => setLoading(false),
+          },
+        };
+
+        if (data.mode === "payment") {
+          options.order_id = data.orderId;
+          options.amount = data.amount;
+          options.currency = data.currency;
+        } else {
+          options.subscription_id = data.subscriptionId;
+        }
+
+        new window.Razorpay(options).open();
+        return;
+      }
+
+      alert("Checkout unavailable.");
+      setLoading(false);
     } catch {
       alert("Something went wrong starting checkout.");
       setLoading(false);

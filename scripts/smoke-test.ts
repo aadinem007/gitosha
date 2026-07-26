@@ -35,7 +35,7 @@ else ok("chat greeting");
 const samples: [string, string][] = [
   ["show pricing", "pricing"],
   ["how do I download after paying", "delivery"],
-  ["why pay 29999 for agency", "solo-vs-agency"],
+  ["why pay 249 for agency", "solo-vs-agency"],
   ["refund policy", "legal"],
   ["what is free", "free"],
 ];

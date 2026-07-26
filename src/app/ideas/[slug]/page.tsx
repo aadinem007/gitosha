@@ -76,7 +76,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
               <p className="mt-4 text-sm text-[var(--muted)]">
                 Full competitor map and launch kit unlock on{" "}
                 <Link href="/pricing" className="text-[var(--brass)] underline">
-                  Operator (₹999/mo launch)
+                  Operator ($15/mo launch)
                 </Link>
                 .
               </p>
@@ -88,13 +88,13 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
               href="/pricing"
               className="rounded-md bg-[var(--brass)] px-4 py-2.5 text-center text-sm font-semibold text-[var(--hull)]"
             >
-              Unlock Operator — ₹999/mo
+              Unlock Operator — $15/mo
             </Link>
             <Link
               href="/foundry-kit"
               className="rounded-md border border-[var(--line)] px-4 py-2.5 text-center text-sm font-semibold"
             >
-              Foundry Solo — ₹9,999
+              Foundry Solo — $99
             </Link>
           </div>
         </article>

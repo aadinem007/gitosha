@@ -75,7 +75,7 @@ const BLOCKED_SUBSTRINGS = [
 const GET_ALLOWED_APIS = ["/api/auth/callback", "/api/vault/export"];
 
 /** Webhooks / payment callbacks — do not apply browser-bot UA heuristics. */
-const UA_EXEMPT_PREFIXES = ["/api/razorpay/webhook"];
+const UA_EXEMPT_PREFIXES = ["/api/stripe/webhook", "/api/razorpay/webhook"];
 
 const BAD_UA_PATTERNS = [
   /sqlmap/i,
@@ -97,6 +97,7 @@ const BAD_UA_PATTERNS = [
 
 /** Default body caps by route (Content-Length). Webhook allows larger signed payloads. */
 function maxBodyBytes(path: string): number {
+  if (path.startsWith("/api/stripe/webhook")) return 256_000;
   if (path.startsWith("/api/razorpay/webhook")) return 256_000;
   if (path.startsWith("/api/chat")) return 16_384;
   if (path.startsWith("/api/waitlist")) return 8_192;

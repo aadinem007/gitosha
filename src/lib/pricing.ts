@@ -13,7 +13,8 @@ export type PricingPlan = {
   cadence: string;
   description: string;
   features: string[];
-  amountPaise?: number;
+  /** Stripe minor units (cents). amount * 100. */
+  amountCents?: number;
   planEnvVar?: "vaultPro" | "vaultTeam";
   mode: "subscription" | "payment" | "none";
   cta: string;
@@ -21,12 +22,18 @@ export type PricingPlan = {
   highlight?: boolean;
 };
 
+export const CURRENCY = "usd" as const;
+export const CURRENCY_DISPLAY = "USD";
+
+/** Post-launch Operator list price (first 100 seats use launch amountCents on vault-pro). */
+export const OPERATOR_LIST_PRICE_CENTS = 1900;
+
 export const VAULT_PLANS: PricingPlan[] = [
   {
     id: "vault-free",
     product: "vault",
     name: "Scout",
-    price: "₹0",
+    price: "$0",
     cadence: "forever",
     description: "Taste the research. No card. No trap. Decide if we’re serious before you pay.",
     features: [
@@ -47,10 +54,10 @@ export const VAULT_PLANS: PricingPlan[] = [
     id: "vault-pro",
     product: "vault",
     name: "Operator",
-    price: "₹999",
+    price: "$15",
     cadence: "/month",
     description:
-      "Launch lock-in for the first 100 operators (then ₹1,499/mo). Full vault — stop guessing what to build.",
+      "Launch lock-in for the first 100 operators (then $19/mo). Full vault — stop guessing what to build.",
     features: [
       "Everything in Scout",
       "Every scored idea + every full premium teardown (Markdown)",
@@ -70,10 +77,10 @@ export const VAULT_PLANS: PricingPlan[] = [
       "Cancel anytime — access through the paid period",
       "Built for operators who choose niches, not scroll Twitter lists",
     ],
-    amountPaise: 99900,
+    amountCents: 1500,
     planEnvVar: "vaultPro",
     mode: "subscription",
-    cta: "Unlock Operator — ₹999",
+    cta: "Unlock Operator — $15",
     badge: "First 100 only",
     highlight: true,
   },
@@ -81,9 +88,9 @@ export const VAULT_PLANS: PricingPlan[] = [
     id: "vault-pro-annual",
     product: "vault",
     name: "Operator Annual",
-    price: "₹9,999",
+    price: "$149",
     cadence: "/year",
-    description: "Pay once. ~2 months free vs monthly launch price. Lock research for the year.",
+    description: "Pay once. ~3 months free vs monthly launch price. Lock research for the year.",
     features: [
       "Everything in Operator",
       "Priority niche research queue (1 niche / quarter)",
@@ -95,16 +102,16 @@ export const VAULT_PLANS: PricingPlan[] = [
       "Quarterly research cadence without monthly decisions",
       "No monthly reminders — one decision, twelve months",
     ],
-    amountPaise: 999900,
+    amountCents: 14900,
     mode: "payment",
-    cta: "Lock the year — ₹9,999",
+    cta: "Lock the year — $149",
     badge: "Best value",
   },
   {
     id: "vault-team",
     product: "vault",
     name: "Studio",
-    price: "₹4,999",
+    price: "$49",
     cadence: "/month",
     description: "Shared research brain for studios shipping multiple products — five seats, one invoice.",
     features: [
@@ -120,7 +127,7 @@ export const VAULT_PLANS: PricingPlan[] = [
       "Ideal when 2+ people decide what to build next",
       "Pipeline view for client pitches that start with scores",
     ],
-    amountPaise: 499900,
+    amountCents: 4900,
     planEnvVar: "vaultTeam",
     mode: "subscription",
     cta: "Put the studio on Studio",
@@ -132,7 +139,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     id: "foundry-solo",
     product: "foundry",
     name: "Foundry Solo",
-    price: "₹9,999",
+    price: "$99",
     cadence: "one-time",
     description:
       "Stop rebuilding auth and billing. Ship your product on a stack that already takes payments.",
@@ -159,7 +166,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
       "Smoke-tested kit layout (docs + agency folder present)",
       "Same stack Gitosha uses in production — not a toy demo",
     ],
-    amountPaise: 999900,
+    amountCents: 9900,
     mode: "payment",
     cta: "Get Solo — download today",
   },
@@ -167,7 +174,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     id: "foundry-agency",
     product: "foundry",
     name: "Foundry Agency",
-    price: "₹29,999",
+    price: "$249",
     cadence: "one-time",
     description:
       "One license. Unlimited client SaaS builds. White-label. Studio research for a year. Built so studios stop restarting from zero every engagement.",
@@ -190,9 +197,9 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
       "Deliverable: rights + templates + research seat pack",
       "Studio Vault seats keep research language consistent across staff",
     ],
-    amountPaise: 2999900,
+    amountCents: 24900,
     mode: "payment",
-    cta: "Claim Agency — ₹29,999",
+    cta: "Claim Agency — $249",
     badge: "Studios choose this",
     highlight: true,
   },
@@ -200,16 +207,16 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     id: "bundle-launch",
     product: "bundle",
     name: "Launch Bundle",
-    price: "₹14,999",
+    price: "$149",
     cadence: "one-time",
     description:
-      "Research + scaffold in one checkout. Foundry Solo + 12 months Operator — cleaner and cheaper than buying both apart (~₹21,987).",
+      "Research + scaffold in one checkout. Foundry Solo + 12 months Operator — cleaner and cheaper than buying both apart ($99 + $180).",
     features: [
       "Foundry Solo source license (full zip)",
       "12 months Operator Vault access",
       "Kill criteria + premium teardowns for a full year",
       "CSV export + magic-link Vault access",
-      "Save ~₹7,000 vs Solo + monthlies at launch price",
+      "Save ~$130 vs Solo + monthlies at launch price",
       "Single checkout · one receipt",
       "Instant Foundry download + Vault sign-in unlock",
       "15% Foundry discount not needed — already bundled",
@@ -217,7 +224,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
       "Decide what to build (Vault) and ship it (Foundry) without two cart decisions",
       "Annual Operator cadence locked in — no monthly churn risk",
     ],
-    amountPaise: 1499900,
+    amountCents: 14900,
     mode: "payment",
     cta: "Take the Launch Bundle",
     badge: "Most chosen",
@@ -233,8 +240,11 @@ export function assertPricingInvariants(): string[] {
     if (ids.has(p.id)) errors.push(`Duplicate plan id: ${p.id}`);
     ids.add(p.id);
     if (p.features.length < 4) errors.push(`${p.id} needs richer features`);
-    if (p.mode !== "none" && (!p.amountPaise || p.amountPaise <= 0)) {
-      errors.push(`${p.id} missing amountPaise`);
+    if (p.mode !== "none" && (!p.amountCents || p.amountCents <= 0)) {
+      errors.push(`${p.id} missing amountCents`);
+    }
+    if (p.price.includes("₹") || p.price.toLowerCase().includes("rs")) {
+      errors.push(`${p.id} must display USD, not INR`);
     }
     if (new Set(p.features).size !== p.features.length) {
       errors.push(`${p.id} has duplicate feature lines`);
@@ -243,7 +253,12 @@ export function assertPricingInvariants(): string[] {
   const solo = FOUNDRY_PLANS.find((p) => p.id === "foundry-solo")!;
   const agency = FOUNDRY_PLANS.find((p) => p.id === "foundry-agency")!;
   const bundle = FOUNDRY_PLANS.find((p) => p.id === "bundle-launch")!;
-  if (agency.amountPaise! <= solo.amountPaise!) errors.push("Agency must cost more than Solo");
-  if (bundle.amountPaise! <= solo.amountPaise!) errors.push("Bundle should exceed Solo alone");
+  const operator = VAULT_PLANS.find((p) => p.id === "vault-pro")!;
+  if (agency.amountCents! <= solo.amountCents!) errors.push("Agency must cost more than Solo");
+  if (bundle.amountCents! <= solo.amountCents!) errors.push("Bundle should exceed Solo alone");
+  if (solo.amountCents !== 9900) errors.push("Solo must be $99 (9900 cents)");
+  if (agency.amountCents !== 24900) errors.push("Agency must be $249 (24900 cents)");
+  if (bundle.amountCents !== 14900) errors.push("Bundle must be $149 (14900 cents)");
+  if (operator.amountCents !== 1500) errors.push("Operator launch must be $15 (1500 cents)");
   return errors;
 }

@@ -22,8 +22,9 @@ export default function PrivacyPage() {
           purchases).
         </li>
         <li>
-          <strong>Billing:</strong> payment references from Razorpay (payment/order/subscription
-          IDs). We do not store full card numbers — Razorpay processes cards/UPI.
+          <strong>Billing:</strong> payment references from Stripe (and optionally Razorpay) —
+          customer, session, payment, or subscription IDs. We do not store full card numbers —
+          Stripe (or Razorpay) processes cards.
         </li>
         <li>
           <strong>Product records:</strong> subscription tier, license keys, download counts for
@@ -50,7 +51,8 @@ export default function PrivacyPage() {
       <ul>
         <li>Supabase — authentication and database hosting</li>
         <li>Vercel — website hosting</li>
-        <li>Razorpay — payments</li>
+        <li>Stripe — payments (default)</li>
+        <li>Razorpay — optional alternate payments</li>
         <li>Resend (optional) — transactional email when configured</li>
       </ul>
 

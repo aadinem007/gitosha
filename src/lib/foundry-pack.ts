@@ -45,7 +45,7 @@ Issued by: ${BRAND.name}
 ${rights}
 
 ## What you received
-A production Next.js SaaS scaffold with auth, Postgres/Prisma, Razorpay checkout + webhooks, and deploy-ready defaults.
+A production Next.js SaaS scaffold with auth, Postgres/Prisma, checkout + webhooks, and deploy-ready defaults.
 
 ## Support
 Contact the email on ${siteUrl()} (Contact in footer).

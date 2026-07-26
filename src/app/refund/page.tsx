@@ -11,8 +11,8 @@ export default function RefundPage() {
   return (
     <LegalShell title="Refund Policy" updated="21 July 2026">
       <p>
-        This Refund Policy applies to purchases made on {BRAND.name} (INR via Razorpay). Please read it
-        before buying digital products.
+        This Refund Policy applies to purchases made on {BRAND.name} (USD via Stripe by default).
+        Please read it before buying digital products.
       </p>
 
       <h2>1. Foundry (Solo, Agency, Launch Bundle)</h2>
@@ -55,11 +55,14 @@ export default function RefundPage() {
       </p>
       <ul>
         <li>Purchase email</li>
-        <li>Razorpay payment ID (if available)</li>
+        <li>Stripe payment / receipt ID (or Razorpay payment ID if used)</li>
         <li>License key (Foundry) if issued</li>
         <li>Short reason</li>
       </ul>
-      <p>We aim to respond within 3 business days. Approved refunds are issued via Razorpay to the original payment method.</p>
+      <p>
+        We aim to respond within 3 business days. Approved refunds are issued via the original
+        payment processor to the original payment method.
+      </p>
 
       <h2>4. Chargebacks</h2>
       <p>

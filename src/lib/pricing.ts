@@ -28,6 +28,15 @@ export const CURRENCY_DISPLAY = "USD";
 /** Post-launch Operator list price (first 100 seats use launch amountCents on vault-pro). */
 export const OPERATOR_LIST_PRICE_CENTS = 1900;
 
+/**
+ * Approx INR paise for Razorpay (Indian merchant accounts).
+ * Site displays USD; Razorpay still charges INR so existing keys keep working.
+ * $1 ≈ ₹83 → paise ≈ amountCents * 83
+ */
+export function usdCentsToInrPaise(amountCents: number): number {
+  return Math.round(amountCents * 83);
+}
+
 export const VAULT_PLANS: PricingPlan[] = [
   {
     id: "vault-free",

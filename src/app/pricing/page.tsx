@@ -133,7 +133,8 @@ export default function PricingPage() {
 
           <p className="mt-10 text-xs leading-relaxed text-[var(--support)]">
             Operator launch price ($15/mo) applies to the first 100 paying seats, then returns to
-            $19/mo. Prices shown in USD. Checkout runs on Stripe. By purchasing you agree to{" "}
+            $19/mo. Prices shown in USD. Checkout uses your configured payment provider. By
+            purchasing you agree to{" "}
             <a href="/terms" className="text-[var(--brass)] hover:underline">
               Terms
             </a>

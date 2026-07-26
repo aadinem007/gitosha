@@ -146,7 +146,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     id: "pricing",
     keywords: ["price", "pricing", "cost", "how much", "dollar", "usd", "$", "cheap", "plan"],
     reply: {
-      text: "Vault: Scout free · Operator $15/mo launch (then $19) · Operator Annual $149/yr · Studio $49/mo. Foundry: Solo $99 · Agency $249 · Launch Bundle $149. Checkout via Stripe (cards worldwide).",
+      text: "Vault: Scout free · Operator $15/mo launch (then $19) · Operator Annual $149/yr · Studio $49/mo. Foundry: Solo $99 · Agency $249 · Launch Bundle $149. Prices in USD; checkout accepts card/UPI.",
       links: [{ label: "Full pricing", href: "/pricing" }],
       suggestions: ["Operator details", "Foundry Solo details", "Launch Bundle"],
     },
@@ -155,7 +155,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     id: "payment",
     keywords: ["stripe", "razorpay", "upi", "pay", "payment", "card", "checkout", "refund", "test"],
     reply: {
-      text: "Checkout runs on Stripe Checkout (cards and local methods where Stripe supports them). Amounts are set server-side in USD. After a successful payment, Foundry buyers get a license key on-screen; Vault buyers sign in with the same email. For billing issues, use Contact in the footer.",
+      text: "Checkout runs through the site payment provider (card/UPI). List prices are USD; amounts are set server-side. After a successful payment, Foundry buyers get a license key on-screen; Vault buyers sign in with the same email. For billing issues, use Contact in the footer.",
       links: [
         { label: "Pricing", href: "/pricing" },
         { label: "Contact", href: "mailto:aaditya.shah8005@gmail.com" },

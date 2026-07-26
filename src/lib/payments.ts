@@ -4,8 +4,8 @@ export { getPaymentsProvider };
 
 export function paymentsUnavailableMessage(): string {
   const provider = getPaymentsProvider();
-  if (provider === "razorpay") {
-    return "Payments are temporarily unavailable.";
+  if (provider === "stripe") {
+    return "Checkout is not configured yet. Set STRIPE_SECRET_KEY to enable Stripe.";
   }
-  return "Checkout is not configured yet. Set STRIPE_SECRET_KEY to enable payments.";
+  return "Payments are temporarily unavailable. Check Razorpay keys on the server.";
 }

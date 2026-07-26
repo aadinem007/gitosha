@@ -11,8 +11,8 @@ export default function RefundPage() {
   return (
     <LegalShell title="Refund Policy" updated="21 July 2026">
       <p>
-        This Refund Policy applies to purchases made on {BRAND.name} (USD via Stripe by default).
-        Please read it before buying digital products.
+        This Refund Policy applies to purchases made on {BRAND.name} (USD list prices; checkout via
+        the configured payment provider). Please read it before buying digital products.
       </p>
 
       <h2>1. Foundry (Solo, Agency, Launch Bundle)</h2>

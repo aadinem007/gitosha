@@ -62,10 +62,10 @@ export default function TermsPage() {
 
       <h2>5. Payments</h2>
       <p>
-        Payments are processed by Stripe in USD (Razorpay remains an optional alternate provider).
-        Prices shown on the Pricing page apply at checkout. Operator launch pricing may change after
-        the early-operator cap. Subscriptions renew until canceled where recurring billing is
-        enabled; one-time purchases do not auto-renew.
+        List prices are shown in USD. Payments are processed by the configured checkout provider
+        (Razorpay by default; Stripe if enabled). Prices on the Pricing page apply at checkout.
+        Operator launch pricing may change after the early-operator cap. Subscriptions renew until
+        canceled where recurring billing is enabled; one-time purchases do not auto-renew.
       </p>
 
       <h2>6. Refunds</h2>

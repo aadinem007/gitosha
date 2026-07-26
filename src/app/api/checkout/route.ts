@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { VAULT_PLANS, FOUNDRY_PLANS, CURRENCY } from "@/lib/pricing";
+import { VAULT_PLANS, FOUNDRY_PLANS, CURRENCY, usdCentsToInrPaise } from "@/lib/pricing";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { assertSameOrigin, readJsonLimited, requireJsonContentType, securityLog } from "@/lib/secure";
 import {
@@ -104,14 +104,15 @@ async function createRazorpayCheckout(planId: string, email: string) {
     return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
   }
 
-  const amount = plan.amountCents;
+  // Site lists USD; Razorpay India settles in INR (paise).
+  const amount = usdCentsToInrPaise(plan.amountCents);
 
   if (plan.mode === "payment") {
     const order = await razorpay.orders.create({
       amount,
-      currency: "USD",
+      currency: "INR",
       receipt: `sy_${Date.now()}`.slice(0, 40),
-      notes: { planId: plan.id, product: plan.product, email },
+      notes: { planId: plan.id, product: plan.product, email, usdCents: String(plan.amountCents) },
     });
 
     return NextResponse.json({
@@ -120,7 +121,7 @@ async function createRazorpayCheckout(planId: string, email: string) {
       keyId: RAZORPAY_KEY_ID,
       orderId: order.id,
       amount,
-      currency: "USD",
+      currency: "INR",
       planId: plan.id,
       product: plan.product,
       email,
@@ -155,9 +156,9 @@ async function createRazorpayCheckout(planId: string, email: string) {
 
     const order = await razorpay.orders.create({
       amount,
-      currency: "USD",
+      currency: "INR",
       receipt: `sy_${Date.now()}`.slice(0, 40),
-      notes: { planId: plan.id, product: plan.product, email },
+      notes: { planId: plan.id, product: plan.product, email, usdCents: String(plan.amountCents) },
     });
 
     return NextResponse.json({
@@ -166,7 +167,7 @@ async function createRazorpayCheckout(planId: string, email: string) {
       keyId: RAZORPAY_KEY_ID,
       orderId: order.id,
       amount,
-      currency: "USD",
+      currency: "INR",
       planId: plan.id,
       product: plan.product,
       email,

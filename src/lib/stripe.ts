@@ -58,7 +58,14 @@ export function stripePriceEnvForPlan(
   }
 }
 
+/**
+ * Default: Razorpay (existing Vercel keys keep working).
+ * Set PAYMENTS_PROVIDER=stripe only when Stripe keys are configured.
+ */
 export function getPaymentsProvider(): "stripe" | "razorpay" {
-  const raw = (process.env.PAYMENTS_PROVIDER ?? "stripe").toLowerCase().trim();
-  return raw === "razorpay" ? "razorpay" : "stripe";
+  const raw = (process.env.PAYMENTS_PROVIDER ?? "razorpay").toLowerCase().trim();
+  if (raw === "stripe") return "stripe";
+  if (raw === "razorpay") return "razorpay";
+  // auto / anything else: use Stripe only if keys exist, else Razorpay
+  return isStripeConfigured() ? "stripe" : "razorpay";
 }

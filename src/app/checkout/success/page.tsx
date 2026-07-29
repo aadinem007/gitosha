@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { LicensePortal } from "@/components/LicensePortal";
+import { CheckoutFulfillClient } from "@/components/CheckoutFulfillClient";
 import { fulfillPurchase } from "@/lib/fulfill";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 
@@ -16,7 +16,7 @@ async function resolveStripeSession(sessionId: string): Promise<{
     const stripe = getStripe();
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status !== "paid" && session.status !== "complete") {
+    if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
       return {};
     }
 
@@ -71,11 +71,12 @@ export default async function CheckoutSuccessPage({
   }>;
 }) {
   const params = await searchParams;
-  let key = params.key ?? "";
-  let email = params.email ?? "";
+  // Ignore legacy ?key= in URL — do not honor query-string license keys
+  let email = "";
+  let key = "";
   let product = params.product;
 
-  if (params.session_id && !key) {
+  if (params.session_id) {
     const resolved = await resolveStripeSession(params.session_id);
     if (resolved.licenseKey) key = resolved.licenseKey;
     if (resolved.email) email = resolved.email;
@@ -83,24 +84,23 @@ export default async function CheckoutSuccessPage({
   }
 
   const isVault = product === "vault";
-  const isFoundry = product === "foundry" || product === "bundle" || Boolean(key);
+  const isFoundry = product === "foundry" || product === "bundle" || Boolean(key) || !product;
 
   return (
     <>
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-lg px-6 py-20">
-          <h1 className="text-center font-display text-3xl font-bold">Payment confirmed.</h1>
+          <h1 className="text-center font-display text-3xl font-semibold tracking-tight">
+            Payment confirmed.
+          </h1>
 
-          {isVault && !isFoundry ? (
+          {isVault && product === "vault" ? (
             <div className="mt-6 text-center">
               <p className="text-[var(--muted)]">
                 Operator access is unlocked. Sign in with the same email you paid with.
               </p>
-              <Link
-                href="/login"
-                className="btn-primary mt-8 inline-block"
-              >
+              <Link href="/login" className="btn-primary mt-8 inline-block">
                 Sign in to Vault
               </Link>
             </div>
@@ -110,29 +110,11 @@ export default async function CheckoutSuccessPage({
                 Your Foundry kit is ready. Download the zip below — this is the product you paid for.
               </p>
 
-              {key && (
-                <div className="mt-6 rounded-lg border border-[var(--brass)]/40 bg-[var(--panel)] px-4 py-5 text-center">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass-dim)]">
-                    License key — save this
-                  </p>
-                  <p className="mt-2 font-mono text-xl font-semibold tracking-wide">{key}</p>
-                  {email && <p className="mt-2 text-xs text-[var(--muted)]">Issued to {email}</p>}
-                </div>
-              )}
-
-              <div className="mt-8">
-                <LicensePortal initialEmail={email} initialKey={key} />
-              </div>
-
-              {product === "bundle" && (
-                <p className="mt-6 text-center text-sm text-[var(--signal)]">
-                  Bundle bonus: Vault is unlocked too —{" "}
-                  <Link href="/login" className="underline">
-                    sign in
-                  </Link>{" "}
-                  with {email || "your purchase email"}.
-                </p>
-              )}
+              <CheckoutFulfillClient
+                initialEmail={email}
+                initialKey={key}
+                product={product}
+              />
 
               {params.session_id && !key && !isVault && (
                 <p className="mt-6 text-center text-sm text-[var(--muted)]">

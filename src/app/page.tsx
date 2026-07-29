@@ -107,7 +107,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Lando-scale split chapter */}
+        {/* Editorial split chapters */}
         <section className="mega-split" id="know">
           <div className="mega-split-visual" aria-hidden="true">
             <TrackField intensity="stage" />

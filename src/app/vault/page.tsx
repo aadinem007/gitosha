@@ -11,7 +11,9 @@ export default async function VaultPage() {
     ? await prisma.subscriber.findUnique({ where: { email: data.user.email } })
     : null;
 
-  const isPro = subscriber?.tier === "PRO" || subscriber?.tier === "TEAM";
+  const isPro =
+    (subscriber?.tier === "PRO" || subscriber?.tier === "TEAM") &&
+    subscriber?.status === "ACTIVE";
   const ideas = await prisma.idea.findMany({ orderBy: { totalScore: "desc" } });
 
   return (

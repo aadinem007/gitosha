@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { BRAND } from "@/lib/brand";
 
 /**
- * Lando-style flash intro — neon lime field, then reveal the site.
+ * Brief forge flash — papaya field, then reveal the site.
  * Skips after first visit in-session; respects reduced motion.
  */
 export function SiteIntro() {

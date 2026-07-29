@@ -33,16 +33,28 @@ export async function readJsonLimited(
 
 /**
  * Same-site guard for browser-originated mutating requests.
- * Allows missing Origin on some native clients but blocks clear cross-site Origin.
+ * Fail closed in production when NEXT_PUBLIC_SITE_URL is missing/invalid.
  */
 export function assertSameOrigin(req: Request): boolean {
   const site = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!site) return true;
+  const isProd = process.env.NODE_ENV === "production";
+
+  if (!site) {
+    if (isProd) {
+      securityLog("origin_check_misconfigured", { reason: "missing_site_url" });
+      return false;
+    }
+    return true;
+  }
 
   let allowed: URL;
   try {
     allowed = new URL(site);
   } catch {
+    if (isProd) {
+      securityLog("origin_check_misconfigured", { reason: "invalid_site_url" });
+      return false;
+    }
     return true;
   }
 
@@ -66,7 +78,7 @@ export function assertSameOrigin(req: Request): boolean {
     }
   }
 
-  // No Origin/Referer (curl, server-to-server) — allow; Razorpay webhooks have no browser Origin
+  // No Origin/Referer (curl, server-to-server) — allow; webhooks have no browser Origin
   return true;
 }
 

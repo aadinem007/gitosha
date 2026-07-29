@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { fulfillPurchase } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { getRazorpay } from "@/lib/razorpay";
 import { readJsonLimited, safeEqual, assertSameOrigin, requireJsonContentType, securityLog } from "@/lib/secure";
 import { getPaymentsProvider, getStripe, isStripeConfigured } from "@/lib/stripe";
 
@@ -22,6 +23,16 @@ const stripeSchema = z.object({
   sessionId: z.string().max(200),
 });
 
+function notesRecord(notes: unknown): Record<string, string> {
+  if (!notes || typeof notes !== "object") return {};
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(notes as Record<string, unknown>)) {
+    if (typeof v === "string") out[k] = v;
+    else if (typeof v === "number" || typeof v === "boolean") out[k] = String(v);
+  }
+  return out;
+}
+
 async function verifyStripe(sessionId: string) {
   if (!isStripeConfigured()) {
     return NextResponse.json({ error: "Payment verification unavailable" }, { status: 500 });
@@ -30,7 +41,8 @@ async function verifyStripe(sessionId: string) {
   const stripe = getStripe();
   const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-  if (session.payment_status !== "paid" && session.status !== "complete") {
+  // Never treat status===complete alone as paid (async methods can be unpaid)
+  if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
     return NextResponse.json({ error: "Payment not completed" }, { status: 400 });
   }
 
@@ -99,9 +111,48 @@ async function verifyRazorpay(data: z.infer<typeof razorpaySchema>) {
     return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
   }
 
+  // Server-sourced plan/email only — never trust client body for entitlement
+  const rz = getRazorpay();
+  let planId = "";
+  let email = "";
+
+  try {
+    if (data.mode === "payment" && data.razorpay_order_id) {
+      const order = await rz.orders.fetch(data.razorpay_order_id);
+      const notes = notesRecord(order.notes);
+      planId = notes.planId ?? "";
+      email = (notes.email ?? "").toLowerCase();
+    } else if (data.razorpay_subscription_id) {
+      const sub = await rz.subscriptions.fetch(data.razorpay_subscription_id);
+      const notes = notesRecord(sub.notes);
+      planId = notes.planId ?? "";
+      email = (notes.email ?? "").toLowerCase();
+    }
+  } catch {
+    securityLog("verify_razorpay_fetch_failed", { mode: data.mode });
+    return NextResponse.json({ error: "Could not verify order" }, { status: 400 });
+  }
+
+  if (!planId || !email) {
+    return NextResponse.json({ error: "Missing purchase metadata" }, { status: 400 });
+  }
+
+  // Optional consistency check — mismatch means tampering
+  if (
+    data.planId !== planId ||
+    data.email.toLowerCase() !== email
+  ) {
+    securityLog("verify_client_metadata_mismatch", {
+      mode: data.mode,
+      clientPlan: data.planId,
+      serverPlan: planId,
+    });
+    return NextResponse.json({ error: "Purchase metadata mismatch" }, { status: 400 });
+  }
+
   const result = await fulfillPurchase({
-    email: data.email.toLowerCase(),
-    planId: data.planId,
+    email,
+    planId,
     paymentId: data.razorpay_payment_id,
     orderId: data.razorpay_order_id,
     subscriptionId: data.razorpay_subscription_id,
@@ -111,7 +162,7 @@ async function verifyRazorpay(data: z.infer<typeof razorpaySchema>) {
   return NextResponse.json({
     ok: true,
     product: result.product,
-    email: data.email.toLowerCase(),
+    email,
     licenseKey: result.licenseKey,
   });
 }

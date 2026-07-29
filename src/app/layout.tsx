@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ChatWidget } from "@/components/ChatWidget";
 import { BRAND, siteUrl } from "@/lib/brand";
 import "./globals.css";
 
-const display = Bebas_Neue({
+const display = Space_Grotesk({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["500", "600", "700"],
 });
 
 const body = DM_Sans({

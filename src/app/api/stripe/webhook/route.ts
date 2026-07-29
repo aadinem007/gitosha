@@ -79,9 +79,24 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        if (session.payment_status === "paid" || session.status === "complete") {
+        if (
+          session.payment_status === "paid" ||
+          session.payment_status === "no_payment_required"
+        ) {
           await fulfillFromSession(session);
         }
+        break;
+      }
+      case "checkout.session.async_payment_succeeded": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        await fulfillFromSession(session);
+        break;
+      }
+      case "checkout.session.async_payment_failed": {
+        // Do not fulfill — leave any pending state alone
+        securityLog("stripe_async_payment_failed", {
+          session: (event.data.object as Stripe.Checkout.Session).id,
+        });
         break;
       }
       case "customer.subscription.deleted":

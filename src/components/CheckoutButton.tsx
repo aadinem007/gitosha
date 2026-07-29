@@ -74,7 +74,7 @@ export function CheckoutButton({
           name: data.name,
           description: data.description,
           prefill: { email: data.email },
-          theme: { color: "#c8ff00" },
+          theme: { color: "#ff5a1f" },
           handler: async (response: {
             razorpay_payment_id: string;
             razorpay_order_id?: string;
@@ -94,9 +94,22 @@ export function CheckoutButton({
             });
             if (verifyRes.ok) {
               const result = await verifyRes.json();
-              const params = new URLSearchParams({ product: result.product ?? "foundry" });
-              if (result.licenseKey) params.set("key", result.licenseKey);
-              if (result.email) params.set("email", result.email);
+              // Keep license off the URL (history / Referer leak)
+              try {
+                sessionStorage.setItem(
+                  "gitosha_checkout",
+                  JSON.stringify({
+                    product: result.product ?? "foundry",
+                    email: result.email ?? data.email,
+                    licenseKey: result.licenseKey ?? "",
+                  })
+                );
+              } catch {
+                /* private mode — fall through without key in URL */
+              }
+              const params = new URLSearchParams({
+                product: result.product ?? "foundry",
+              });
               window.location.href = `/checkout/success?${params.toString()}`;
             } else {
               const err = await verifyRes.json();
@@ -129,7 +142,7 @@ export function CheckoutButton({
     }
   }
 
-  // Lime is FILL only — always black type on lime (never white / hull on brass)
+  // Primary CTAs use brand fill; ghost uses outline
   const style = primary ? "btn-primary w-full" : "btn-ghost w-full";
 
   if (!open) {

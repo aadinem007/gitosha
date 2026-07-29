@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { BRAND, siteUrl } from "@/lib/brand";
+import { redactSecrets } from "@/lib/secure";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -10,7 +11,10 @@ export async function sendLicenseKeyEmail(email: string, key: string, tier: stri
   const downloadUrl = `${SITE}/license?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`;
 
   if (!resend) {
-    console.warn("RESEND_API_KEY not set — skipping email send. License key:", key, "URL:", downloadUrl);
+    console.warn(
+      "RESEND_API_KEY not set — skipping email send.",
+      redactSecrets(`License key: ${key} URL: ${downloadUrl}`)
+    );
     return;
   }
 

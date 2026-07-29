@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
         planId,
         paymentId: String(payment.id),
         orderId: payment.order_id ? String(payment.order_id) : undefined,
+        provider: "razorpay",
       });
       break;
     }
@@ -83,6 +84,8 @@ export async function POST(req: NextRequest) {
         email,
         planId,
         subscriptionId: String(sub.id),
+        paymentId: String(sub.id),
+        provider: "razorpay",
       });
       break;
     }

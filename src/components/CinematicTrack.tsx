@@ -76,7 +76,7 @@ const CONFIG: Record<TrackIntensity, StageConfig> = {
 };
 
 /**
- * Lando-style studio: real PBR GLB + wireframe twin, soft bloom, contact depth.
+ * Studio 3D: PBR GLB + wireframe twin, soft bloom, contact depth.
  */
 export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntensity }) {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -99,7 +99,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, intensity === "full" ? 2 : 1.65));
     renderer.setSize(w, h, false);
-    renderer.setClearColor(0xf3f3ee, 1);
+    renderer.setClearColor(0xeef1f4, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = cfg.exposure;
@@ -114,8 +114,8 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
 
     const scene = new THREE.Scene();
     scene.environment = envTex;
-    scene.background = new THREE.Color(0xf3f3ee);
-    scene.fog = new THREE.FogExp2(0xf3f3ee, cfg.fog);
+    scene.background = new THREE.Color(0xeef1f4);
+    scene.fog = new THREE.FogExp2(0xeef1f4, cfg.fog);
 
     const camera = new THREE.PerspectiveCamera(cfg.cam.fov, w / h, 0.1, 80);
     const camBase = { ...cfg.cam };
@@ -146,11 +146,11 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
     fill.position.set(-5, 2.2, 2.5);
     scene.add(fill);
 
-    const rim = new THREE.DirectionalLight(0xc8ff00, cfg.rim);
+    const rim = new THREE.DirectionalLight(0xff5a1f, cfg.rim);
     rim.position.set(-2.5, 3, -5);
     scene.add(rim);
 
-    const kick = new THREE.PointLight(0xc8ff00, cfg.kick, 14, 2);
+    const kick = new THREE.PointLight(0xff5a1f, cfg.kick, 14, 2);
     kick.position.set(1.6, 1.4, 2.2);
     stage.add(kick);
 
@@ -195,8 +195,8 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
     const ringGeo = new THREE.TorusGeometry(intensity === "stage" ? 1.55 : 1.55, 0.014, 14, 120);
     geometries.push(ringGeo);
     const ringMat = new THREE.MeshStandardMaterial({
-      color: 0xc8ff00,
-      emissive: 0xc8ff00,
+      color: 0xff5a1f,
+      emissive: 0xff5a1f,
       emissiveIntensity: intensity === "stage" ? 0.7 : 0.5,
       metalness: 0.35,
       roughness: 0.35,

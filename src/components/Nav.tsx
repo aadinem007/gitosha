@@ -6,7 +6,7 @@ export function Nav() {
     <header className="site-nav">
       <nav className="site-nav-inner" aria-label="Primary">
         <Link href="/" className="site-nav-brand" aria-label={`${BRAND.name} — Home`}>
-          {BRAND.nameUpper}
+          {BRAND.name}
         </Link>
 
         <div className="site-nav-links">

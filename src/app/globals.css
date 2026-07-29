@@ -403,10 +403,59 @@ body {
   z-index: 0;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 70% 50% at 50% 20%, rgba(255, 90, 31, 0.16), transparent 58%),
-    radial-gradient(ellipse 40% 30% at 15% 70%, rgba(255, 90, 31, 0.06), transparent 50%),
-    radial-gradient(ellipse 35% 28% at 85% 65%, rgba(245, 242, 235, 0.04), transparent 55%),
-    linear-gradient(180deg, #070707 0%, #050505 55%, #080808 100%);
+    radial-gradient(ellipse 55% 45% at 50% 42%, rgba(255, 90, 31, 0.14), transparent 58%),
+    radial-gradient(ellipse 40% 30% at 70% 20%, rgba(255, 255, 255, 0.04), transparent 50%),
+    linear-gradient(180deg, #0a0a0a 0%, #070707 55%, #050505 100%);
+}
+
+.track-field-studio {
+  background:
+    radial-gradient(ellipse 50% 42% at 50% 48%, rgba(255, 90, 31, 0.16), transparent 55%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255, 255, 255, 0.03), transparent 45%),
+    linear-gradient(180deg, #0b0b0b 0%, #070707 100%);
+}
+
+.studio-void {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 55% at 50% 45%, #121212 0%, #070707 70%);
+}
+
+.studio-glow {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: min(70vw, 28rem);
+  height: min(70vw, 28rem);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 90, 31, 0.35) 0%, rgba(255, 90, 31, 0.08) 40%, transparent 70%);
+  filter: blur(8px);
+  animation: horizon-pulse 6s ease-in-out infinite;
+}
+
+.studio-topo {
+  position: absolute;
+  inset: 18% 10% 12%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 90, 31, 0.12);
+  box-shadow:
+    0 0 0 28px rgba(255, 90, 31, 0.04),
+    0 0 0 56px rgba(255, 90, 31, 0.03),
+    0 0 0 90px rgba(245, 242, 235, 0.02);
+  transform: perspective(600px) rotateX(68deg);
+}
+
+.studio-ring {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(42vw, 16rem);
+  height: min(42vw, 16rem);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 90, 31, 0.45);
+  box-shadow: 0 0 40px rgba(255, 90, 31, 0.25);
 }
 
 .track-fallback {
@@ -560,6 +609,12 @@ body {
     linear-gradient(180deg, transparent 48%, rgba(5, 5, 5, 0.35) 82%, var(--hull) 100%),
     radial-gradient(ellipse 80% 45% at 50% 100%, rgba(5, 5, 5, 0.45), transparent 72%);
   pointer-events: none;
+}
+
+.track-fog-soft {
+  background:
+    radial-gradient(ellipse 55% 48% at 50% 42%, transparent 25%, rgba(5, 5, 5, 0.2) 100%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.12) 0%, transparent 30%, rgba(5, 5, 5, 0.45) 100%);
 }
 
 .track-field .track-fallback,

@@ -92,7 +92,7 @@ export default function PricingPage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-6 pb-8">
+        <section className="pricing-deck mx-auto max-w-6xl px-6 pb-8 pt-2">
           <h2 className="font-display text-3xl tracking-wide text-[var(--fog)]">
             Vault — scored research
           </h2>

@@ -1294,9 +1294,18 @@ body {
 }
 
 .rule {
-  height: 1px;
-  background: linear-gradient(90deg, var(--brass), transparent 80%);
+  height: 3px;
+  width: 4.5rem;
+  max-width: 8rem;
+  background: var(--brass);
+  box-shadow: 3px 3px 0 rgba(10, 10, 10, 0.85);
 }
+
+.pricing-deck {
+  background: transparent;
+  border-top: none;
+}
+
 
 .board-shell {
   position: relative;
@@ -1595,11 +1604,12 @@ a.site-footer-brand:hover {
   min-height: min(42vh, 380px);
   padding: 0;
   overflow: hidden;
-  border-bottom: 1px solid var(--line);
+  border-bottom: none;
+  background: var(--hull);
 }
 
 .page-hero-atmos .track-field {
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .page-hero-content {
@@ -1607,12 +1617,12 @@ a.site-footer-brand:hover {
   z-index: 2;
   margin: 0 auto;
   max-width: 72rem;
-  padding: 6rem 1.5rem 2.5rem;
+  padding: 6rem 1.5rem 3.25rem;
   background: linear-gradient(
     180deg,
-    rgba(244, 244, 240, 0.15) 0%,
-    rgba(244, 244, 240, 0.55) 45%,
-    rgba(255, 255, 255, 0.92) 100%
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(243, 243, 238, 0.82) 55%,
+    var(--hull) 100%
   );
 }
 

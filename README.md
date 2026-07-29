@@ -10,6 +10,8 @@ Two products, one audience:
 Live site: https://gitosha.vercel.app  
 (Custom domain `gitosha.com` can be wired later — see Vercel project settings.)
 
+**Auth / magic links:** set `NEXT_PUBLIC_SITE_URL` on Vercel and fix Supabase Site URL — see [`docs/AUTH.md`](docs/AUTH.md). Without that, links redirect to localhost.
+
 ## Stack
 
 Next.js · TypeScript · Tailwind · Prisma · Supabase · Stripe · Resend · Docker · GitHub Actions.  

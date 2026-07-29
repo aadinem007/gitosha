@@ -1,16 +1,18 @@
 /**
- * GITOSHA brand SSOT
+ * GITOSHA brand SSOT — company that helps you know what to build, then ship it.
  *
- * Gi  = Guide / Insight  → Vault (scored opportunity research)
- * to  = the path from idea → build
- * sha = ship / shastra / craft → Foundry (production delivery)
+ * G  = Guide / Insight  → Vault (scored opportunity research)
+ * To = the path from idea → build
+ * Sha = ship / shastra / craft → Foundry (production delivery)
  */
 export const BRAND = {
   name: "Gitosha",
   nameUpper: "GITOSHA",
-  tagline: "Stop guessing. Start shipping the right thing.",
+  /** Public one-liner */
+  tagline: "Know what to build. Then ship it.",
+  /** Slightly longer meta / footer line */
   description:
-    "Gitosha is the operator stack for builders who refuse to waste a quarter on the wrong product — scored research in the Vault, production scaffolding in Foundry. Priced in USD for international teams.",
+    "Know what to build, then ship it. USD-priced Vault research and Foundry SaaS scaffold for international operators.",
   chatName: "Gita",
   chatRole: "Gitosha guide",
   products: {
@@ -18,7 +20,9 @@ export const BRAND = {
     vaultFull: "The Vault",
     foundry: "Foundry",
   },
+  /** Live deploy until custom domain (gitosha.com) is wired — updated after Vercel rename */
   defaultSiteUrl: "https://gitosha.vercel.app",
+  /** Fallback Resend from-address; set EMAIL_FROM in Vercel for production */
   emailFrom: "Gitosha <hello@gitosha.com>",
 } as const;
 

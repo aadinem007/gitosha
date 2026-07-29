@@ -17,7 +17,7 @@ function PlanCard({
           {plan.name}
         </p>
         {plan.badge && (
-          <span className="shrink-0 bg-[var(--brass)] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[#fff7f2]">
+          <span className="shrink-0 bg-[var(--brass)] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--ink)] shadow-[3px_3px_0_rgba(10,10,10,0.85)]">
             {plan.badge}
           </span>
         )}
@@ -67,7 +67,7 @@ export default function PricingPage() {
             </p>
             <h1 className="animate-rise-delay mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
               Clear price.
-              <span className="mt-1 block text-[var(--brass)]">Packed value.</span>
+              <span className="mt-1 block text-[var(--ink)] bg-[var(--brass)] w-fit px-2">Packed value.</span>
             </h1>
             <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
               Scout is free forever. Operator unlocks the full research vault. Foundry is a one-time

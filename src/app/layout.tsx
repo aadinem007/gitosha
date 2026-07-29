@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
-import { Newsreader, Figtree, JetBrains_Mono } from "next/font/google";
+import { Bebas_Neue, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ChatWidget } from "@/components/ChatWidget";
 import { BRAND, siteUrl } from "@/lib/brand";
 import "./globals.css";
 
-const display = Newsreader({
+const display = Bebas_Neue({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+  weight: "400",
 });
 
-const body = Figtree({
+const body = DM_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const mono = JetBrains_Mono({

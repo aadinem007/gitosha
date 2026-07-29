@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { authCallbackUrl } from "@/lib/site";
 
 export function LoginForm({ next }: { next: string }) {
   const [email, setEmail] = useState("");
@@ -11,10 +12,16 @@ export function LoginForm({ next }: { next: string }) {
     e.preventDefault();
     setStatus("loading");
     const supabase = createSupabaseBrowserClient();
+
+    // Always use NEXT_PUBLIC_SITE_URL when set (production), not window.location.
+    // Supabase will reject / overwrite redirects that aren't in the allow list —
+    // Site URL must also be https://gitosha.vercel.app in the Supabase dashboard.
+    const emailRedirectTo = authCallbackUrl(next);
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(next)}`,
+        emailRedirectTo,
       },
     });
     setStatus(error ? "error" : "sent");

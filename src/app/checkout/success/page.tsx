@@ -91,7 +91,7 @@ export default async function CheckoutSuccessPage({
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="mx-auto max-w-lg px-6 py-20">
           <h1 className="text-center font-display text-3xl font-semibold tracking-tight">
             Payment confirmed.

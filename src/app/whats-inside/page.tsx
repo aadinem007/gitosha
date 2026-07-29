@@ -19,7 +19,7 @@ export default function WhatsInsidePage() {
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
             Inventory

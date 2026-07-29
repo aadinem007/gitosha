@@ -66,7 +66,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         <article className="mx-auto max-w-3xl px-6 py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass-dim)]">
             {idea.category}

@@ -26,7 +26,7 @@ export default async function VaultPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="mx-auto max-w-6xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>

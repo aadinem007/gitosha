@@ -155,16 +155,24 @@ export function CheckoutButton({
   }
 
   return (
-    <div className="relative isolate flex w-full min-w-0 flex-col gap-2.5 overflow-visible">
+    <div className="form-stack form-stack-tight relative isolate w-full min-w-0 overflow-visible">
+      <label htmlFor={`checkout-email-${planId}`} className="form-label">
+        Email for receipt
+      </label>
       <input
+        id={`checkout-email-${planId}`}
         type="email"
+        name="email"
         required
+        autoComplete="email"
+        inputMode="email"
+        enterKeyHint="go"
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full min-w-0 border-2 border-[var(--ink)] bg-[var(--panel)] px-3 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(200,255,0,0.25)]"
+        className="form-input"
       />
-      <button type="button" disabled={loading} onClick={startCheckout} className={style}>
+      <button type="button" disabled={loading} onClick={startCheckout} className={`${style} form-submit`}>
         {loading ? "Opening checkout…" : label}
       </button>
     </div>

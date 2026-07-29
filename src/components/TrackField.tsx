@@ -23,11 +23,13 @@ export function TrackField({
     return () => window.clearTimeout(t);
   }, []);
 
+  const interactive = intensity === "full";
+
   return (
     <div
       className={`track-field track-field-dark track-field-${intensity}${
-        webglReady ? " track-field-live" : ""
-      }`}
+        interactive ? " track-field-interactive" : " track-field-passive"
+      }${webglReady ? " track-field-live" : ""}`}
       aria-hidden="true"
     >
       <div className="track-fallback track-fallback-dark" />

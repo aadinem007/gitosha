@@ -17,6 +17,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     if (!mount) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const narrow = window.matchMedia("(max-width: 767px)").matches;
     const hero = intensity === "full";
     const quiet = intensity === "quiet";
     let w = mount.clientWidth || window.innerWidth;
@@ -26,22 +27,26 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     let running = true;
 
     const bg = 0x0c0c0c;
+    const maxDpr = narrow ? 1.25 : 2;
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !narrow,
       alpha: false,
-      powerPreference: "high-performance",
+      powerPreference: narrow ? "low-power" : "high-performance",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
     renderer.setSize(w, h, false);
     renderer.setClearColor(bg, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.9;
-    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.enabled = !narrow;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.domElement.style.cssText =
-      "position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:auto;touch-action:none;cursor:grab;";
+    // Hero CTAs sit above; canvas only captures orbit on wider viewports
+    const allowOrbit = hero && !narrow && !reduced;
+    renderer.domElement.style.cssText = allowOrbit
+      ? "position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:auto;touch-action:none;cursor:grab;"
+      : "position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;touch-action:auto;cursor:default;";
     mount.appendChild(renderer.domElement);
 
     const pmrem = new THREE.PMREMGenerator(renderer);
@@ -69,15 +74,17 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     scene.add(new THREE.AmbientLight(0x9aa29a, 0.18));
     const key = new THREE.DirectionalLight(0xffefe2, 1.15);
     key.position.set(5, 7, 4);
-    key.castShadow = true;
-    key.shadow.mapSize.set(1024, 1024);
-    key.shadow.camera.near = 0.5;
-    key.shadow.camera.far = 30;
-    key.shadow.camera.left = -10;
-    key.shadow.camera.right = 10;
-    key.shadow.camera.top = 10;
-    key.shadow.camera.bottom = -10;
-    key.shadow.bias = -0.0003;
+    key.castShadow = !narrow;
+    if (!narrow) {
+      key.shadow.mapSize.set(1024, 1024);
+      key.shadow.camera.near = 0.5;
+      key.shadow.camera.far = 30;
+      key.shadow.camera.left = -10;
+      key.shadow.camera.right = 10;
+      key.shadow.camera.top = 10;
+      key.shadow.camera.bottom = -10;
+      key.shadow.bias = -0.0003;
+    }
     scene.add(key);
     const fill = new THREE.DirectionalLight(0x6a8098, 0.38);
     fill.position.set(-6, 1.2, 3);
@@ -332,7 +339,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     };
 
     const onDown = (e: PointerEvent) => {
-      if (reduced) return;
+      if (!allowOrbit || reduced) return;
       dragging = true;
       lastPtrX = e.clientX;
       lastPtrY = e.clientY;
@@ -372,6 +379,8 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     const onResize = () => {
       w = mount.clientWidth || window.innerWidth;
       h = mount.clientHeight || window.innerHeight;
+      const isNarrow = w < 768;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isNarrow ? 1.25 : 2));
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
@@ -389,7 +398,9 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     canvas.addEventListener("pointerdown", onDown, { passive: true });
     canvas.addEventListener("pointerup", onUp, { passive: true });
     canvas.addEventListener("pointercancel", onUp, { passive: true });
-    window.addEventListener("pointermove", onPointer, { passive: true });
+    if (allowOrbit) {
+      window.addEventListener("pointermove", onPointer, { passive: true });
+    }
     window.addEventListener("resize", onResize);
 
     const paint = (t: number, animate: boolean) => {
@@ -463,7 +474,9 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       canvas.removeEventListener("pointerdown", onDown);
       canvas.removeEventListener("pointerup", onUp);
       canvas.removeEventListener("pointercancel", onUp);
-      window.removeEventListener("pointermove", onPointer);
+      if (allowOrbit) {
+        window.removeEventListener("pointermove", onPointer);
+      }
       window.removeEventListener("resize", onResize);
       geometries.forEach((g) => g.dispose());
       materials.forEach((m) => m.dispose());

@@ -59,7 +59,7 @@ export default function FoundryKitPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="page-hero">
           <p className="page-kicker animate-rise">Production foundation · USD</p>
           <h1 className="animate-rise-delay mt-3">Foundry</h1>

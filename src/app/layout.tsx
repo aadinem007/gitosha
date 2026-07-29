@@ -50,6 +50,9 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="gitosha-bg flex min-h-full flex-col text-[var(--ink)]">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         {children}
         <ChatWidget />
       </body>

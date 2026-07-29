@@ -14,7 +14,7 @@ export function LegalShell({
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         <article className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">Legal</p>
           <h1 className="mt-3 font-display text-4xl font-bold tracking-tight">{title}</h1>

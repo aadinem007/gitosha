@@ -86,7 +86,7 @@ export default function Home() {
     <>
       <RevealObserver />
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="hero-cinematic hero-cinematic-3d">
           <TrackField />
           <div className="hero-stage">
@@ -103,7 +103,9 @@ export default function Home() {
                 Open Foundry
               </Link>
             </div>
-            <p className="hero-orbit-hint animate-rise-delay-2">Drag to orbit</p>
+            <p className="hero-orbit-hint animate-rise-delay-2" aria-hidden="true">
+              Drag to orbit
+            </p>
           </div>
         </section>
 

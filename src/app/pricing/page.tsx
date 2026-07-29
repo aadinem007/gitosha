@@ -54,10 +54,10 @@ export default function PricingPage() {
   return (
     <>
       <Nav />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         {/* One continuous field — no hero canvas seam */}
         <div className="pricing-page">
-          <header className="mx-auto max-w-6xl px-6 pb-2 pt-28 sm:pt-32">
+          <header className="mx-auto max-w-6xl px-4 pb-2 pt-28 sm:px-6 sm:pt-32">
             <p className="page-kicker animate-rise">
               <Link href="/" className="page-crumb">
                 Home
@@ -94,11 +94,11 @@ export default function PricingPage() {
             </div>
           </header>
 
-          <section className="pricing-deck mx-auto max-w-6xl px-6 pb-8">
+          <section className="pricing-deck mx-auto max-w-6xl px-4 pb-8 sm:px-6">
             <h2 className="font-display text-2xl font-semibold tracking-tight text-[var(--fog)] sm:text-3xl">
               Vault — scored research
             </h2>
-            <div className="mt-5 grid items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-5 grid items-stretch gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-4">
               {VAULT_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}
@@ -112,7 +112,7 @@ export default function PricingPage() {
               priority support, and a year of Studio Vault — so your next three client SaaS builds
               don’t restart from zero.
             </p>
-            <div className="mt-5 grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-5 grid items-stretch gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
               {FOUNDRY_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}

@@ -111,13 +111,13 @@ export function ChatWidget() {
   if (isHome && !homePastHero && !open) return null;
 
   return (
-    <div className="chat-root pointer-events-none fixed bottom-5 right-5 z-[80] flex flex-col items-end gap-3 sm:bottom-7 sm:right-7">
+    <div className="chat-root pointer-events-none fixed z-[80] flex flex-col items-end gap-3 bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))] sm:bottom-7 sm:right-7">
       {open && (
         <section
           id={panelId}
           role="dialog"
           aria-label="Gita chat"
-          className="chat-panel pointer-events-auto flex w-[min(100vw-1.5rem,380px)] flex-col overflow-hidden border border-[var(--line)]"
+          className="chat-panel pointer-events-auto flex w-[min(100vw-1.5rem,380px)] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden border border-[var(--line)]"
         >
           <header className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--hull)] px-4 py-3">
             <div className="min-w-0">
@@ -128,7 +128,7 @@ export function ChatWidget() {
               type="button"
               aria-label="Close chat"
               onClick={() => setOpen(false)}
-              className="px-2 py-1 text-sm text-[var(--muted)] hover:text-[var(--ink)]"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 py-1 text-sm text-[var(--muted)] hover:text-[var(--ink)]"
             >
               ✕
             </button>
@@ -213,12 +213,12 @@ export function ChatWidget() {
                 onChange={(e) => setInput(e.target.value)}
                 maxLength={500}
                 placeholder="Ask about pricing, Foundry, Vault…"
-                className="min-w-0 flex-1 rounded-xl border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
+                className="form-input min-h-12 min-w-0 flex-1 rounded-xl border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || typing}
-                className="btn-primary shrink-0 rounded-xl px-3.5 py-2.5 text-sm disabled:opacity-50"
+                className="btn-primary form-submit shrink-0 rounded-xl px-3.5 py-2.5 text-sm disabled:opacity-50"
               >
                 Send
               </button>

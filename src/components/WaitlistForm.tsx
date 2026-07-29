@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 export function WaitlistForm({
   cta = "Get the free issue",
@@ -10,6 +10,7 @@ export function WaitlistForm({
   /** row = homepage; stack = pricing cards / narrow columns */
   layout?: "row" | "stack";
 }) {
+  const emailId = useId();
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState(""); // honeypot
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
@@ -32,7 +33,10 @@ export function WaitlistForm({
 
   if (status === "done") {
     return (
-      <p className="relative min-h-[2.75rem] text-sm font-medium leading-snug text-[var(--brass-dim)]">
+      <p
+        className="relative min-h-[2.75rem] text-sm font-medium leading-snug text-[var(--brass-dim)]"
+        role="status"
+      >
         You&apos;re on the list. First issue lands this week.
       </p>
     );
@@ -43,11 +47,7 @@ export function WaitlistForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={
-        stacked
-          ? "relative isolate flex w-full min-w-0 flex-col gap-2.5 overflow-visible"
-          : "relative isolate flex w-full max-w-md flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-stretch"
-      }
+      className={stacked ? "form-stack form-stack-tight" : "form-row"}
     >
       <label className="sr-only absolute -left-[9999px]" aria-hidden="true">
         Company
@@ -58,33 +58,30 @@ export function WaitlistForm({
           onChange={(e) => setCompany(e.target.value)}
         />
       </label>
+      <label htmlFor={emailId} className={stacked ? "form-label" : "sr-only"}>
+        Email
+      </label>
       <input
+        id={emailId}
         type="email"
+        name="email"
         required
+        autoComplete="email"
+        inputMode="email"
+        enterKeyHint="send"
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="min-w-0 flex-1 border-2 border-[var(--ink)] bg-[var(--panel)] px-4 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(200,255,0,0.25)]"
+        className="form-input"
       />
       <button
         type="submit"
         disabled={status === "loading"}
-        className={
-          stacked
-            ? "btn-primary w-full px-4 py-2.5 text-sm disabled:opacity-60"
-            : "btn-primary whitespace-nowrap px-4 py-2.5 text-sm disabled:opacity-60"
-        }
+        className={stacked ? "btn-primary form-submit w-full" : "btn-primary form-submit"}
       >
         {status === "loading" ? "Joining…" : cta}
       </button>
-      <p
-        className={
-          stacked
-            ? "min-h-[1.1rem] text-xs leading-snug text-red-400"
-            : "min-h-[1.1rem] w-full text-xs leading-snug text-red-400"
-        }
-        aria-live="polite"
-      >
+      <p className="form-error" aria-live="polite">
         {status === "error" ? "Something went wrong — try again." : "\u00a0"}
       </p>
     </form>

@@ -151,7 +151,7 @@ export default function FoundryKitPage() {
             {[solo, agency, bundle].map((plan) => (
               <div
                 key={plan.id}
-                className={`plan-shell isolate overflow-hidden ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
+                className={`plan-shell isolate ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
               >
                 <p className="font-display text-xl tracking-wide">{plan.name}</p>
                 <p className="mt-2 font-display text-3xl tracking-wide">{plan.price}</p>

@@ -86,7 +86,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/pricing"
-              className="rounded-md bg-[var(--brass)] px-4 py-2.5 text-center text-sm font-semibold text-[var(--hull)]"
+              className="btn-primary px-4 py-2.5 text-center text-sm"
             >
               Unlock Operator — $15/mo
             </Link>

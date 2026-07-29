@@ -45,7 +45,7 @@ export function WaitlistForm({
       onSubmit={handleSubmit}
       className={
         stacked
-          ? "relative isolate flex w-full min-w-0 flex-col gap-2 overflow-hidden"
+          ? "relative isolate flex w-full min-w-0 flex-col gap-2.5 overflow-visible"
           : "relative isolate flex w-full max-w-md flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-stretch"
       }
     >
@@ -64,7 +64,7 @@ export function WaitlistForm({
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="min-w-0 flex-1 border border-[var(--line)] bg-[var(--hull)] px-4 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
+        className="min-w-0 flex-1 border-2 border-[var(--ink)] bg-[var(--panel)] px-4 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[3px_3px_0_var(--brass)]"
       />
       <button
         type="submit"

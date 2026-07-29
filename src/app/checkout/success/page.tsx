@@ -99,7 +99,7 @@ export default async function CheckoutSuccessPage({
               </p>
               <Link
                 href="/login"
-                className="mt-8 inline-block rounded-md bg-[var(--brass)] px-4 py-2.5 text-sm font-semibold text-[var(--hull)]"
+                className="btn-primary mt-8 inline-block"
               >
                 Sign in to Vault
               </Link>

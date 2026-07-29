@@ -1195,10 +1195,11 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 0;
+  border: 2px solid var(--ink);
   background: var(--brass);
   color: #0a0a0a;
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.95rem 1.6rem;
@@ -1207,7 +1208,7 @@ body {
 }
 
 .btn-primary:hover {
-  filter: brightness(1.05);
+  filter: brightness(1.04);
   transform: translate(-1px, -1px);
   box-shadow: 6px 6px 0 rgba(10, 10, 10, 0.9);
 }
@@ -1215,6 +1216,12 @@ body {
 .btn-primary:active {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 rgba(10, 10, 10, 0.9);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  transform: none;
+  cursor: not-allowed;
 }
 
 .btn-ghost {
@@ -1241,32 +1248,42 @@ body {
   box-shadow: 5px 5px 0 rgba(200, 255, 0, 0.65);
 }
 
-/* ── Flat plan shells (pricing / foundry) ── */
+/* ── Plan shells — hard offset depth, Lando light field ── */
 .plan-shell {
   position: relative;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--line);
+  border: 2px solid var(--ink);
   background: var(--panel);
   border-radius: 0;
-  padding: 1.5rem;
-  transition: border-color 0.25s ease;
+  padding: 1.55rem 1.5rem 1.65rem;
+  box-shadow: 6px 6px 0 rgba(10, 10, 10, 0.1);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .plan-shell:hover {
-  border-color: rgba(200, 255, 0, 0.4);
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(10, 10, 10, 0.14);
 }
 
 .plan-shell.is-hot {
-  border-color: rgba(200, 255, 0, 0.65);
-  box-shadow: none;
+  border-color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(200, 255, 0, 0.18) 0%, transparent 42%),
+    var(--panel);
+  box-shadow: 8px 8px 0 rgba(10, 10, 10, 0.88);
+}
+
+.plan-shell.is-hot:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 10px 10px 0 rgba(10, 10, 10, 0.92);
 }
 
 .plan-shell.is-hot::before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
-  height: 2px;
+  height: 5px;
   background: var(--brass);
 }
 

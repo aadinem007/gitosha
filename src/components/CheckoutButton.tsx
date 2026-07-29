@@ -129,31 +129,28 @@ export function CheckoutButton({
     }
   }
 
-  const base =
-    "w-full rounded-md px-4 py-2.5 text-sm font-semibold transition disabled:opacity-60";
-  const style = primary
-    ? "bg-[var(--brass)] text-[var(--hull)] hover:brightness-110"
-    : "border border-[var(--line)] text-[var(--ink)] hover:border-[var(--brass)]";
+  // Lime is FILL only — always black type on lime (never white / hull on brass)
+  const style = primary ? "btn-primary w-full" : "btn-ghost w-full";
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className={`${base} ${style}`}>
+      <button type="button" onClick={() => setOpen(true)} className={style} disabled={loading}>
         {label}
       </button>
     );
   }
 
   return (
-    <div className="relative isolate flex w-full min-w-0 flex-col gap-2 overflow-hidden">
+    <div className="relative isolate flex w-full min-w-0 flex-col gap-2.5 overflow-visible">
       <input
         type="email"
         required
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full min-w-0 rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
+        className="w-full min-w-0 border-2 border-[var(--ink)] bg-[var(--panel)] px-3 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[3px_3px_0_var(--brass)]"
       />
-      <button type="button" disabled={loading} onClick={startCheckout} className={`${base} ${style}`}>
+      <button type="button" disabled={loading} onClick={startCheckout} className={style}>
         {loading ? "Opening checkout…" : label}
       </button>
     </div>

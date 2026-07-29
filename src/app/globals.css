@@ -200,7 +200,7 @@ body {
   );
 }
 
-/* ── Cinematic hero — typography first, no WebGL bloom ── */
+/* ── Cinematic hero — dark PBR stage + typography ── */
 .hero-cinematic {
   position: relative;
   min-height: 100svh;
@@ -211,10 +211,45 @@ body {
   overflow: hidden;
   padding: 0 1.5rem 4rem;
   margin: 0;
+  background: #0e100c;
+}
+
+.hero-cinematic-3d::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   background:
-    radial-gradient(ellipse 70% 55% at 75% 35%, rgba(200, 255, 0, 0.16), transparent 55%),
-    radial-gradient(ellipse 40% 30% at 10% 80%, rgba(10, 10, 10, 0.04), transparent 50%),
-    linear-gradient(180deg, #f7f7f2 0%, #f3f3ee 100%);
+    linear-gradient(90deg, rgba(10, 12, 8, 0.88) 0%, rgba(10, 12, 8, 0.55) 38%, rgba(10, 12, 8, 0.12) 62%, transparent 78%),
+    linear-gradient(180deg, rgba(10, 12, 8, 0.25) 0%, transparent 35%, rgba(10, 12, 8, 0.55) 100%);
+}
+
+.hero-cinematic-3d .brand-mark {
+  color: #f3f3ee;
+  text-shadow: 4px 4px 0 rgba(200, 255, 0, 0.35);
+}
+
+.hero-cinematic-3d .hero-line {
+  color: #f3f3ee;
+}
+
+.hero-cinematic-3d .hero-support {
+  color: rgba(243, 243, 238, 0.72);
+}
+
+.hero-cinematic-3d .hero-orbit-hint {
+  color: rgba(200, 255, 0, 0.75);
+}
+
+.hero-cinematic-3d .btn-ghost {
+  color: #f3f3ee;
+  border-color: rgba(243, 243, 238, 0.45);
+}
+
+.hero-cinematic-3d .btn-ghost:hover {
+  border-color: var(--brass);
+  color: var(--brass);
 }
 
 @media (min-width: 640px) {
@@ -511,52 +546,36 @@ body {
   border-color: var(--ink);
 }
 
-/* Abstract track field — CSS underlay + WebGL canvas owns the frame */
+/* Abstract track field — dark studio underlay + WebGL canvas (no white bloom) */
 .track-field {
   pointer-events: auto;
   position: absolute;
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 55% 45% at 50% 42%, rgba(200, 255, 0, 0.14), transparent 58%),
-    radial-gradient(ellipse 40% 30% at 70% 20%, rgba(255, 255, 255, 0.04), transparent 50%),
-    linear-gradient(180deg, var(--panel) 0%, var(--hull) 55%, var(--hull) 100%);
+  background: #0e100c;
 }
 
+.track-field-dark,
 .track-field-studio {
+  background: #0e100c;
+}
+
+.track-fallback-dark {
   background:
-    radial-gradient(ellipse 50% 42% at 50% 48%, rgba(200, 255, 0, 0.16), transparent 55%),
-    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255, 255, 255, 0.03), transparent 45%),
-    linear-gradient(180deg, var(--panel) 0%, var(--hull) 100%);
+    radial-gradient(ellipse 40% 35% at 62% 46%, rgba(200, 255, 0, 0.08), transparent 55%),
+    linear-gradient(160deg, #161814 0%, #0e100c 100%);
 }
 
 .studio-void {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 55% at 50% 45%, #ffffff 0%, var(--hull) 70%);
+  background: #0e100c;
 }
 
-.studio-glow {
-  position: absolute;
-  left: 50%;
-  top: 48%;
-  width: min(70vw, 28rem);
-  height: min(70vw, 28rem);
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(200, 255, 0, 0.35) 0%, rgba(200, 255, 0, 0.08) 40%, transparent 70%);
-  filter: blur(8px);
-  animation: horizon-pulse 6s ease-in-out infinite;
-}
-
+.studio-glow,
 .studio-glow-side {
-  left: 68%;
-  top: 46%;
-  width: min(55vw, 26rem);
-  height: min(55vw, 26rem);
-  background: radial-gradient(circle, rgba(200, 255, 0, 0.22) 0%, rgba(255, 140, 90, 0.06) 38%, transparent 68%);
-  filter: blur(18px);
+  display: none;
 }
 
 .studio-topo {
@@ -596,16 +615,11 @@ body {
 }
 
 .track-field-stage {
-  background:
-    radial-gradient(ellipse 58% 48% at 50% 46%, rgba(200, 255, 0, 0.22), transparent 55%),
-    radial-gradient(ellipse 40% 30% at 70% 20%, rgba(200, 255, 0, 0.08), transparent 50%),
-    linear-gradient(180deg, #1f221c 0%, #121410 100%);
+  background: #0e100c;
 }
 
 .track-field-quiet {
-  background:
-    radial-gradient(ellipse 60% 45% at 50% 30%, rgba(200, 255, 0, 0.14), transparent 60%),
-    linear-gradient(180deg, #1a1c18 0%, #121410 100%);
+  background: #0e100c;
 }
 
 .cinematic-canvas {
@@ -733,20 +747,9 @@ body {
   stroke-width: 0.28;
 }
 
-.track-fog {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background:
-    linear-gradient(180deg, transparent 48%, rgba(243, 243, 238, 0.35) 82%, var(--hull) 100%),
-    radial-gradient(ellipse 80% 45% at 50% 100%, rgba(243, 243, 238, 0.45), transparent 72%);
-  pointer-events: none;
-}
-
+.track-fog,
 .track-fog-soft {
-  background:
-    radial-gradient(ellipse 55% 48% at 50% 42%, transparent 25%, rgba(243, 243, 238, 0.2) 100%),
-    linear-gradient(180deg, rgba(243, 243, 238, 0.12) 0%, transparent 30%, rgba(243, 243, 238, 0.45) 100%);
+  display: none;
 }
 
 .track-field .track-fallback,

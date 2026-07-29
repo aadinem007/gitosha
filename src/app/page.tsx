@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { TrackField } from "@/components/TrackField";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { BRAND } from "@/lib/brand";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
@@ -84,7 +85,8 @@ export default function Home() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="hero-cinematic">
+        <section className="hero-cinematic hero-cinematic-3d">
+          <TrackField />
           <div className="hero-stage">
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
@@ -100,16 +102,14 @@ export default function Home() {
                 Open Foundry
               </Link>
             </div>
+            <p className="hero-orbit-hint animate-rise-delay-2">Drag to orbit</p>
           </div>
         </section>
 
         {/* Editorial split chapters */}
         <section className="mega-split" id="know">
-          <div className="mega-split-visual mega-split-visual-static" aria-hidden="true">
-            <div className="mega-glyph">
-              <span>01</span>
-              <p>Vault</p>
-            </div>
+          <div className="mega-split-visual" aria-hidden="true">
+            <TrackField intensity="stage" />
           </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Know what">
@@ -162,11 +162,8 @@ export default function Home() {
         </section>
 
         <section className="mega-split mega-split-alt" id="ship">
-          <div className="mega-split-visual mega-split-visual-static" aria-hidden="true">
-            <div className="mega-glyph">
-              <span>02</span>
-              <p>Foundry</p>
-            </div>
+          <div className="mega-split-visual" aria-hidden="true">
+            <TrackField intensity="stage" />
           </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Then ship">

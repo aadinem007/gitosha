@@ -8,19 +8,8 @@ const CinematicTrack = dynamic(
   { ssr: false, loading: () => null }
 );
 
-function StaticStudioFallback() {
-  return (
-    <>
-      <div className="studio-void" />
-      <div className="studio-glow studio-glow-side" />
-      <div className="track-grain" />
-    </>
-  );
-}
-
 /**
- * Full-bleed studio 3D — real GLB prop.
- * full = hero right-weight · stage = centered mega panels · quiet = chapter underlays
+ * Dark studio WebGL field — no CSS glow blobs, no bloom washout.
  */
 export function TrackField({
   intensity = "full",
@@ -30,23 +19,19 @@ export function TrackField({
   const [webglReady, setWebglReady] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setWebglReady(true), 40);
+    const t = window.setTimeout(() => setWebglReady(true), 20);
     return () => window.clearTimeout(t);
   }, []);
 
   return (
     <div
-      className={`track-field track-field-studio track-field-${intensity}${
+      className={`track-field track-field-dark track-field-${intensity}${
         webglReady ? " track-field-live" : ""
       }`}
       aria-hidden="true"
     >
-      <div className="track-fallback">
-        <StaticStudioFallback />
-      </div>
+      <div className="track-fallback track-fallback-dark" />
       <CinematicTrack intensity={intensity} />
-      <div className="track-fog track-fog-soft" />
-      <div className="track-vignette" />
     </div>
   );
 }

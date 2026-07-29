@@ -1,22 +1,20 @@
 @import "tailwindcss";
 
-/* ── Visual direction: near-black void, sharp off-white type, ONE papaya race accent ── */
+/* ── Lando theme: off-white field, black type, neon lime accent ── */
 :root {
-  --hull: #050505;
-  --panel: #0c0c0c;
-  --ink: #f5f2eb;
-  /* Labels / chrome only — never body copy over 3D */
-  --muted: #a8a49a;
-  --line: #1c1c1c;
-  --brass: #ff5a1f;
-  --brass-dim: #c44518;
-  /* Body / support / feature lists — high contrast on dark */
-  --fog: #e8e4dc;
-  --support: #e8e4dc;
-  --signal: #ff5a1f;
-  --glow: rgba(255, 90, 31, 0.08);
-  --scrim: rgba(5, 5, 5, 0.78);
-  --scrim-soft: rgba(5, 5, 5, 0.62);
+  --hull: #f4f4f0;
+  --panel: #ffffff;
+  --ink: #0a0a0a;
+  --muted: #6e6e66;
+  --line: #e2e2dc;
+  --brass: #c8ff00;
+  --brass-dim: #9fcc00;
+  --fog: #1a1a1a;
+  --support: #3d3d38;
+  --signal: #0a0a0a;
+  --glow: rgba(200, 255, 0, 0.14);
+  --scrim: rgba(255, 255, 255, 0.94);
+  --scrim-soft: rgba(244, 244, 240, 0.9);
 }
 
 @theme inline {
@@ -59,9 +57,9 @@ body {
   position: relative;
   background-color: var(--hull);
   background-image:
-    radial-gradient(ellipse 90% 55% at 50% -25%, rgba(255, 90, 31, 0.07), transparent 55%),
+    radial-gradient(ellipse 90% 55% at 50% -25%, rgba(200, 255, 0, 0.07), transparent 55%),
     radial-gradient(ellipse 40% 35% at 100% 100%, rgba(255, 255, 255, 0.02), transparent 50%),
-    linear-gradient(180deg, #050505 0%, #080808 100%);
+    linear-gradient(180deg, var(--hull) 0%, var(--panel) 100%);
 }
 
 .gitosha-bg::after {
@@ -70,8 +68,8 @@ body {
   position: fixed;
   inset: 0;
   z-index: 50;
-  opacity: 0.045;
-  mix-blend-mode: overlay;
+  opacity: 0.025;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -82,7 +80,7 @@ body {
   left: 0;
   right: 0;
   z-index: 40;
-  background: linear-gradient(180deg, rgba(5, 5, 5, 0.72) 0%, rgba(5, 5, 5, 0.28) 70%, transparent 100%);
+  background: linear-gradient(180deg, rgba(244, 244, 240, 0.86) 0%, rgba(244, 244, 240, 0.4) 70%, transparent 100%);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid transparent;
 }
@@ -154,7 +152,7 @@ body {
 }
 
 .site-nav-signin:hover {
-  border-color: rgba(255, 90, 31, 0.55);
+  border-color: rgba(200, 255, 0, 0.55);
   color: var(--brass);
 }
 
@@ -177,18 +175,18 @@ body {
 /* Readable plate behind copy that overlays busy 3D */
 .copy-scrim {
   padding: 1.35rem 1.4rem 1.5rem;
-  border: 1px solid rgba(255, 90, 31, 0.22);
+  border: 1px solid rgba(200, 255, 0, 0.22);
   background: var(--scrim);
   backdrop-filter: blur(14px) saturate(1.1);
   -webkit-backdrop-filter: blur(14px) saturate(1.1);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
 }
 
 .copy-scrim-soft {
   background: linear-gradient(
     105deg,
     var(--scrim-soft) 0%,
-    rgba(5, 5, 5, 0.35) 72%,
+    rgba(244, 244, 240, 0.35) 72%,
     transparent 100%
   );
 }
@@ -241,10 +239,7 @@ body {
   letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--ink);
-  text-shadow:
-    0 0 60px rgba(5, 5, 5, 0.9),
-    0 4px 40px rgba(0, 0, 0, 0.75),
-    0 0 120px rgba(255, 90, 31, 0.22);
+  text-shadow: none;
   position: relative;
   z-index: 3;
 }
@@ -318,7 +313,7 @@ body {
   font-size: clamp(1.1rem, 3.5vw, 1.65rem);
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #050505;
+  color: #0a0a0a;
   font-weight: 400;
 }
 
@@ -330,16 +325,16 @@ body {
   align-items: center;
   border-top: 1px solid var(--line);
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 90, 31, 0.1), transparent 55%),
-    linear-gradient(180deg, #070707 0%, #050505 100%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200, 255, 0, 0.1), transparent 55%),
+    linear-gradient(180deg, var(--hull) 0%, var(--hull) 100%);
   padding: 4.5rem 1.5rem;
   overflow: hidden;
 }
 
 .mega-split-alt {
   background:
-    radial-gradient(ellipse 70% 50% at 80% 40%, rgba(255, 90, 31, 0.08), transparent 50%),
-    linear-gradient(180deg, #050505 0%, #080808 100%);
+    radial-gradient(ellipse 70% 50% at 80% 40%, rgba(200, 255, 0, 0.08), transparent 50%),
+    linear-gradient(180deg, var(--hull) 0%, var(--panel) 100%);
 }
 
 .mega-split-inner {
@@ -366,7 +361,7 @@ body {
 
 .mega-split-word-accent {
   color: var(--brass);
-  text-shadow: 0 0 80px rgba(255, 90, 31, 0.35);
+  text-shadow: 0 0 80px rgba(200, 255, 0, 0.35);
 }
 
 .mega-split-copy {
@@ -385,7 +380,7 @@ body {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--brass);
-  border-bottom: 1px solid rgba(255, 90, 31, 0.4);
+  border-bottom: 1px solid rgba(200, 255, 0, 0.4);
   padding-bottom: 2px;
   transition: color 0.2s ease, border-color 0.2s ease;
 }
@@ -403,22 +398,22 @@ body {
   z-index: 0;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 55% 45% at 50% 42%, rgba(255, 90, 31, 0.14), transparent 58%),
+    radial-gradient(ellipse 55% 45% at 50% 42%, rgba(200, 255, 0, 0.14), transparent 58%),
     radial-gradient(ellipse 40% 30% at 70% 20%, rgba(255, 255, 255, 0.04), transparent 50%),
-    linear-gradient(180deg, #0a0a0a 0%, #070707 55%, #050505 100%);
+    linear-gradient(180deg, var(--panel) 0%, var(--hull) 55%, var(--hull) 100%);
 }
 
 .track-field-studio {
   background:
-    radial-gradient(ellipse 50% 42% at 50% 48%, rgba(255, 90, 31, 0.16), transparent 55%),
+    radial-gradient(ellipse 50% 42% at 50% 48%, rgba(200, 255, 0, 0.16), transparent 55%),
     radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255, 255, 255, 0.03), transparent 45%),
-    linear-gradient(180deg, #0b0b0b 0%, #070707 100%);
+    linear-gradient(180deg, var(--panel) 0%, var(--hull) 100%);
 }
 
 .studio-void {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 55% at 50% 45%, #121212 0%, #070707 70%);
+  background: radial-gradient(ellipse 70% 55% at 50% 45%, #ffffff 0%, var(--hull) 70%);
 }
 
 .studio-glow {
@@ -429,7 +424,7 @@ body {
   height: min(70vw, 28rem);
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 90, 31, 0.35) 0%, rgba(255, 90, 31, 0.08) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(200, 255, 0, 0.35) 0%, rgba(200, 255, 0, 0.08) 40%, transparent 70%);
   filter: blur(8px);
   animation: horizon-pulse 6s ease-in-out infinite;
 }
@@ -439,7 +434,7 @@ body {
   top: 46%;
   width: min(55vw, 26rem);
   height: min(55vw, 26rem);
-  background: radial-gradient(circle, rgba(255, 90, 31, 0.22) 0%, rgba(255, 200, 160, 0.06) 38%, transparent 68%);
+  background: radial-gradient(circle, rgba(200, 255, 0, 0.22) 0%, rgba(220, 255, 120, 0.06) 38%, transparent 68%);
   filter: blur(18px);
 }
 
@@ -447,10 +442,10 @@ body {
   position: absolute;
   inset: 18% 10% 12%;
   border-radius: 50%;
-  border: 1px solid rgba(255, 90, 31, 0.12);
+  border: 1px solid rgba(200, 255, 0, 0.12);
   box-shadow:
-    0 0 0 28px rgba(255, 90, 31, 0.04),
-    0 0 0 56px rgba(255, 90, 31, 0.03),
+    0 0 0 28px rgba(200, 255, 0, 0.04),
+    0 0 0 56px rgba(200, 255, 0, 0.03),
     0 0 0 90px rgba(245, 242, 235, 0.02);
   transform: perspective(600px) rotateX(68deg);
 }
@@ -463,8 +458,8 @@ body {
   height: min(42vw, 16rem);
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 2px solid rgba(255, 90, 31, 0.45);
-  box-shadow: 0 0 40px rgba(255, 90, 31, 0.25);
+  border: 2px solid rgba(200, 255, 0, 0.45);
+  box-shadow: 0 0 40px rgba(200, 255, 0, 0.25);
 }
 
 .track-fallback {
@@ -481,8 +476,8 @@ body {
 
 .track-field-quiet {
   background:
-    radial-gradient(ellipse 60% 45% at 50% 30%, rgba(255, 90, 31, 0.12), transparent 60%),
-    linear-gradient(180deg, #080808 0%, #050505 100%);
+    radial-gradient(ellipse 60% 45% at 50% 30%, rgba(200, 255, 0, 0.12), transparent 60%),
+    linear-gradient(180deg, var(--panel) 0%, var(--hull) 100%);
 }
 
 .cinematic-canvas {
@@ -509,8 +504,8 @@ body {
   inset: -20% -10% 10%;
   z-index: 0;
   background:
-    radial-gradient(ellipse 55% 42% at 50% 18%, rgba(255, 90, 31, 0.22), transparent 62%),
-    linear-gradient(180deg, transparent 28%, rgba(5, 5, 5, 0.55) 78%, var(--hull) 96%);
+    radial-gradient(ellipse 55% 42% at 50% 18%, rgba(200, 255, 0, 0.22), transparent 62%),
+    linear-gradient(180deg, transparent 28%, rgba(244, 244, 240, 0.55) 78%, var(--hull) 96%);
 }
 
 .track-horizon {
@@ -523,7 +518,7 @@ body {
   transform: translate(-50%, -40%);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 55%, rgba(255, 138, 74, 0.55), rgba(255, 90, 31, 0.28) 35%, transparent 68%);
+    radial-gradient(circle at 50% 55%, rgba(180, 230, 0, 0.55), rgba(200, 255, 0, 0.28) 35%, transparent 68%);
   filter: blur(2px);
   animation: horizon-pulse 5.5s ease-in-out infinite;
 }
@@ -544,7 +539,7 @@ body {
   z-index: 0;
   width: 160%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 90, 31, 0.75), transparent);
+  background: linear-gradient(90deg, transparent, rgba(200, 255, 0, 0.75), transparent);
   transform: rotate(-8deg);
   animation: track-sweep 5.2s ease-in-out infinite;
   opacity: 0.7;
@@ -567,8 +562,8 @@ body {
     180deg,
     transparent 0,
     transparent 18px,
-    rgba(255, 90, 31, 0.35) 18px,
-    rgba(255, 90, 31, 0.35) 28px
+    rgba(200, 255, 0, 0.35) 18px,
+    rgba(200, 255, 0, 0.35) 28px
   );
   mask-image: linear-gradient(90deg, transparent, #000 42%, #000 58%, transparent);
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 42%, #000 58%, transparent);
@@ -583,9 +578,9 @@ body {
   inset: 10% -5% 20%;
   z-index: 0;
   background:
-    linear-gradient(105deg, transparent 40%, rgba(255, 90, 31, 0.18) 50%, transparent 60%),
+    linear-gradient(105deg, transparent 40%, rgba(200, 255, 0, 0.18) 50%, transparent 60%),
     linear-gradient(75deg, transparent 35%, rgba(245, 242, 235, 0.08) 48%, transparent 62%),
-    linear-gradient(95deg, transparent 30%, rgba(255, 90, 31, 0.1) 55%, transparent 70%);
+    linear-gradient(95deg, transparent 30%, rgba(200, 255, 0, 0.1) 55%, transparent 70%);
   animation: ribbon-drift 8s ease-in-out infinite;
   filter: blur(0.5px);
 }
@@ -606,7 +601,7 @@ body {
 }
 
 .track-lines .track-line-hot {
-  stroke: rgba(255, 90, 31, 0.85);
+  stroke: rgba(200, 255, 0, 0.85);
   stroke-width: 0.28;
 }
 
@@ -615,15 +610,15 @@ body {
   inset: 0;
   z-index: 2;
   background:
-    linear-gradient(180deg, transparent 48%, rgba(5, 5, 5, 0.35) 82%, var(--hull) 100%),
-    radial-gradient(ellipse 80% 45% at 50% 100%, rgba(5, 5, 5, 0.45), transparent 72%);
+    linear-gradient(180deg, transparent 48%, rgba(244, 244, 240, 0.35) 82%, var(--hull) 100%),
+    radial-gradient(ellipse 80% 45% at 50% 100%, rgba(244, 244, 240, 0.45), transparent 72%);
   pointer-events: none;
 }
 
 .track-fog-soft {
   background:
-    radial-gradient(ellipse 55% 48% at 50% 42%, transparent 25%, rgba(5, 5, 5, 0.2) 100%),
-    linear-gradient(180deg, rgba(5, 5, 5, 0.12) 0%, transparent 30%, rgba(5, 5, 5, 0.45) 100%);
+    radial-gradient(ellipse 55% 48% at 50% 42%, transparent 25%, rgba(244, 244, 240, 0.2) 100%),
+    linear-gradient(180deg, rgba(244, 244, 240, 0.12) 0%, transparent 30%, rgba(244, 244, 240, 0.45) 100%);
 }
 
 .track-field .track-fallback,
@@ -635,7 +630,7 @@ body {
   position: absolute;
   inset: 0;
   z-index: 2;
-  box-shadow: inset 0 0 100px 28px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 100px 28px rgba(0, 0, 0, 0.06);
   pointer-events: none;
 }
 
@@ -659,11 +654,11 @@ body {
 }
 
 .chapter-vault {
-  background: linear-gradient(180deg, #070707 0%, #050505 100%);
+  background: linear-gradient(180deg, var(--hull) 0%, var(--hull) 100%);
 }
 
 .chapter-foundry {
-  background: linear-gradient(180deg, #050505 0%, #0a0a0a 100%);
+  background: linear-gradient(180deg, var(--hull) 0%, var(--panel) 100%);
 }
 
 .chapter-visual {
@@ -701,7 +696,7 @@ body {
   z-index: 3;
   max-width: 22rem;
   padding: 1.05rem 1.15rem 1.15rem;
-  border: 1px solid rgba(255, 90, 31, 0.4);
+  border: 1px solid rgba(200, 255, 0, 0.4);
   background: var(--scrim);
   backdrop-filter: blur(14px) saturate(1.1);
   -webkit-backdrop-filter: blur(14px) saturate(1.1);
@@ -864,7 +859,7 @@ body {
 /* ── Below-fold feature proof — dense editorial, not card spam ── */
 .proof-plane {
   border-top: 1px solid var(--line);
-  background: linear-gradient(180deg, #080808 0%, #050505 100%);
+  background: linear-gradient(180deg, var(--panel) 0%, var(--hull) 100%);
   padding: 4.5rem 1.5rem 5.5rem;
 }
 
@@ -1118,7 +1113,7 @@ body {
   justify-content: center;
   border-radius: 0;
   background: var(--brass);
-  color: #050505;
+  color: #0a0a0a;
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -1148,7 +1143,7 @@ body {
 }
 
 .btn-ghost:hover {
-  border-color: rgba(255, 90, 31, 0.55);
+  border-color: rgba(200, 255, 0, 0.55);
   color: var(--ink);
 }
 
@@ -1165,11 +1160,11 @@ body {
 }
 
 .plan-shell:hover {
-  border-color: rgba(255, 90, 31, 0.4);
+  border-color: rgba(200, 255, 0, 0.4);
 }
 
 .plan-shell.is-hot {
-  border-color: rgba(255, 90, 31, 0.65);
+  border-color: rgba(200, 255, 0, 0.65);
   box-shadow: none;
 }
 
@@ -1232,7 +1227,7 @@ body {
 }
 
 .score-row:hover {
-  background: rgba(255, 90, 31, 0.05);
+  background: rgba(200, 255, 0, 0.05);
 }
 
 /* ── Quiet footer ── */
@@ -1502,9 +1497,9 @@ a.site-footer-brand:hover {
   padding: 6rem 1.5rem 2.5rem;
   background: linear-gradient(
     180deg,
-    rgba(5, 5, 5, 0.15) 0%,
-    rgba(5, 5, 5, 0.55) 45%,
-    rgba(5, 5, 5, 0.88) 100%
+    rgba(244, 244, 240, 0.15) 0%,
+    rgba(244, 244, 240, 0.55) 45%,
+    rgba(255, 255, 255, 0.92) 100%
   );
 }
 
@@ -1538,12 +1533,12 @@ a.site-footer-brand:hover {
 /* ── Editorial story planes (before unpack/pricing) ── */
 .story-plane {
   border-top: 1px solid var(--line);
-  background: linear-gradient(180deg, #070707 0%, #050505 100%);
+  background: linear-gradient(180deg, var(--hull) 0%, var(--hull) 100%);
   padding: 4.25rem 1.5rem 4.75rem;
 }
 
 .story-plane-alt {
-  background: linear-gradient(180deg, #0a0a0a 0%, #060606 100%);
+  background: linear-gradient(180deg, var(--panel) 0%, #060606 100%);
 }
 
 .story-inner {
@@ -1781,11 +1776,10 @@ a.site-footer-brand:hover {
 }
 
 .login-panel {
-  padding: 1.35rem 1.25rem;
-  border: 1px solid rgba(255, 90, 31, 0.28);
-  background: var(--scrim);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding: 1.5rem 1.35rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
 }
 
 .page-hero-content > p,

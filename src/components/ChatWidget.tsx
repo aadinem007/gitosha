@@ -143,7 +143,7 @@ export function ChatWidget() {
                 <div
                   className={`max-w-[92%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                     m.role === "user"
-                      ? "rounded-br-md bg-[var(--brass)] text-[var(--hull)]"
+                      ? "rounded-br-md bg-[var(--brass)] text-[#0a0a0a]"
                       : "rounded-bl-md border border-[var(--line)] bg-[var(--panel)] text-[var(--fog)]"
                   }`}
                 >
@@ -232,7 +232,7 @@ export function ChatWidget() {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="chat-launcher pointer-events-auto group relative flex h-12 w-12 items-center justify-center bg-[var(--brass)] text-[var(--hull)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hull)]"
+        className="chat-launcher pointer-events-auto group relative flex h-12 w-12 items-center justify-center bg-[var(--brass)] text-[#0a0a0a] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hull)]"
       >
         {open ? (
           <span className="font-display text-lg leading-none">✕</span>

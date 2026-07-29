@@ -45,7 +45,7 @@ export function LoginForm({ next }: { next: string }) {
       >
         {status === "loading" ? "Sending…" : "Email me a magic link"}
       </button>
-      <p className="min-h-[1.1rem] text-xs leading-snug text-red-400" aria-live="polite">
+      <p className="min-h-[1.1rem] text-xs leading-snug text-red-600" aria-live="polite">
         {status === "error" ? "Something went wrong — try again." : "\u00a0"}
       </p>
     </form>

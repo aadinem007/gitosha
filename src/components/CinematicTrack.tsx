@@ -36,10 +36,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, quiet ? 1.5 : 2));
     renderer.setSize(w, h, false);
-    renderer.setClearColor(0x080808, 1);
+    renderer.setClearColor(0xf4f4f0, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.02;
     renderer.domElement.style.cssText =
       "position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:auto;touch-action:none;";
     mount.appendChild(renderer.domElement);
@@ -49,8 +49,8 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
 
     const scene = new THREE.Scene();
     scene.environment = envTex;
-    scene.background = new THREE.Color(0x080808);
-    scene.fog = new THREE.FogExp2(0x080808, quiet ? 0.055 : 0.032);
+    scene.background = new THREE.Color(0xf4f4f0);
+    scene.fog = new THREE.FogExp2(0xf4f4f0, quiet ? 0.04 : 0.022);
 
     const camera = new THREE.PerspectiveCamera(quiet ? 40 : 44, w / h, 0.1, 80);
     // Bias camera so the model sits in the right half (copy stays left)
@@ -76,10 +76,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     const fill = new THREE.DirectionalLight(0xa8bdd0, 0.55);
     fill.position.set(-4, 2, 3);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xff5a1f, quiet ? 0.7 : 1.35);
+    const rim = new THREE.DirectionalLight(0xc8ff00, quiet ? 0.55 : 0.95);
     rim.position.set(-3, 2.5, -5);
     scene.add(rim);
-    const kick = new THREE.PointLight(0xff5a1f, quiet ? 8 : 16, 12, 2);
+    const kick = new THREE.PointLight(0xc8ff00, quiet ? 4 : 8, 12, 2);
     kick.position.set(2.2, 1.2, 2);
     stage.add(kick);
 
@@ -92,12 +92,12 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     const ped = new THREE.Mesh(
       pedGeo,
       new THREE.MeshPhysicalMaterial({
-        color: 0x0c0c0c,
-        metalness: 0.95,
-        roughness: 0.28,
-        envMapIntensity: 0.85,
+        color: 0xffffff,
+        metalness: 0.35,
+        roughness: 0.45,
+        envMapIntensity: 0.6,
         transparent: true,
-        opacity: 0.9,
+        opacity: 0.95,
       })
     );
     materials.push(ped.material as THREE.Material);
@@ -105,15 +105,15 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     ped.position.y = -1.15;
     stage.add(ped);
 
-    // Thin papaya ring under the prop
+    // Thin lime ring under the prop
     const ringGeo = new THREE.TorusGeometry(quiet ? 1.35 : 1.7, 0.012, 12, 96);
     geometries.push(ringGeo);
     const ringMat = new THREE.MeshStandardMaterial({
-      color: 0xff5a1f,
-      emissive: 0xff5a1f,
-      emissiveIntensity: quiet ? 0.55 : 0.95,
-      metalness: 0.5,
-      roughness: 0.35,
+      color: 0xc8ff00,
+      emissive: 0xc8ff00,
+      emissiveIntensity: quiet ? 0.35 : 0.55,
+      metalness: 0.4,
+      roughness: 0.4,
     });
     materials.push(ringMat);
     const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -167,10 +167,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
           const mesh = obj as THREE.Mesh;
           if (!mesh.isMesh) return;
           mesh.material = new THREE.MeshBasicMaterial({
-            color: 0xf5f2eb,
+            color: 0x0a0a0a,
             wireframe: true,
             transparent: true,
-            opacity: quiet ? 0.22 : 0.32,
+            opacity: quiet ? 0.2 : 0.28,
             depthWrite: false,
           });
           materials.push(mesh.material as THREE.Material);
@@ -199,7 +199,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
         const wMesh = new THREE.Mesh(
           geo,
           new THREE.MeshBasicMaterial({
-            color: 0xff5a1f,
+            color: 0xc8ff00,
             wireframe: true,
             transparent: true,
             opacity: 0.45,
@@ -224,10 +224,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometries.push(pGeo);
     const pMat = new THREE.PointsMaterial({
-      color: 0xffdcc8,
-      size: 0.018,
+      color: 0x9fcc00,
+      size: 0.016,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.28,
       depthWrite: false,
       sizeAttenuation: true,
     });
@@ -238,7 +238,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
     // Soft bloom — never nuke the PBR textures
-    const bloom = new UnrealBloomPass(new THREE.Vector2(w, h), quiet ? 0.18 : 0.28, 0.4, 0.85);
+    const bloom = new UnrealBloomPass(new THREE.Vector2(w, h), quiet ? 0.08 : 0.12, 0.35, 0.9);
     composer.addPass(bloom);
     composer.addPass(new SMAAPass());
     composer.addPass(new OutputPass());
@@ -359,7 +359,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
       ring.rotation.z = animate ? t * 0.15 : 0;
 
       // Don't bloom until model is in — avoids white flash
-      bloom.strength = modelReady ? (quiet ? 0.16 : 0.26) : 0.05;
+      bloom.strength = modelReady ? (quiet ? 0.08 : 0.12) : 0.04;
 
       composer.render();
     };

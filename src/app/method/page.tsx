@@ -50,8 +50,9 @@ export default function MethodPage() {
 
           <h2 className="mt-14 font-display text-xl font-semibold">What operators also get</h2>
           <p className="mt-3 text-sm leading-relaxed text-[var(--support)]">
-            Kill criteria for each idea, an anti-portfolio of concepts we reject, competitor maps, and a
-            14-day launch checklist. Research that only celebrates winners is marketing. We sell judgment.
+            Clear go/no-go criteria for each idea, an anti-portfolio of concepts we reject, competitor
+            maps, and a 14-day launch checklist. Research that only celebrates winners is marketing.
+            We sell judgment.
           </p>
 
           <div className="mt-12 border-t border-[var(--line)] pt-8">

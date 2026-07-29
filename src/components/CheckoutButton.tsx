@@ -25,12 +25,13 @@ function loadRazorpayScript(): Promise<boolean> {
 export function CheckoutButton({
   planId,
   label,
-  primary = false,
+  primary: _primary = false,
 }: {
   planId: string;
   label: string;
   primary?: boolean;
 }) {
+  void _primary;
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [open, setOpen] = useState(false);

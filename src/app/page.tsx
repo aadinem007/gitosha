@@ -3,6 +3,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { TrackField } from "@/components/TrackField";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { RevealObserver } from "@/components/RevealObserver";
 import { BRAND } from "@/lib/brand";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
 import { SEED_IDEAS, totalScore } from "@/lib/ideas-data";
@@ -20,10 +21,10 @@ const SCOREBOARD = SEED_IDEAS.slice(0, 4).map((idea) => ({
 const SAMPLE = SEED_IDEAS.find((i) => i.slug === "recoverly") ?? SEED_IDEAS[2];
 const SAMPLE_SCORE = totalScore(SAMPLE.scores);
 
-const KILL_LINES = [
-  "Kill if demand < 6 with no paid evidence",
-  "Kill if competition ≥ 8 and no wedge",
-  "Park if time-to-launch < 5 for solo founders",
+const DECISION_LINES = [
+  "Pass if demand < 6 with no paid evidence",
+  "Pass if competition ≥ 8 and no wedge",
+  "Defer if time-to-launch < 5 for solo founders",
 ];
 
 const METHOD_DIMS = [
@@ -45,7 +46,7 @@ const FOUNDRY_WALK = [
 const WHO_FOR = [
   {
     title: "Indie operators",
-    body: "You pick one niche and ship. Operator kills dead ideas; Foundry removes plumbing weeks.",
+    body: "You pick one niche and ship. Operator filters weak ideas; Foundry removes plumbing weeks.",
   },
   {
     title: "Studios & agencies",
@@ -53,7 +54,7 @@ const WHO_FOR = [
   },
   {
     title: "Founders who hate vanity lists",
-    body: "We publish low scores. If an idea dies on kill criteria, you see why — before you spend a quarter.",
+    body: "We publish low scores. If an idea fails go/no-go criteria, you see why — before you spend a quarter.",
   },
 ];
 
@@ -61,7 +62,7 @@ const PROOF_COMPARE = [
   {
     label: "Decide what to ship",
     scout: "Public scores + method",
-    operator: "Full teardowns + kill criteria",
+    operator: "Full teardowns + go/no-go criteria",
   },
   {
     label: "Ship the product",
@@ -83,6 +84,7 @@ const PROOF_COMPARE = [
 export default function Home() {
   return (
     <>
+      <RevealObserver />
       <Nav />
       <main className="flex-1">
         <section className="hero-cinematic hero-cinematic-3d">
@@ -91,8 +93,8 @@ export default function Home() {
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
             <p className="hero-support animate-rise">
-              USD pricing for international operators. Honest kill criteria. A scaffold that already
-              takes payments — so you ship the right thing, fast.
+              USD pricing for international operators. Clear go/no-go criteria. A production-ready
+              foundation that already takes payments — so you ship the right thing, fast.
             </p>
             <div className="hero-cta animate-rise-delay">
               <Link href="/pricing" className="btn-primary">
@@ -107,7 +109,7 @@ export default function Home() {
         </section>
 
         {/* Editorial split chapters */}
-        <section className="mega-split" id="know">
+        <section className="mega-split" id="know" data-reveal>
           <div className="mega-split-visual" aria-hidden="true">
             <TrackField intensity="stage" />
           </div>
@@ -117,8 +119,8 @@ export default function Home() {
               <span className="mega-split-word mega-split-word-accent">what</span>
             </h2>
             <p className="mega-split-copy">
-              Ten dimensions. Kill criteria. Public rejects. Research built for operators who decide
-              in one sitting — not scroll Twitter lists.
+              Ten dimensions. Clear decision frameworks. Public rejects. Research built for operators
+              who decide in one sitting — not scroll Twitter lists.
             </p>
             <Link href="/#vault" className="mega-split-link">
               Enter the Vault →
@@ -127,7 +129,7 @@ export default function Home() {
         </section>
 
         {/* 01 Vault */}
-        <section className="chapter chapter-vault" id="vault">
+        <section className="chapter chapter-vault" id="vault" data-reveal>
           <div className="chapter-visual">
             <div className="chapter-visual-frame" aria-label="Live scoreboard sample">
               <p className="chapter-visual-label">01 · Research plane</p>
@@ -141,7 +143,7 @@ export default function Home() {
                 ))}
               </ul>
               <ul className="hud-kill-list">
-                {KILL_LINES.map((line) => (
+                {DECISION_LINES.map((line) => (
                   <li key={line}>{line}</li>
                 ))}
               </ul>
@@ -150,7 +152,7 @@ export default function Home() {
           <div className="chapter-inner copy-scrim-soft">
             <p className="chapter-index">01</p>
             <p className="chapter-eyebrow">{BRAND.products.vault}</p>
-            <h2 className="chapter-title">Kill bad ideas early.</h2>
+            <h2 className="chapter-title">Filter weak ideas early.</h2>
             <p className="chapter-copy">
               Operator unlocks every teardown, financial sketch, and launch checklist — from $15/mo
               launch for the first 100 seats.
@@ -161,7 +163,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mega-split mega-split-alt" id="ship">
+        <section className="mega-split mega-split-alt" id="ship" data-reveal>
           <div className="mega-split-visual" aria-hidden="true">
             <TrackField intensity="stage" />
           </div>
@@ -181,7 +183,7 @@ export default function Home() {
         </section>
 
         {/* 02 Foundry */}
-        <section className="chapter chapter-foundry" id="foundry">
+        <section className="chapter chapter-foundry" id="foundry" data-reveal>
           <div className="chapter-inner copy-scrim-soft">
             <p className="chapter-index">02</p>
             <p className="chapter-eyebrow">{BRAND.products.foundry}</p>
@@ -210,7 +212,7 @@ export default function Home() {
         </section>
 
         {/* 03 Method */}
-        <section className="story-plane" id="method">
+        <section className="story-plane" id="method" data-reveal>
           <span className="float-accent float-accent-a" aria-hidden="true" />
           <span className="float-accent float-accent-c" aria-hidden="true" />
           <div className="story-inner">
@@ -236,14 +238,14 @@ export default function Home() {
         </section>
 
         {/* 04 Foundry walkthrough */}
-        <section className="story-plane story-plane-alt" id="inside">
+        <section className="story-plane story-plane-alt" id="inside" data-reveal>
           <span className="float-accent float-accent-b" aria-hidden="true" />
           <div className="story-inner">
             <p className="story-kicker">04 · Inside Foundry</p>
             <h2 className="story-title">What’s in the zip.</h2>
             <p className="story-lede">
-              Not a Notion template. A production scaffold that already takes payments — the same
-              patterns Gitosha runs on.
+              Not a Notion template. A production-ready foundation that already takes payments — the
+              same patterns Gitosha runs on.
             </p>
             <div className="walk-grid">
               {FOUNDRY_WALK.map((item) => (
@@ -260,7 +262,7 @@ export default function Home() {
         </section>
 
         {/* 05 Who */}
-        <section className="story-plane" id="for">
+        <section className="story-plane" id="for" data-reveal>
           <div className="story-inner">
             <p className="story-kicker">05 · Who it’s for</p>
             <h2 className="story-title">Outcomes, not vibes.</h2>
@@ -280,12 +282,13 @@ export default function Home() {
         </section>
 
         {/* 06 Sample */}
-        <section className="story-plane story-plane-alt" id="sample">
+        <section className="story-plane story-plane-alt" id="sample" data-reveal>
           <div className="story-inner">
             <p className="story-kicker">06 · Sample score</p>
             <h2 className="story-title">A real scored idea.</h2>
             <p className="story-lede">
-              Public preview. Operator unlocks the full teardown, kill criteria, and launch checklist.
+              Public preview. Operator unlocks the full teardown, go/no-go criteria, and launch
+              checklist.
             </p>
             <div className="sample-card copy-scrim">
               <div className="sample-head">
@@ -312,7 +315,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="proof-plane" id="proof">
+        <section className="proof-plane" id="proof" data-reveal>
           <div className="proof-inner">
             <p className="proof-kicker">Unpack · USD</p>
             <h2 className="proof-title">Operator and Foundry, unpacked.</h2>
@@ -379,7 +382,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="closing">
+        <section className="closing" data-reveal>
           <div className="closing-inner">
             <h2 className="closing-title">
               Every week you wait is another week building the wrong thing.

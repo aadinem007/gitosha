@@ -70,7 +70,7 @@ export const VAULT_PLANS: PricingPlan[] = [
     features: [
       "Everything in Scout",
       "Every scored idea + every full premium teardown (Markdown)",
-      "Kill criteria written as pass/fail gates — not vibes",
+      "Go/no-go criteria written as pass/fail gates — not vibes",
       "Anti-portfolio: concepts we reject so you don’t waste a quarter",
       "Financial sketch + unit-economics notes per opportunity",
       "14-day launch checklist tied to each scored idea",
@@ -79,7 +79,7 @@ export const VAULT_PLANS: PricingPlan[] = [
       "One-click CSV export of the live scoreboard",
       "Magic-link sign-in to the private Vault",
       "Searchable archive that grows as new scores ship",
-      "Outcome focus: decide ship / kill / park in one sitting",
+      "Outcome focus: decide ship / pass / defer in one sitting",
       "Gita + FAQ for instant product answers",
       "Email support for Vault access & billing",
       "15% off Foundry forever (Solo / Agency / Bundle)",
@@ -106,7 +106,7 @@ export const VAULT_PLANS: PricingPlan[] = [
       "Clean annual invoice for accounting / books",
       "Early access to new research formats",
       "Same CSV export + Vault magic-link access",
-      "Kill criteria + launch checklists all year",
+      "Go/no-go criteria + launch checklists all year",
       "Foundry discount still applies all year",
       "Quarterly research cadence without monthly decisions",
       "No monthly reminders — one decision, twelve months",
@@ -131,7 +131,7 @@ export const VAULT_PLANS: PricingPlan[] = [
       "Quarterly 30-min strategy call",
       "CSV export for partners / investors / clients",
       "Priority Gita + email support path",
-      "Kill criteria shared so the team stops debating dead ideas",
+      "Go/no-go criteria shared so the team stops debating dead ideas",
       "Same scored language across founders, PMs, and freelancers",
       "Ideal when 2+ people decide what to build next",
       "Pipeline view for client pitches that start with scores",
@@ -153,7 +153,7 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     description:
       "Stop rebuilding auth and billing. Ship your product on a stack that already takes payments.",
     features: [
-      "Production Next.js App Router + TypeScript + Tailwind scaffold",
+      "Production Next.js App Router + TypeScript + Tailwind foundation",
       "Postgres + Prisma (customers, licenses, waitlist models)",
       "Magic-link auth pre-wired (Supabase)",
       "Checkout + signature verify + webhook unlock flow",
@@ -219,11 +219,11 @@ export const FOUNDRY_PLANS: PricingPlan[] = [
     price: "$149",
     cadence: "one-time",
     description:
-      "Research + scaffold in one checkout. Foundry Solo + 12 months Operator — cleaner and cheaper than buying both apart ($99 + $180).",
+      "Research + ship kit in one checkout. Foundry Solo + 12 months Operator — cleaner and cheaper than buying both apart ($99 + $180).",
     features: [
       "Foundry Solo source license (full zip)",
       "12 months Operator Vault access",
-      "Kill criteria + premium teardowns for a full year",
+      "Go/no-go criteria + premium teardowns for a full year",
       "CSV export + magic-link Vault access",
       "Save ~$130 vs Solo + monthlies at launch price",
       "Single checkout · one receipt",

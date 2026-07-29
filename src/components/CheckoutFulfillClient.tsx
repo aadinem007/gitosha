@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LicensePortal } from "@/components/LicensePortal";
 
 type Stored = {
@@ -8,6 +8,30 @@ type Stored = {
   email?: string;
   licenseKey?: string;
 };
+
+function readStoredCheckout(initialEmail: string, initialKey: string) {
+  if (initialKey) {
+    return { email: initialEmail, key: initialKey, ready: true };
+  }
+  if (typeof window === "undefined") {
+    return { email: initialEmail, key: initialKey, ready: Boolean(initialKey) };
+  }
+  try {
+    const raw = sessionStorage.getItem("gitosha_checkout");
+    if (!raw) {
+      return { email: initialEmail, key: initialKey, ready: true };
+    }
+    const data = JSON.parse(raw) as Stored;
+    sessionStorage.removeItem("gitosha_checkout");
+    return {
+      email: data.email ?? initialEmail,
+      key: data.licenseKey ?? initialKey,
+      ready: true,
+    };
+  } catch {
+    return { email: initialEmail, key: initialKey, ready: true };
+  }
+}
 
 /**
  * Reads one-time checkout payload from sessionStorage (never from URL query).
@@ -21,27 +45,9 @@ export function CheckoutFulfillClient({
   initialKey?: string;
   product?: string;
 }) {
-  const [email, setEmail] = useState(initialEmail);
-  const [key, setKey] = useState(initialKey);
-  const [ready, setReady] = useState(Boolean(initialKey));
-
-  useEffect(() => {
-    if (initialKey) return;
-    try {
-      const raw = sessionStorage.getItem("gitosha_checkout");
-      if (!raw) {
-        setReady(true);
-        return;
-      }
-      const data = JSON.parse(raw) as Stored;
-      if (data.email) setEmail(data.email);
-      if (data.licenseKey) setKey(data.licenseKey);
-      sessionStorage.removeItem("gitosha_checkout");
-    } catch {
-      /* ignore */
-    }
-    setReady(true);
-  }, [initialKey]);
+  const [{ email, key, ready }] = useState(() =>
+    readStoredCheckout(initialEmail, initialKey)
+  );
 
   if (!ready) {
     return <p className="text-center text-sm text-[var(--muted)]">Preparing your download…</p>;

@@ -71,8 +71,8 @@ export default function PricingPage() {
             </h1>
             <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
               Scout is free forever. Operator unlocks the full research vault. Foundry is a one-time
-              production scaffold — Agency is the studio license that pays for itself on the second
-              client build.
+              production-ready foundation — Agency is the studio license that pays for itself on the
+              second client build.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold uppercase tracking-[0.12em]">

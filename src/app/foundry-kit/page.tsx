@@ -40,7 +40,7 @@ const AGENCY_EXTRAS = [
 ];
 
 const COMPARE = [
-  { label: "Production scaffold zip", solo: true, agency: true },
+  { label: "Production foundation zip", solo: true, agency: true },
   { label: "Auth + payments + DB wired", solo: true, agency: true },
   { label: "Server-side payment amounts", solo: true, agency: true },
   { label: "Commercial products allowed", solo: "1 product", agency: "Unlimited clients" },
@@ -61,7 +61,7 @@ export default function FoundryKitPage() {
       <Nav />
       <main className="flex-1">
         <section className="page-hero">
-          <p className="page-kicker animate-rise">Production scaffold · USD</p>
+          <p className="page-kicker animate-rise">Production foundation · USD</p>
           <h1 className="animate-rise-delay mt-3">Foundry</h1>
           <div className="rule mt-6 max-w-xs" />
           <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[] = [
   {
     q: "What do I get on Operator ($15/mo launch)?",
-    a: "Everything in free Scout, plus every premium teardown (Markdown), kill criteria as pass/fail gates, anti-portfolio of rejects, financial sketches, 14-day launch checklists, competitor maps + positioning wedges, 10-dimension breakdowns, CSV export, magic-link Vault, searchable growing archive, email support for access & billing, and 15% off Foundry forever. Cancel anytime — built to decide ship/kill/park in one sitting.",
+    a: "Everything in free Scout, plus every premium teardown (Markdown), go/no-go criteria as pass/fail gates, anti-portfolio of rejects, financial sketches, 14-day launch checklists, competitor maps + positioning wedges, 10-dimension breakdowns, CSV export, magic-link Vault, searchable growing archive, email support for access & billing, and 15% off Foundry forever. Cancel anytime — built to decide ship / pass / defer in one sitting.",
     links: [
       { label: "See all Operator features", href: "/whats-inside" },
       { label: "Pricing", href: "/pricing" },
@@ -19,7 +19,7 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
   },
   {
     q: "What am I buying with Foundry Agency ($249)?",
-    a: "The Solo production zip (auth, database, checkout, webhooks, deploy docs — same stack Gitosha runs), plus unlimited client projects, white-label rights, handoff/invoice/proposal/white-label docs in the zip, priority support, 1 year of Studio Vault (5 seats), and commercial rights for agency resale of your builds. Not a custom build of your client’s product — the scaffold + rights pack you reuse every engagement.",
+    a: "The Solo production zip (auth, database, checkout, webhooks, deploy docs — same stack Gitosha runs), plus unlimited client projects, white-label rights, handoff/invoice/proposal/white-label docs in the zip, priority support, 1 year of Studio Vault (5 seats), and commercial rights for agency resale of your builds. Not a custom build of your client’s product — the production foundation + rights pack you reuse every engagement.",
     links: [
       { label: "Full inventory", href: "/whats-inside" },
       { label: "Inspect Foundry", href: "/foundry-kit" },
@@ -37,7 +37,7 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
   },
   {
     q: "What’s in the Launch Bundle ($149)?",
-    a: "Foundry Solo (full zip) + 12 months Operator — kill criteria, premium teardowns, CSV export, magic-link Vault — in one payment. Saves ~$130 vs Solo + monthlies at launch price. Best if you want research and the ship kit without two cart decisions.",
+    a: "Foundry Solo (full zip) + 12 months Operator — go/no-go criteria, premium teardowns, CSV export, magic-link Vault — in one payment. Saves ~$130 vs Solo + monthlies at launch price. Best if you want research and the ship kit without two cart decisions.",
     links: [{ label: "Pricing", href: "/pricing" }],
   },
   {

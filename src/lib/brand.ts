@@ -12,7 +12,7 @@ export const BRAND = {
   tagline: "Know what to build. Then ship it.",
   /** Slightly longer meta / footer line */
   description:
-    "Know what to build, then ship it. USD-priced Vault research and Foundry SaaS scaffold for international operators.",
+    "Know what to build, then ship it. USD-priced Vault research and a production-ready Foundry foundation for international operators.",
   chatName: "Gita",
   chatRole: "Gitosha guide",
   products: {

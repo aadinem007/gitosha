@@ -54,14 +54,15 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
 
     const camera = new THREE.PerspectiveCamera(hero ? 38 : 34, w / h, 0.1, 60);
     const camBase = hero
-      ? { x: 0.4, y: 0.45, z: 6.2 }
+      ? { x: 0.15, y: 0.4, z: 6.4 }
       : { x: 0.05, y: 0.25, z: 4.8 };
     camera.position.set(camBase.x, camBase.y, camBase.z);
 
     const root = new THREE.Group();
     scene.add(root);
     const stage = new THREE.Group();
-    stage.position.set(hero ? 1.2 : 0, hero ? 0.15 : 0, 0);
+    // Keep sculpture on the right so the brand mark stays readable
+    stage.position.set(hero ? 1.95 : 0, hero ? 0.12 : 0, 0);
     root.add(stage);
 
     // Soft studio — metal reads chrome, no white clay flood

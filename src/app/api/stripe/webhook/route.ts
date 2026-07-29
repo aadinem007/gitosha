@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
-import { fulfillPurchase } from "@/lib/fulfill";
+import { fulfillPurchase, isFulfillablePlanId } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { securityLog } from "@/lib/secure";
 import { getStripe } from "@/lib/stripe";
@@ -9,6 +9,13 @@ import { getStripe } from "@/lib/stripe";
 export const runtime = "nodejs";
 
 async function fulfillFromSession(session: Stripe.Checkout.Session) {
+  if (
+    session.payment_status !== "paid" &&
+    session.payment_status !== "no_payment_required"
+  ) {
+    return;
+  }
+
   const email = (
     session.metadata?.email ||
     session.customer_email ||
@@ -16,7 +23,12 @@ async function fulfillFromSession(session: Stripe.Checkout.Session) {
     ""
   ).toLowerCase();
   const planId = session.metadata?.planId;
-  if (!email || !planId) return;
+  if (!email || !planId || !isFulfillablePlanId(planId)) {
+    if (planId && !isFulfillablePlanId(planId)) {
+      securityLog("stripe_webhook_unknown_plan", { planId: planId.slice(0, 64) });
+    }
+    return;
+  }
 
   const paymentIntent =
     typeof session.payment_intent === "string"
@@ -52,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
-    return NextResponse.json({ error: "Unavailable" }, { status: 400 });
+    return NextResponse.json({ error: "Unavailable" }, { status: 503 });
   }
 
   const rawBody = await req.text();
@@ -79,12 +91,7 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        if (
-          session.payment_status === "paid" ||
-          session.payment_status === "no_payment_required"
-        ) {
-          await fulfillFromSession(session);
-        }
+        await fulfillFromSession(session);
         break;
       }
       case "checkout.session.async_payment_succeeded": {

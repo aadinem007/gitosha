@@ -19,16 +19,19 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/login`);
   }
 
-  if (code) {
-    const supabase = await createSupabaseServerClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) {
-      securityLog("auth_callback_exchange_failed", {
-        ip: clientIp(request),
-        message: error.message.slice(0, 120),
-      });
-      return NextResponse.redirect(`${origin}/login?error=auth`);
-    }
+  if (!code) {
+    securityLog("auth_callback_missing_code", { ip: clientIp(request) });
+    return NextResponse.redirect(`${origin}/login`);
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) {
+    securityLog("auth_callback_exchange_failed", {
+      ip: clientIp(request),
+      message: error.message.slice(0, 120),
+    });
+    return NextResponse.redirect(`${origin}/login?error=auth`);
   }
 
   return NextResponse.redirect(`${origin}${next}`);

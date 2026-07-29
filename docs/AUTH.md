@@ -4,6 +4,14 @@ Production site: `https://gitosha.vercel.app`
 
 Magic links were redirecting to `http://localhost:3000` because Supabase **Site URL** was still localhost, and/or `NEXT_PUBLIC_SITE_URL` was missing on Vercel.
 
+## Security posture (app)
+
+- Branded magic links use **server-only** `SUPABASE_SERVICE_ROLE_KEY` via `src/lib/supabase/admin.ts` — never `NEXT_PUBLIC_*`.
+- `/api/auth/magic-link` is rate-limited per IP (5/min) and per email (3/hour); responses do not reveal whether an account exists.
+- `/api/auth/callback` requires a `code`; `next` is restricted to same-site relative paths (`safeRedirectPath`).
+- Session cookies: `SameSite=Lax`, `Secure` in production (via `@supabase/ssr` + proxy/server clients).
+- `/vault` is gated in `src/proxy.ts` **and** redirects unauthenticated users in the page itself (defense-in-depth against proxy bypass CVEs).
+
 ## 1. Vercel env
 
 Set:
@@ -14,7 +22,7 @@ NEXT_PUBLIC_SITE_URL=https://gitosha.vercel.app
 
 Redeploy after saving.
 
-The app uses this for `emailRedirectTo` (`src/lib/site.ts` → `LoginForm`). In production it also falls back to `https://gitosha.vercel.app` if the env var is missing.
+The app uses this for `emailRedirectTo` (`src/lib/site.ts` → `LoginForm`). In production it also falls back to `https://gitosha.vercel.app` if the env var is missing. Production same-origin checks **fail closed** if this URL is missing/invalid.
 
 ## 2. Supabase Dashboard (required)
 
@@ -35,7 +43,7 @@ Save.
 ### Preferred: branded Resend path (app code)
 
 If Vercel has **both**:
-- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (server-only — never expose to the browser)
 - `RESEND_API_KEY`
 - `EMAIL_FROM=Gitosha <your-verified-domain@…>`
 

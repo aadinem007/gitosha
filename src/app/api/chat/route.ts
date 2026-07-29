@@ -21,9 +21,12 @@ async function maybeLlmReply(message: string, grounded: ChatReply): Promise<Chat
   const key = process.env.OPENAI_API_KEY;
   if (!key) return null;
 
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8_000);
   try {
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
+      signal: ctrl.signal,
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
@@ -42,7 +45,7 @@ ${grounded.text}
 
 Allowed links (mention only if relevant): ${(grounded.links ?? []).map((l) => l.href).join(", ") || "none"}`,
           },
-          { role: "user", content: message },
+          { role: "user", content: message.slice(0, 500) },
         ],
       }),
     });
@@ -53,12 +56,14 @@ Allowed links (mention only if relevant): ${(grounded.links ?? []).map((l) => l.
     const text = data.choices?.[0]?.message?.content?.trim();
     if (!text) return null;
     return {
-      text,
+      text: text.slice(0, 1200),
       links: grounded.links,
       suggestions: grounded.suggestions,
     };
   } catch {
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 

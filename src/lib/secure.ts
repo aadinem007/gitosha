@@ -78,8 +78,21 @@ export function assertSameOrigin(req: Request): boolean {
     }
   }
 
-  // No Origin/Referer (curl, server-to-server) — allow; webhooks have no browser Origin
+  // No Origin/Referer — allow only outside production (local curl / tooling).
+  // Production browser POSTs must send Origin or Referer (webhooks use dedicated routes).
+  if (isProd) {
+    securityLog("origin_missing", { path: new URL(req.url).pathname });
+    return false;
+  }
   return true;
+}
+
+/**
+ * Alias for browser JSON APIs — same rules as assertSameOrigin (prod requires Origin/Referer).
+ * Webhooks must NOT call this; they verify signatures instead.
+ */
+export function requireBrowserOrigin(req: Request): boolean {
+  return assertSameOrigin(req);
 }
 
 /** Require JSON Content-Type on browser JSON APIs (allows charset suffix). */

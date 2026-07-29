@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutFulfillClient } from "@/components/CheckoutFulfillClient";
-import { fulfillPurchase } from "@/lib/fulfill";
+import { fulfillPurchase, isFulfillablePlanId } from "@/lib/fulfill";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 
 async function resolveStripeSession(sessionId: string): Promise<{
@@ -27,7 +27,7 @@ async function resolveStripeSession(sessionId: string): Promise<{
       ""
     ).toLowerCase();
     const planId = session.metadata?.planId;
-    if (!email || !planId) return {};
+    if (!email || !planId || !isFulfillablePlanId(planId)) return {};
 
     const paymentIntent =
       typeof session.payment_intent === "string"
@@ -49,6 +49,8 @@ async function resolveStripeSession(sessionId: string): Promise<{
       customerId,
       provider: "stripe",
     });
+
+    if (result.product === "unknown") return {};
 
     return {
       product: result.product,

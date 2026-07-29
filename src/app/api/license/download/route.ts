@@ -54,21 +54,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "License not found for that email + key." }, { status: 404 });
   }
 
-  if (license.downloadCount >= 50) {
-    return NextResponse.json(
-      { error: "Download limit reached. Contact support with your license key." },
-      { status: 429 }
-    );
-  }
-
-  await prisma.licenseKey.update({
-    where: { id: license.id },
+  // Atomic cap — closes TOCTOU race where parallel requests both pass a pre-check
+  const bumped = await prisma.licenseKey.updateMany({
+    where: { id: license.id, downloadCount: { lt: 50 } },
     data: {
       downloadCount: { increment: 1 },
       lastDownloadedAt: new Date(),
       activatedAt: license.activatedAt ?? new Date(),
     },
   });
+  if (bumped.count === 0) {
+    securityLog("license_dl_cap_hit", { tier: license.tier });
+    return NextResponse.json(
+      { error: "Download limit reached. Contact support with your license key." },
+      { status: 429 }
+    );
+  }
 
   const { stream, filename } = createFoundryZipStream({
     tier: license.tier,
@@ -77,13 +78,15 @@ export async function POST(req: NextRequest) {
   });
 
   const webStream = Readable.toWeb(stream) as ReadableStream;
+  const safeName = filename === "foundry-agency.zip" ? "foundry-agency.zip" : "foundry-solo.zip";
 
   return new NextResponse(webStream, {
     status: 200,
     headers: {
       "Content-Type": "application/zip",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `attachment; filename="${safeName}"`,
       "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
       "X-License-Tier": license.tier,
     },
   });

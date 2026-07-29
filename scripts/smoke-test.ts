@@ -1,6 +1,8 @@
 import { assertPricingInvariants, VAULT_PLANS, FOUNDRY_PLANS } from "../src/lib/pricing";
 import { matchKnowledge, KNOWLEDGE, CHAT_GREETING } from "../src/lib/chat-knowledge";
 import { safeRedirectPath } from "../src/lib/secure";
+import { isFulfillablePlanId } from "../src/lib/fulfill";
+import { rateLimit } from "../src/lib/rate-limit";
 import { existsSync } from "fs";
 import path from "path";
 
@@ -60,12 +62,37 @@ const redirectCases: [string, string][] = [
   ["https://evil.com", "/vault"],
   ["/\\evil", "/vault"],
   ["vault", "/vault"],
+  ["/\tevil", "/vault"],
 ];
 for (const [input, expect] of redirectCases) {
   const got = safeRedirectPath(input, "/vault");
   if (got === expect) ok(`safeRedirectPath: ${JSON.stringify(input)}`);
   else fail(`safeRedirectPath: ${JSON.stringify(input)}`, `got ${got}, want ${expect}`);
 }
+
+// Fulfill plan allowlist — payment path must reject unknown plan ids
+if (isFulfillablePlanId("vault-pro") && isFulfillablePlanId("foundry-agency")) {
+  ok("fulfill allowlist includes paid plans");
+} else {
+  fail("fulfill allowlist missing paid plans");
+}
+if (
+  !isFulfillablePlanId("vault-free") &&
+  !isFulfillablePlanId("admin-god-mode") &&
+  !isFulfillablePlanId("")
+) {
+  ok("fulfill allowlist rejects free/unknown plans");
+} else {
+  fail("fulfill allowlist too permissive");
+}
+
+// Rate limit: second request over limit fails
+const rlKey = `smoke-rl-${Date.now()}`;
+const a = rateLimit({ key: rlKey, limit: 2, windowMs: 60_000 });
+const b = rateLimit({ key: rlKey, limit: 2, windowMs: 60_000 });
+const c = rateLimit({ key: rlKey, limit: 2, windowMs: 60_000 });
+if (a.ok && b.ok && !c.ok) ok("rateLimit blocks after window quota");
+else fail("rateLimit behavior unexpected");
 
 // Kit files Agency buyers are promised
 const kitRoot = path.join(process.cwd(), "kits", "foundry");

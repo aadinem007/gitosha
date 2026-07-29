@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { SEED_IDEAS, totalScore, type IdeaScores } from "@/lib/ideas-data";
+import { prisma } from "@/lib/prisma";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const SCORE_LABELS: { key: keyof IdeaScores; label: string }[] = [
   { key: "demand", label: "Demand" },
@@ -33,10 +35,33 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function IdeaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const idea = SEED_IDEAS.find((i) => i.slug === slug);
-  if (!idea) notFound();
+  const found = SEED_IDEAS.find((i) => i.slug === slug);
+  if (!found) {
+    notFound();
+    return null;
+  }
+  const idea = found;
 
   const score = totalScore(idea.scores);
+
+  // Premium teardowns require Operator — never leak Pro copy on public SEO pages
+  let canReadTeardown = !idea.isPremium;
+  if (idea.isPremium) {
+    try {
+      const supabase = await createSupabaseServerClient();
+      const { data } = await supabase.auth.getUser();
+      if (data.user?.email) {
+        const subscriber = await prisma.subscriber.findUnique({
+          where: { email: data.user.email.toLowerCase() },
+        });
+        canReadTeardown =
+          (subscriber?.tier === "PRO" || subscriber?.tier === "TEAM") &&
+          subscriber?.status === "ACTIVE";
+      }
+    } catch {
+      canReadTeardown = false;
+    }
+  }
 
   return (
     <>
@@ -71,15 +96,24 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
 
           <div className="mt-8 border-t border-[var(--line)] pt-6">
             <h2 className="font-display font-semibold">Teardown</h2>
-            <p className="mt-2 text-sm text-[var(--fog)]">{idea.teardownMd}</p>
-            {idea.isPremium && (
-              <p className="mt-4 text-sm text-[var(--muted)]">
-                Full competitor map and launch kit unlock on{" "}
-                <Link href="/pricing" className="text-[var(--brass-dim)] underline">
-                  Operator ($15/mo launch)
-                </Link>
-                .
-              </p>
+            {canReadTeardown ? (
+              <p className="mt-2 text-sm text-[var(--fog)]">{idea.teardownMd}</p>
+            ) : (
+              <>
+                <p className="mt-2 text-sm text-[var(--fog)]">
+                  Full competitor map, go/no-go gates, and launch notes unlock on Operator.
+                </p>
+                <p className="mt-4 text-sm text-[var(--muted)]">
+                  <Link href="/pricing" className="text-[var(--brass-dim)] underline">
+                    Unlock Operator — $15/mo launch
+                  </Link>
+                  {" · "}
+                  <Link href="/login" className="underline">
+                    Sign in
+                  </Link>{" "}
+                  if you already subscribe.
+                </p>
+              </>
             )}
           </div>
 

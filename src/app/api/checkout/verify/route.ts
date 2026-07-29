@@ -1,7 +1,7 @@
 import { createHmac } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { fulfillPurchase } from "@/lib/fulfill";
+import { fulfillPurchase, isFulfillablePlanId } from "@/lib/fulfill";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getRazorpay } from "@/lib/razorpay";
 import { readJsonLimited, safeEqual, assertSameOrigin, requireJsonContentType, securityLog } from "@/lib/secure";
@@ -68,6 +68,11 @@ async function verifyStripe(sessionId: string) {
   const customerId =
     typeof session.customer === "string" ? session.customer : session.customer?.id;
 
+  if (!isFulfillablePlanId(planId)) {
+    securityLog("verify_stripe_unknown_plan", { planId: planId.slice(0, 64) });
+    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
+  }
+
   const result = await fulfillPurchase({
     email,
     planId,
@@ -77,6 +82,10 @@ async function verifyStripe(sessionId: string) {
     customerId,
     provider: "stripe",
   });
+
+  if (result.product === "unknown") {
+    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
+  }
 
   return NextResponse.json({
     ok: true,
@@ -137,11 +146,13 @@ async function verifyRazorpay(data: z.infer<typeof razorpaySchema>) {
     return NextResponse.json({ error: "Missing purchase metadata" }, { status: 400 });
   }
 
-  // Optional consistency check — mismatch means tampering
-  if (
-    data.planId !== planId ||
-    data.email.toLowerCase() !== email
-  ) {
+  if (!isFulfillablePlanId(planId)) {
+    securityLog("verify_razorpay_unknown_plan", { planId: planId.slice(0, 64) });
+    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
+  }
+
+  // Consistency check — mismatch means tampering; server notes still win for fulfill
+  if (data.planId !== planId || data.email.toLowerCase() !== email) {
     securityLog("verify_client_metadata_mismatch", {
       mode: data.mode,
       clientPlan: data.planId,
@@ -158,6 +169,10 @@ async function verifyRazorpay(data: z.infer<typeof razorpaySchema>) {
     subscriptionId: data.razorpay_subscription_id,
     provider: "razorpay",
   });
+
+  if (result.product === "unknown") {
+    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
+  }
 
   return NextResponse.json({
     ok: true,

@@ -50,6 +50,18 @@ export async function POST(req: NextRequest) {
   }
 
   const email = parsed.data.email.toLowerCase();
+  // Per-inbox cap — stops magic-link bombing a victim mailbox (independent of IP)
+  const emailLimited = rateLimit({
+    key: `magic-link-email:${email}`,
+    limit: 3,
+    windowMs: 60 * 60_000,
+  });
+  if (!emailLimited.ok) {
+    securityLog("magic_link_email_rate_limited", { ip: clientIp(req) });
+    // Same shape as success — no email enumeration
+    return NextResponse.json({ ok: true, branded: true });
+  }
+
   const next = safeRedirectPath(parsed.data.next, "/vault");
   const redirectTo = authCallbackUrl(next);
 

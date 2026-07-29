@@ -1,8 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import { generateLicenseKey } from "@/lib/license";
 import { sendLicenseKeyEmail, sendWelcomeEmail } from "@/lib/email";
+import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
+import { securityLog } from "@/lib/secure";
 
 export type PaymentProvider = "stripe" | "razorpay";
+
+/** Paid plan ids only — never trust arbitrary client/webhook plan strings. */
+export const FULFILLABLE_PLAN_IDS = new Set(
+  [...VAULT_PLANS, ...FOUNDRY_PLANS]
+    .filter((p) => p.mode !== "none")
+    .map((p) => p.id)
+);
+
+export function isFulfillablePlanId(planId: string): boolean {
+  return FULFILLABLE_PLAN_IDS.has(planId as (typeof VAULT_PLANS)[number]["id"]);
+}
 
 export async function fulfillVaultSubscription(opts: {
   email: string;
@@ -13,6 +26,14 @@ export async function fulfillVaultSubscription(opts: {
 }) {
   const tier = opts.planId.includes("team") || opts.planId.includes("studio") ? "TEAM" : "PRO";
   const provider = opts.provider ?? "stripe";
+
+  const existing = await prisma.subscriber.findUnique({ where: { email: opts.email } });
+  const alreadyActiveSameTier =
+    existing?.status === "ACTIVE" &&
+    existing.tier === tier &&
+    (provider === "stripe"
+      ? Boolean(opts.subscriptionId) && existing.stripeSubscriptionId === opts.subscriptionId
+      : Boolean(opts.subscriptionId) && existing.razorpaySubscriptionId === opts.subscriptionId);
 
   await prisma.subscriber.upsert({
     where: { email: opts.email },
@@ -44,7 +65,11 @@ export async function fulfillVaultSubscription(opts: {
           }),
     },
   });
-  await sendWelcomeEmail(opts.email, tier);
+
+  // Idempotent webhooks / verify retries must not spam welcome mail
+  if (!alreadyActiveSameTier && !(existing?.status === "ACTIVE" && existing.tier === tier)) {
+    await sendWelcomeEmail(opts.email, tier);
+  }
 }
 
 export async function fulfillFoundryPurchase(opts: {
@@ -104,6 +129,12 @@ export async function fulfillPurchase(opts: {
   provider?: PaymentProvider;
 }): Promise<{ licenseKey?: string; product: string }> {
   const provider = opts.provider ?? "stripe";
+
+  // Fail closed: refuse unknown / free / forged plan ids from notes or metadata
+  if (!isFulfillablePlanId(opts.planId)) {
+    securityLog("fulfill_unknown_plan", { planId: opts.planId.slice(0, 64), provider });
+    return { product: "unknown" };
+  }
 
   if (opts.planId === "bundle-launch") {
     const licenseKey = await fulfillFoundryPurchase({

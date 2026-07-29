@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { prisma } from "@/lib/prisma";
@@ -7,9 +8,15 @@ export default async function VaultPage() {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.auth.getUser();
 
-  const subscriber = data.user?.email
-    ? await prisma.subscriber.findUnique({ where: { email: data.user.email } })
-    : null;
+  // Defense-in-depth: never rely only on proxy/middleware for AuthZ
+  const userEmail = data.user?.email?.toLowerCase();
+  if (!userEmail) {
+    redirect("/login?next=/vault");
+  }
+
+  const subscriber = await prisma.subscriber.findUnique({
+    where: { email: userEmail },
+  });
 
   const isPro =
     (subscriber?.tier === "PRO" || subscriber?.tier === "TEAM") &&

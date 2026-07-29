@@ -233,15 +233,16 @@ body {
 .hero-cinematic-3d .brand-mark {
   color: #bbccd7;
   background: linear-gradient(135deg, #646973 0%, #9aadb8 38%, #bbccd7 68%, #e8f5c0 100%);
+  background-size: 100% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: none;
+  /* Avoid isolation/filter clipping the final glyph paint box */
   filter:
     drop-shadow(0 0 1px rgba(8, 10, 6, 0.9))
     drop-shadow(0 2px 0 rgba(8, 10, 6, 0.55))
     drop-shadow(0 14px 36px rgba(0, 0, 0, 0.55));
-  isolation: isolate;
 }
 
 .hero-cinematic-3d .hero-line {
@@ -292,10 +293,11 @@ body {
   z-index: 2;
   margin: 0;
   width: 100%;
-  max-width: 100%;
+  max-width: min(100%, 46rem);
   overflow: visible;
   container-type: inline-size;
   container-name: hero-stage;
+  padding-inline-end: 0.35rem;
 }
 
 .hero-stage::before {
@@ -315,31 +317,30 @@ body {
 @media (min-width: 900px) {
   .hero-stage {
     /* Wide enough for full GITOSHA; leave room for 3D on the right */
-    max-width: min(54rem, 62vw);
+    max-width: min(48rem, 58vw);
   }
 }
 
 .brand-mark {
   font-family: var(--font-display), sans-serif;
-  /* Fit all 7 letters inside the stage — never crop the final A */
-  font-size: clamp(3.4rem, 14vw, 11.5rem);
-  font-size: clamp(3.4rem, min(18cqi, 14vw), 11.5rem);
-  line-height: 0.82;
+  /* Scale to container so all 7 letters (incl. final A) stay inside the stage */
+  font-size: clamp(2.75rem, min(15.5cqi, 11.5vw), 9.25rem);
+  line-height: 0.86;
   font-weight: 400;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
   text-transform: uppercase;
   color: var(--ink);
   text-shadow: none;
   position: relative;
   z-index: 3;
   display: block;
-  width: max-content;
+  width: 100%;
   max-width: 100%;
   white-space: nowrap;
   overflow: visible;
-  /* Extra end pad so the last glyph / tracking isn't clipped by overflow parents */
-  padding-inline-end: 0.12em;
-  box-sizing: content-box;
+  /* End pad so glyph side-bearings / tracking aren't clipped by overflow parents */
+  padding-inline-end: 0.2em;
+  box-sizing: border-box;
 }
 
 .hero-line {
@@ -358,7 +359,7 @@ body {
 
 .hero-support {
   margin-top: 0.95rem;
-  max-width: 32rem;
+  max-width: 36rem;
   font-size: clamp(1.08rem, 1.7vw, 1.22rem);
   line-height: 1.55;
   font-weight: 450;
@@ -848,7 +849,7 @@ body {
 .chapter {
   position: relative;
   border: none;
-  min-height: min(78vh, 720px);
+  min-height: min(82vh, 780px);
   display: grid;
   grid-template-columns: 1fr;
   align-items: stretch;
@@ -1022,18 +1023,20 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 3.5rem 1.5rem;
+  padding: 3.5rem 1.5rem 4rem;
   position: relative;
   z-index: 2;
+  overflow: visible;
 }
 
 @media (min-width: 900px) {
   .chapter-inner {
-    padding: 4.5rem 3rem;
+    padding: 4.5rem 3rem 5rem;
   }
 
-  .chapter-inner-vault {
-    /* Pull copy off the dark seam so 01 / Vault aren't jammed on the split */
+  .chapter-inner-vault,
+  .chapter-inner-foundry {
+    /* Pull copy off the dark seam so content isn't jammed on the split */
     padding-left: 3.75rem;
     padding-right: 3.5rem;
   }
@@ -1070,28 +1073,23 @@ body {
   color: var(--ink);
 }
 
-.chapter-title-product {
-  margin-top: 0.55rem;
-  font-size: clamp(3.6rem, 10vw, 7rem);
-  line-height: 0.88;
-  letter-spacing: 0.04em;
-}
-
-.chapter-lead {
-  margin-top: 1.15rem;
-  max-width: 28rem;
-  font-size: clamp(1.2rem, 2vw, 1.4rem);
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: -0.02em;
-  color: var(--ink);
+/* Sentence headlines — content-rich chapter panels (not a lone product word) */
+.chapter-title-section {
+  margin-top: 0.85rem;
+  max-width: 22ch;
+  font-size: clamp(2.15rem, 4.6vw, 3.55rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  font-weight: 700;
+  font-family: var(--font-body), sans-serif;
 }
 
 .chapter-copy {
-  margin-top: 1.1rem;
-  max-width: 32rem;
-  font-size: clamp(1.08rem, 1.7vw, 1.22rem);
-  line-height: 1.6;
+  margin-top: 1.25rem;
+  max-width: 34rem;
+  font-size: clamp(1.08rem, 1.7vw, 1.24rem);
+  line-height: 1.62;
   color: var(--support);
 }
 
@@ -1695,12 +1693,12 @@ a.site-footer-brand:hover {
 @keyframes draft {
   from {
     opacity: 0;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.02em;
     filter: blur(2px);
   }
   to {
     opacity: 1;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.005em;
     filter: blur(0);
   }
 }
@@ -1769,10 +1767,10 @@ a.site-footer-brand:hover {
 /* Scroll-in once — used with RevealObserver + [data-reveal] */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(48px);
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 
@@ -1780,6 +1778,71 @@ a.site-footer-brand:hover {
   opacity: 1;
   transform: translateY(0);
   will-change: auto;
+}
+
+/* Stagger copy blocks inside revealed sections */
+[data-reveal] .mega-split-inner > *,
+[data-reveal] .chapter-inner > *,
+[data-reveal] .story-inner > *,
+[data-reveal] .proof-inner > *,
+[data-reveal] .closing-inner > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal].is-inview .mega-split-inner > *,
+[data-reveal].is-inview .chapter-inner > *,
+[data-reveal].is-inview .story-inner > *,
+[data-reveal].is-inview .proof-inner > *,
+[data-reveal].is-inview .closing-inner > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-reveal].is-inview .mega-split-inner > *:nth-child(1),
+[data-reveal].is-inview .chapter-inner > *:nth-child(1),
+[data-reveal].is-inview .story-inner > *:nth-child(1),
+[data-reveal].is-inview .proof-inner > *:nth-child(1),
+[data-reveal].is-inview .closing-inner > *:nth-child(1) {
+  transition-delay: 0.04s;
+}
+[data-reveal].is-inview .mega-split-inner > *:nth-child(2),
+[data-reveal].is-inview .chapter-inner > *:nth-child(2),
+[data-reveal].is-inview .story-inner > *:nth-child(2),
+[data-reveal].is-inview .proof-inner > *:nth-child(2),
+[data-reveal].is-inview .closing-inner > *:nth-child(2) {
+  transition-delay: 0.12s;
+}
+[data-reveal].is-inview .mega-split-inner > *:nth-child(3),
+[data-reveal].is-inview .chapter-inner > *:nth-child(3),
+[data-reveal].is-inview .story-inner > *:nth-child(3),
+[data-reveal].is-inview .proof-inner > *:nth-child(3),
+[data-reveal].is-inview .closing-inner > *:nth-child(3) {
+  transition-delay: 0.2s;
+}
+[data-reveal].is-inview .mega-split-inner > *:nth-child(4),
+[data-reveal].is-inview .chapter-inner > *:nth-child(4),
+[data-reveal].is-inview .story-inner > *:nth-child(4),
+[data-reveal].is-inview .proof-inner > *:nth-child(4),
+[data-reveal].is-inview .closing-inner > *:nth-child(4) {
+  transition-delay: 0.28s;
+}
+[data-reveal].is-inview .mega-split-inner > *:nth-child(5),
+[data-reveal].is-inview .chapter-inner > *:nth-child(5),
+[data-reveal].is-inview .story-inner > *:nth-child(5),
+[data-reveal].is-inview .proof-inner > *:nth-child(5),
+[data-reveal].is-inview .closing-inner > *:nth-child(5) {
+  transition-delay: 0.36s;
+}
+[data-reveal].is-inview .mega-split-inner > *:nth-child(n + 6),
+[data-reveal].is-inview .chapter-inner > *:nth-child(n + 6),
+[data-reveal].is-inview .story-inner > *:nth-child(n + 6),
+[data-reveal].is-inview .proof-inner > *:nth-child(n + 6),
+[data-reveal].is-inview .closing-inner > *:nth-child(n + 6) {
+  transition-delay: 0.42s;
 }
 
 .legal-prose h2 {
@@ -2257,7 +2320,12 @@ a.site-footer-brand:hover {
     animation: none;
   }
 
-  [data-reveal] {
+  [data-reveal],
+  [data-reveal] .mega-split-inner > *,
+  [data-reveal] .chapter-inner > *,
+  [data-reveal] .story-inner > *,
+  [data-reveal] .proof-inner > *,
+  [data-reveal] .closing-inner > * {
     opacity: 1;
     transform: none;
     transition: none;

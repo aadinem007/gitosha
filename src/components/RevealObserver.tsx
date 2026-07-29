@@ -25,10 +25,21 @@ export function RevealObserver() {
           io.unobserve(entry.target);
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+      // Earlier trigger + lower bar so tall sections clearly animate on scroll
+      { threshold: 0.08, rootMargin: "0px 0px -4% 0px" }
     );
 
-    nodes.forEach((el) => io.observe(el));
+    nodes.forEach((el) => {
+      // Already on-screen at hydrate (e.g. hero support) — reveal immediately
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      if (rect.top < vh * 0.92 && rect.bottom > 0) {
+        el.classList.add("is-inview");
+        return;
+      }
+      io.observe(el);
+    });
+
     return () => io.disconnect();
   }, []);
 

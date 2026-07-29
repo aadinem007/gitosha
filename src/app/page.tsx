@@ -92,7 +92,9 @@ export default function Home() {
           <div className="hero-stage">
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
-            <p className="hero-support animate-rise">{BRAND.heroSupport}</p>
+            <p className="hero-support" data-reveal>
+              {BRAND.heroSupport}
+            </p>
             <div className="hero-cta animate-rise-delay">
               <Link href="/pricing" className="btn-primary">
                 View pricing
@@ -116,8 +118,8 @@ export default function Home() {
               <span className="mega-split-word mega-split-word-accent">what</span>
             </h2>
             <p className="mega-split-copy">
-              Ten dimensions. Clear decision frameworks. Public rejects. Research built for operators
-              who decide in one sitting — not scroll Twitter lists.
+              Ten scored dimensions. Explicit go/no-go frameworks. Public rejects. Research built for
+              operators who decide in one sitting — not another scroll of vanity idea lists.
             </p>
             <Link href="/#vault" className="mega-split-link">
               Enter the Vault →
@@ -149,12 +151,9 @@ export default function Home() {
           </div>
           <div className="chapter-inner chapter-inner-vault copy-scrim-soft">
             <p className="chapter-index">01</p>
-            <h2 className="chapter-title chapter-title-product">{BRAND.products.vault}</h2>
-            <p className="chapter-lead">{BRAND.vaultLead}</p>
-            <p className="chapter-copy">
-              Operator unlocks every teardown, financial sketch, and launch checklist — from $15/mo
-              launch for the first 100 seats.
-            </p>
+            <p className="chapter-eyebrow">{BRAND.products.vault}</p>
+            <h2 className="chapter-title chapter-title-section">{BRAND.vaultHeadline}</h2>
+            <p className="chapter-copy">{BRAND.vaultBody}</p>
             <Link href="/pricing" className="chapter-link">
               See {BRAND.products.vault} plans →
             </Link>
@@ -171,8 +170,8 @@ export default function Home() {
               <span className="mega-split-word mega-split-word-accent">ship</span>
             </h2>
             <p className="mega-split-copy">
-              Foundry is the production zip — auth, checkout, webhooks, deploy docs. Pay once in USD.
-              Download the same minute.
+              Foundry is the production zip — auth, checkout, webhooks, and deploy docs included. Pay
+              once in USD. Download the same minute. Start from a stack that already takes payments.
             </p>
             <Link href="/foundry-kit" className="mega-split-link">
               Inspect Foundry →
@@ -182,14 +181,11 @@ export default function Home() {
 
         {/* 02 Foundry */}
         <section className="chapter chapter-foundry" id="foundry" data-reveal>
-          <div className="chapter-inner copy-scrim-soft">
+          <div className="chapter-inner chapter-inner-foundry copy-scrim-soft">
             <p className="chapter-index">02</p>
             <p className="chapter-eyebrow">{BRAND.products.foundry}</p>
-            <h2 className="chapter-title">Ship on day one.</h2>
-            <p className="chapter-copy">
-              Solo $99 for your product. Agency $249 for every client after. Same stack Gitosha runs
-              — not a toy demo.
-            </p>
+            <h2 className="chapter-title chapter-title-section">{BRAND.foundryHeadline}</h2>
+            <p className="chapter-copy">{BRAND.foundryBody}</p>
             <Link href="/foundry-kit" className="chapter-link">
               Open {BRAND.products.foundry} →
             </Link>

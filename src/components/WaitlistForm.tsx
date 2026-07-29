@@ -32,7 +32,7 @@ export function WaitlistForm({
 
   if (status === "done") {
     return (
-      <p className="relative min-h-[2.75rem] text-sm font-medium leading-snug text-[var(--brass)]">
+      <p className="relative min-h-[2.75rem] text-sm font-medium leading-snug text-[var(--brass-dim)]">
         You&apos;re on the list. First issue lands this week.
       </p>
     );

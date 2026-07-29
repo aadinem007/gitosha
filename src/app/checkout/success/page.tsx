@@ -112,7 +112,7 @@ export default async function CheckoutSuccessPage({
 
               {key && (
                 <div className="mt-6 rounded-lg border border-[var(--brass)]/40 bg-[var(--panel)] px-4 py-5 text-center">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass-dim)]">
                     License key — save this
                   </p>
                   <p className="mt-2 font-mono text-xl font-semibold tracking-wide">{key}</p>

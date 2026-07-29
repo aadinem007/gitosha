@@ -21,7 +21,7 @@ export default function MethodPage() {
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
-          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
             Rubric
           </p>
           <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
@@ -38,7 +38,7 @@ export default function MethodPage() {
             {DIMENSIONS.map((d, i) => (
               <div key={d.name} className="border-t border-[var(--line)] py-4">
                 <div className="flex items-baseline gap-3">
-                  <span className="font-mono text-[10px] tracking-[0.18em] text-[var(--brass)]">
+                  <span className="font-mono text-[10px] tracking-[0.18em] text-[var(--brass-dim)]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <p className="font-display font-semibold text-[var(--ink)]">{d.name}</p>
@@ -61,7 +61,7 @@ export default function MethodPage() {
             </p>
             <Link
               href="/pricing"
-              className="mt-5 inline-block text-sm font-semibold text-[var(--brass)] underline-offset-4 hover:underline"
+              className="mt-5 inline-block text-sm font-semibold text-[var(--brass-dim)] underline-offset-4 hover:underline"
             >
               Get Operator access →
             </Link>

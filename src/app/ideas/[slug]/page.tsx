@@ -43,7 +43,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
       <Nav />
       <main className="flex-1">
         <article className="mx-auto max-w-3xl px-6 py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass-dim)]">
             {idea.category}
           </p>
           <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">{idea.name}</h1>
@@ -75,7 +75,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
             {idea.isPremium && (
               <p className="mt-4 text-sm text-[var(--muted)]">
                 Full competitor map and launch kit unlock on{" "}
-                <Link href="/pricing" className="text-[var(--brass)] underline">
+                <Link href="/pricing" className="text-[var(--brass-dim)] underline">
                   Operator ($15/mo launch)
                 </Link>
                 .

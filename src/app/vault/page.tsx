@@ -21,7 +21,7 @@ export default async function VaultPage() {
         <section className="mx-auto max-w-6xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+              <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
                 Research
               </p>
               <h1 className="animate-rise-delay mt-3 font-display text-4xl font-bold tracking-tight sm:text-5xl">
@@ -36,7 +36,7 @@ export default async function VaultPage() {
               {isPro && (
                 <a
                   href="/api/vault/export"
-                  className="font-semibold text-[var(--brass)] underline-offset-4 hover:underline"
+                  className="font-semibold text-[var(--brass-dim)] underline-offset-4 hover:underline"
                 >
                   Export CSV
                 </a>
@@ -49,7 +49,7 @@ export default async function VaultPage() {
               You&apos;re on Scout (free). Full teardowns unlock on Operator.{" "}
               <a
                 href="/pricing"
-                className="font-semibold text-[var(--brass)] underline-offset-4 hover:underline"
+                className="font-semibold text-[var(--brass-dim)] underline-offset-4 hover:underline"
               >
                 Upgrade — $15/mo launch price
               </a>

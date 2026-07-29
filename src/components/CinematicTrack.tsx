@@ -10,36 +10,101 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass.js";
 
-type Intensity = "full" | "quiet";
+export type TrackIntensity = "full" | "quiet" | "stage";
+
+type StageConfig = {
+  cam: { x: number; y: number; z: number; fov: number };
+  stageX: number;
+  stageY: number;
+  lookX: number;
+  targetSize: number;
+  fog: number;
+  bloom: number;
+  rim: number;
+  kick: number;
+  wire: number;
+  dust: number;
+  exposure: number;
+};
+
+const CONFIG: Record<TrackIntensity, StageConfig> = {
+  // Hero: right-weighted, room to breathe for copy on the left
+  full: {
+    cam: { x: 0.85, y: 0.25, z: 5.4, fov: 44 },
+    stageX: 1.55,
+    stageY: -0.05,
+    lookX: 1.3,
+    targetSize: 2.65,
+    fog: 0.018,
+    bloom: 0.11,
+    rim: 0.95,
+    kick: 8,
+    wire: 0.28,
+    dust: 160,
+    exposure: 1.05,
+  },
+  // Chapter overlays: softer, still readable under HUD
+  quiet: {
+    cam: { x: 0.2, y: 0.12, z: 4.4, fov: 38 },
+    stageX: 0.35,
+    stageY: -0.1,
+    lookX: 0.25,
+    targetSize: 2.2,
+    fog: 0.028,
+    bloom: 0.07,
+    rim: 0.7,
+    kick: 5,
+    wire: 0.22,
+    dust: 70,
+    exposure: 1.0,
+  },
+  // Mega-split panels: centered, close, hard presence
+  stage: {
+    cam: { x: 0.05, y: 0.08, z: 3.85, fov: 36 },
+    stageX: 0,
+    stageY: -0.05,
+    lookX: 0,
+    targetSize: 2.55,
+    fog: 0.012,
+    bloom: 0.1,
+    rim: 1.15,
+    kick: 10,
+    wire: 0.32,
+    dust: 110,
+    exposure: 1.08,
+  },
+};
 
 /**
- * Lando-style hero: real PBR GLB + wireframe twin, studio lights, right-weighted.
- * No placeholder cubes. Soft bloom only.
+ * Lando-style studio: real PBR GLB + wireframe twin, soft bloom, contact depth.
  */
-export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }) {
+export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntensity }) {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
 
+    const cfg = CONFIG[intensity];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const quiet = intensity === "quiet";
     let w = mount.clientWidth || window.innerWidth;
     let h = mount.clientHeight || window.innerHeight;
     let disposed = false;
+    let visible = true;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: false,
       powerPreference: "high-performance",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, quiet ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, intensity === "full" ? 2 : 1.65));
     renderer.setSize(w, h, false);
-    renderer.setClearColor(0xf4f4f0, 1);
+    renderer.setClearColor(0xf3f3ee, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.02;
+    renderer.toneMappingExposure = cfg.exposure;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.domElement.style.cssText =
       "position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:auto;touch-action:none;";
     mount.appendChild(renderer.domElement);
@@ -49,77 +114,112 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
 
     const scene = new THREE.Scene();
     scene.environment = envTex;
-    scene.background = new THREE.Color(0xf4f4f0);
-    scene.fog = new THREE.FogExp2(0xf4f4f0, quiet ? 0.04 : 0.022);
+    scene.background = new THREE.Color(0xf3f3ee);
+    scene.fog = new THREE.FogExp2(0xf3f3ee, cfg.fog);
 
-    const camera = new THREE.PerspectiveCamera(quiet ? 40 : 44, w / h, 0.1, 80);
-    // Bias camera so the model sits in the right half (copy stays left)
-    const camBase = {
-      x: quiet ? 0.35 : 0.85,
-      y: quiet ? 0.15 : 0.25,
-      z: quiet ? 4.6 : 5.4,
-    };
+    const camera = new THREE.PerspectiveCamera(cfg.cam.fov, w / h, 0.1, 80);
+    const camBase = { ...cfg.cam };
     camera.position.set(camBase.x, camBase.y, camBase.z);
 
     const root = new THREE.Group();
     scene.add(root);
 
     const stage = new THREE.Group();
-    // Push prop into the right side of frame
-    stage.position.set(quiet ? 0.9 : 1.55, quiet ? -0.15 : -0.05, 0);
+    stage.position.set(cfg.stageX, cfg.stageY, 0);
     root.add(stage);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.45));
-    const key = new THREE.DirectionalLight(0xfff4ea, quiet ? 1.6 : 2.4);
-    key.position.set(5, 6, 4);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.38));
+    const key = new THREE.DirectionalLight(0xfff4ea, intensity === "stage" ? 2.6 : 2.2);
+    key.position.set(4.5, 7, 3.5);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    key.shadow.camera.near = 0.5;
+    key.shadow.camera.far = 24;
+    key.shadow.camera.left = -6;
+    key.shadow.camera.right = 6;
+    key.shadow.camera.top = 6;
+    key.shadow.camera.bottom = -6;
+    key.shadow.bias = -0.0002;
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xa8bdd0, 0.55);
-    fill.position.set(-4, 2, 3);
+
+    const fill = new THREE.DirectionalLight(0xb8c8d8, 0.62);
+    fill.position.set(-5, 2.2, 2.5);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xc8ff00, quiet ? 0.55 : 0.95);
-    rim.position.set(-3, 2.5, -5);
+
+    const rim = new THREE.DirectionalLight(0xc8ff00, cfg.rim);
+    rim.position.set(-2.5, 3, -5);
     scene.add(rim);
-    const kick = new THREE.PointLight(0xc8ff00, quiet ? 4 : 8, 12, 2);
-    kick.position.set(2.2, 1.2, 2);
+
+    const kick = new THREE.PointLight(0xc8ff00, cfg.kick, 14, 2);
+    kick.position.set(1.6, 1.4, 2.2);
     stage.add(kick);
 
     const materials: THREE.Material[] = [];
     const geometries: THREE.BufferGeometry[] = [];
 
-    // Soft pedestal
-    const pedGeo = new THREE.CircleGeometry(quiet ? 1.8 : 2.35, 64);
+    // Soft lit floor disc
+    const pedGeo = new THREE.CircleGeometry(intensity === "stage" ? 2.1 : 2.0, 72);
     geometries.push(pedGeo);
-    const ped = new THREE.Mesh(
-      pedGeo,
-      new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
-        metalness: 0.35,
-        roughness: 0.45,
-        envMapIntensity: 0.6,
-        transparent: true,
-        opacity: 0.95,
-      })
-    );
-    materials.push(ped.material as THREE.Material);
+    const pedMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      metalness: 0.28,
+      roughness: 0.42,
+      envMapIntensity: 0.7,
+      transparent: true,
+      opacity: 0.97,
+    });
+    materials.push(pedMat);
+    const ped = new THREE.Mesh(pedGeo, pedMat);
     ped.rotation.x = -Math.PI / 2;
     ped.position.y = -1.15;
+    ped.receiveShadow = true;
     stage.add(ped);
 
-    // Thin lime ring under the prop
-    const ringGeo = new THREE.TorusGeometry(quiet ? 1.35 : 1.7, 0.012, 12, 96);
+    // Contact shadow blob under prop (reads as real 3D on light BG)
+    const shadowGeo = new THREE.CircleGeometry(1.05, 48);
+    geometries.push(shadowGeo);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      color: 0x0a0a0a,
+      transparent: true,
+      opacity: 0.14,
+      depthWrite: false,
+    });
+    materials.push(shadowMat);
+    const contact = new THREE.Mesh(shadowGeo, shadowMat);
+    contact.rotation.x = -Math.PI / 2;
+    contact.position.y = -1.145;
+    contact.scale.set(1.35, 0.7, 1);
+    stage.add(contact);
+
+    // Neon ground ring
+    const ringGeo = new THREE.TorusGeometry(intensity === "stage" ? 1.55 : 1.55, 0.014, 14, 120);
     geometries.push(ringGeo);
     const ringMat = new THREE.MeshStandardMaterial({
       color: 0xc8ff00,
       emissive: 0xc8ff00,
-      emissiveIntensity: quiet ? 0.35 : 0.55,
-      metalness: 0.4,
-      roughness: 0.4,
+      emissiveIntensity: intensity === "stage" ? 0.7 : 0.5,
+      metalness: 0.35,
+      roughness: 0.35,
     });
     materials.push(ringMat);
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = -Math.PI / 2;
     ring.position.y = -1.12;
     stage.add(ring);
+
+    // Outer thin black ring for depth edge
+    const outerGeo = new THREE.TorusGeometry(intensity === "stage" ? 1.85 : 1.9, 0.006, 10, 96);
+    geometries.push(outerGeo);
+    const outerMat = new THREE.MeshBasicMaterial({
+      color: 0x0a0a0a,
+      transparent: true,
+      opacity: 0.18,
+    });
+    materials.push(outerMat);
+    const outer = new THREE.Mesh(outerGeo, outerMat);
+    outer.rotation.x = -Math.PI / 2;
+    outer.position.y = -1.118;
+    stage.add(outer);
 
     const prop = new THREE.Group();
     stage.add(prop);
@@ -137,72 +237,71 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
         solid.traverse((obj) => {
           const mesh = obj as THREE.Mesh;
           if (!mesh.isMesh) return;
-          mesh.castShadow = false;
-          mesh.receiveShadow = false;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
           const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
           mats.forEach((m) => {
             const std = m as THREE.MeshStandardMaterial;
-            if (std.envMapIntensity !== undefined) std.envMapIntensity = 1.25;
-            if (std.roughness !== undefined) std.roughness = Math.min(std.roughness ?? 0.5, 0.55);
+            if (std.envMapIntensity !== undefined) std.envMapIntensity = 1.35;
+            if (std.roughness !== undefined) std.roughness = Math.min(std.roughness ?? 0.5, 0.5);
+            if (std.metalness !== undefined) std.metalness = Math.max(std.metalness ?? 0.2, 0.25);
           });
         });
 
-        // Fit + face camera
         const box = new THREE.Box3().setFromObject(solid);
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z) || 1;
-        const target = quiet ? 2.1 : 2.65;
-        const s = target / maxDim;
+        const s = cfg.targetSize / maxDim;
         solid.scale.setScalar(s);
         box.setFromObject(solid);
         const center = box.getCenter(new THREE.Vector3());
         solid.position.sub(center);
-        solid.position.y += 0.15;
-        solid.rotation.y = Math.PI * 0.15;
+        solid.position.y += 0.18;
+        solid.rotation.y = Math.PI * 0.18;
         prop.add(solid);
 
-        // Wireframe twin (Lando helmet overlay energy)
         wireTwin = solid.clone(true);
         wireTwin.traverse((obj) => {
           const mesh = obj as THREE.Mesh;
           if (!mesh.isMesh) return;
+          mesh.castShadow = false;
           mesh.material = new THREE.MeshBasicMaterial({
             color: 0x0a0a0a,
             wireframe: true,
             transparent: true,
-            opacity: quiet ? 0.2 : 0.28,
+            opacity: cfg.wire,
             depthWrite: false,
           });
           materials.push(mesh.material as THREE.Material);
         });
-        wireTwin.scale.multiplyScalar(1.035);
+        wireTwin.scale.multiplyScalar(1.038);
         prop.add(wireTwin);
 
         modelReady = true;
       },
       undefined,
       () => {
-        // Fallback: polished chrome icosa if GLB fails
         if (disposed) return;
         const geo = new THREE.IcosahedronGeometry(1.15, 2);
         geometries.push(geo);
         const mat = new THREE.MeshPhysicalMaterial({
           color: 0xe8e4dc,
           metalness: 1,
-          roughness: 0.15,
+          roughness: 0.12,
           clearcoat: 1,
-          envMapIntensity: 1.4,
+          envMapIntensity: 1.5,
         });
         materials.push(mat);
         const mesh = new THREE.Mesh(geo, mat);
+        mesh.castShadow = true;
         prop.add(mesh);
         const wMesh = new THREE.Mesh(
           geo,
           new THREE.MeshBasicMaterial({
-            color: 0xc8ff00,
+            color: 0x0a0a0a,
             wireframe: true,
             transparent: true,
-            opacity: 0.45,
+            opacity: 0.35,
           })
         );
         materials.push(wMesh.material as THREE.Material);
@@ -212,22 +311,21 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
       }
     );
 
-    // Sparse dust only — no cubes
-    const count = quiet ? 80 : 160;
+    const count = cfg.dust;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 1] = (Math.random() - 0.35) * 5;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      positions[i * 3] = (Math.random() - 0.5) * 9;
+      positions[i * 3 + 1] = (Math.random() - 0.35) * 4.5;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 7;
     }
     const pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometries.push(pGeo);
     const pMat = new THREE.PointsMaterial({
-      color: 0x9fcc00,
-      size: 0.016,
+      color: 0x6b8600,
+      size: 0.018,
       transparent: true,
-      opacity: 0.28,
+      opacity: 0.35,
       depthWrite: false,
       sizeAttenuation: true,
     });
@@ -237,8 +335,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
 
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    // Soft bloom — never nuke the PBR textures
-    const bloom = new UnrealBloomPass(new THREE.Vector2(w, h), quiet ? 0.08 : 0.12, 0.35, 0.9);
+    const bloom = new UnrealBloomPass(new THREE.Vector2(w, h), cfg.bloom, 0.32, 0.88);
     composer.addPass(bloom);
     composer.addPass(new SMAAPass());
     composer.addPass(new OutputPass());
@@ -254,21 +351,22 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     let targetScrollT = 0;
     let orbitX = 0;
     let orbitY = 0;
-    let targetOrbitX = 0.35;
-    let targetOrbitY = -0.08;
+    let targetOrbitX = intensity === "stage" ? 0.55 : 0.35;
+    let targetOrbitY = intensity === "stage" ? -0.12 : -0.08;
     let dragging = false;
     let lastPtrX = 0;
     let lastPtrY = 0;
 
-    const look = new THREE.Vector3(quiet ? 0.7 : 1.3, 0.05, 0);
+    const look = new THREE.Vector3(cfg.lookX, 0.05, 0);
     const canvas = renderer.domElement;
 
     const onPointer = (e: PointerEvent) => {
       const rect = mount.getBoundingClientRect();
       const nx = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
       const ny = ((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1;
-      targetParallaxX = nx * (quiet ? 0.4 : 0.7);
-      targetParallaxY = ny * (quiet ? 0.25 : 0.4);
+      const amp = intensity === "full" ? 0.7 : intensity === "stage" ? 0.55 : 0.35;
+      targetParallaxX = nx * amp;
+      targetParallaxY = ny * amp * 0.55;
     };
 
     const onPointerDown = (e: PointerEvent) => {
@@ -306,6 +404,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     };
 
     const onScroll = () => {
+      if (intensity !== "full") {
+        targetScrollT = 0;
+        return;
+      }
       targetScrollT = Math.min(1, window.scrollY / Math.min(window.innerHeight * 1.5, 860));
     };
 
@@ -318,6 +420,14 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
       composer.setSize(w, h);
       bloom.setSize(w, h);
     };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting && entry.intersectionRatio > 0.05;
+      },
+      { threshold: [0, 0.05, 0.2] }
+    );
+    io.observe(mount);
 
     canvas.addEventListener("pointermove", onPointerDrag, { passive: true });
     canvas.addEventListener("pointerdown", onPointerDown, { passive: true });
@@ -335,37 +445,31 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
       orbitY += (targetOrbitY - orbitY) * (animate ? 0.11 : 1);
       scrollT += (targetScrollT - scrollT) * (animate ? 0.08 : 1);
 
-      prop.rotation.y = orbitX + (animate ? t * 0.08 : 0);
+      prop.rotation.y = orbitX + (animate ? t * (intensity === "stage" ? 0.12 : 0.08) : 0);
       prop.rotation.x = orbitY * 0.65;
-      prop.position.y = Math.sin(animate ? t * 0.85 : 0.4) * 0.05;
+      prop.position.y = Math.sin(animate ? t * 0.9 : 0.4) * 0.055;
 
       if (wireTwin) {
-        wireTwin.rotation.y = Math.sin(animate ? t * 0.35 : 0) * 0.04;
+        wireTwin.rotation.y = Math.sin(animate ? t * 0.4 : 0) * 0.05;
       }
 
-      camera.position.x = camBase.x + parallaxX * 0.55 + orbitX * 0.12;
-      camera.position.y = camBase.y + parallaxY * 0.35 + scrollT * 0.25;
-      camera.position.z = camBase.z - scrollT * 1.6;
-      look.set(
-        (quiet ? 0.7 : 1.3) + parallaxX * 0.2,
-        0.05 + parallaxY * 0.15,
-        0
-      );
+      camera.position.x = camBase.x + parallaxX * 0.5 + orbitX * 0.1;
+      camera.position.y = camBase.y + parallaxY * 0.32 + scrollT * 0.2;
+      camera.position.z = camBase.z - scrollT * 1.4;
+      look.set(cfg.lookX + parallaxX * 0.15, 0.05 + parallaxY * 0.12, 0);
       camera.lookAt(look);
 
-      stage.position.x = (quiet ? 0.9 : 1.55) + parallaxX * 0.08;
-      points.rotation.y = animate ? t * 0.015 : 0;
-      kick.intensity = (quiet ? 7 : 14) + Math.sin(animate ? t : 0) * 2;
-      ring.rotation.z = animate ? t * 0.15 : 0;
+      stage.position.x = cfg.stageX + parallaxX * 0.06;
+      points.rotation.y = animate ? t * 0.018 : 0;
+      kick.intensity = cfg.kick + Math.sin(animate ? t : 0) * 1.8;
+      ring.rotation.z = animate ? t * 0.18 : 0;
+      contact.scale.set(1.35 + Math.sin(animate ? t * 0.9 : 0) * 0.04, 0.7, 1);
 
-      // Don't bloom until model is in — avoids white flash
-      bloom.strength = modelReady ? (quiet ? 0.08 : 0.12) : 0.04;
-
+      bloom.strength = modelReady ? cfg.bloom : 0.03;
       composer.render();
     };
 
     if (reduced) {
-      // Wait briefly for GLB then freeze
       const freeze = window.setTimeout(() => paintFrame(1, false), 400);
       return () => {
         disposed = true;
@@ -376,7 +480,9 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
 
     const tick = () => {
       if (!running) return;
-      paintFrame(clock.getElapsedTime(), true);
+      if (visible) {
+        paintFrame(clock.getElapsedTime(), true);
+      }
       raf = requestAnimationFrame(tick);
     };
     tick();
@@ -384,6 +490,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
     function cleanup() {
       running = false;
       cancelAnimationFrame(raf);
+      io.disconnect();
       canvas.removeEventListener("pointermove", onPointerDrag);
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointerup", onPointerUp);
@@ -420,7 +527,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: Intensity }
   return (
     <div
       ref={mountRef}
-      className={`cinematic-canvas${intensity === "quiet" ? " cinematic-canvas-quiet" : ""}`}
+      className={`cinematic-canvas cinematic-canvas-${intensity}`}
       aria-hidden="true"
     />
   );

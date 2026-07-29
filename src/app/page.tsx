@@ -109,6 +109,9 @@ export default function Home() {
 
         {/* Lando-scale split chapter */}
         <section className="mega-split" id="know">
+          <div className="mega-split-visual" aria-hidden="true">
+            <TrackField intensity="stage" />
+          </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Know what">
               <span className="mega-split-word">Know</span>
@@ -161,6 +164,9 @@ export default function Home() {
         </section>
 
         <section className="mega-split mega-split-alt" id="ship">
+          <div className="mega-split-visual" aria-hidden="true">
+            <TrackField intensity="stage" />
+          </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Then ship">
               <span className="mega-split-word">Then</span>

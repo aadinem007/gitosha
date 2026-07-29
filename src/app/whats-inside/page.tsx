@@ -21,7 +21,7 @@ export default function WhatsInsidePage() {
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
             Inventory
           </p>
           <h1 className="mt-3 font-display text-5xl font-bold tracking-tight">
@@ -55,7 +55,7 @@ export default function WhatsInsidePage() {
             ))}
           </ul>
 
-          <h2 className="mt-12 font-display text-xl font-semibold text-[var(--brass)]">
+          <h2 className="mt-12 font-display text-xl font-semibold text-[var(--brass-dim)]">
             Agency adds on top of Solo
           </h2>
           <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">

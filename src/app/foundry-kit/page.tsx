@@ -73,7 +73,7 @@ export default function FoundryKitPage() {
               for studios shipping many client products from one license.
             </p>
             <div className="mt-6 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
-              <Link href="/license" className="font-semibold text-[var(--brass)] hover:underline">
+              <Link href="/license" className="font-semibold text-[var(--brass-dim)] hover:underline">
                 Already paid? License portal →
               </Link>
               <Link href="/faq" className="text-[var(--support)] hover:text-[var(--ink)]">
@@ -127,7 +127,7 @@ export default function FoundryKitPage() {
                   <tr>
                     <th className="px-5 py-3 font-medium">Capability</th>
                     <th className="px-5 py-3 font-medium">Solo</th>
-                    <th className="px-5 py-3 font-medium text-[var(--brass)]">Agency</th>
+                    <th className="px-5 py-3 font-medium text-[var(--brass-dim)]">Agency</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -164,7 +164,7 @@ export default function FoundryKitPage() {
                     <li key={f}>— {f}</li>
                   ))}
                   {plan.features.length > 14 && (
-                    <li className="text-[var(--brass)]">
+                    <li className="text-[var(--brass-dim)]">
                       +{plan.features.length - 14} more — see Pricing / What’s inside
                     </li>
                   )}
@@ -182,11 +182,11 @@ export default function FoundryKitPage() {
 
           <p className="mt-10 text-xs text-[var(--support)]">
             By purchasing you agree to{" "}
-            <Link href="/terms" className="text-[var(--brass)] hover:underline">
+            <Link href="/terms" className="text-[var(--brass-dim)] hover:underline">
               Terms
             </Link>{" "}
             and{" "}
-            <Link href="/refund" className="text-[var(--brass)] hover:underline">
+            <Link href="/refund" className="text-[var(--brass-dim)] hover:underline">
               Refunds
             </Link>
             .

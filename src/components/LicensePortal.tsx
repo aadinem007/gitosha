@@ -135,7 +135,7 @@ export function LicensePortal({
       {meta && (
         <div className="rounded-lg border border-[var(--brass)]/30 bg-[var(--hull)]/60 px-4 py-3 text-sm">
           <p>
-            Tier: <span className="font-semibold text-[var(--brass)]">{meta.tier}</span>
+            Tier: <span className="font-semibold text-[var(--brass-dim)]">{meta.tier}</span>
           </p>
           <p className="mt-1 text-[var(--muted)]">Downloads so far: {meta.downloadCount}</p>
           {meta.vaultAccess ? (
@@ -149,7 +149,7 @@ export function LicensePortal({
           ) : (
             <p className="mt-2 text-[var(--muted)]">
               Need research too?{" "}
-              <a href="/pricing" className="text-[var(--brass)] underline underline-offset-4">
+              <a href="/pricing" className="text-[var(--brass-dim)] underline underline-offset-4">
                 Operator plans
               </a>
             </p>

@@ -58,7 +58,7 @@ export default function FaqPage() {
       <Nav />
       <main className="flex-1">
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass)]">FAQ</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">FAQ</p>
           <h1 className="mt-3 font-display text-5xl font-bold tracking-tight">Straight answers</h1>
           <div className="rule mt-6 max-w-[6rem]" />
           <div className="mt-12 space-y-8">
@@ -72,7 +72,7 @@ export default function FaqPage() {
                       <Link
                         key={l.href}
                         href={l.href}
-                        className="text-sm font-semibold text-[var(--brass)] hover:underline"
+                        className="text-sm font-semibold text-[var(--brass-dim)] hover:underline"
                       >
                         {l.label} →
                       </Link>
@@ -83,8 +83,8 @@ export default function FaqPage() {
             ))}
           </div>
           <p className="mt-14 text-sm text-[var(--support)]">
-            Still stuck? Tap <span className="text-[var(--brass)]">ASK</span> or email{" "}
-            <a href="mailto:aaditya.shah8005@gmail.com" className="text-[var(--brass)] hover:underline">
+            Still stuck? Tap <span className="text-[var(--brass-dim)]">ASK</span> or email{" "}
+            <a href="mailto:aaditya.shah8005@gmail.com" className="text-[var(--brass-dim)] hover:underline">
               aaditya.shah8005@gmail.com
             </a>
             .

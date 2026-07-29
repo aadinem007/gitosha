@@ -19,12 +19,13 @@ function StaticStudioFallback() {
 }
 
 /**
- * Full-bleed studio 3D — real GLB prop, Lando-style right weight.
+ * Full-bleed studio 3D — real GLB prop.
+ * full = hero right-weight · stage = centered mega panels · quiet = chapter underlays
  */
 export function TrackField({
   intensity = "full",
 }: {
-  intensity?: "full" | "quiet";
+  intensity?: "full" | "quiet" | "stage";
 }) {
   const [webglReady, setWebglReady] = useState(false);
 
@@ -35,7 +36,7 @@ export function TrackField({
 
   return (
     <div
-      className={`track-field track-field-studio${intensity === "quiet" ? " track-field-quiet" : ""}${
+      className={`track-field track-field-studio track-field-${intensity}${
         webglReady ? " track-field-live" : ""
       }`}
       aria-hidden="true"

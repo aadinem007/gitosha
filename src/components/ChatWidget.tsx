@@ -156,7 +156,7 @@ export function ChatWidget() {
                         <a
                           key={l.href + l.label}
                           href={l.href}
-                          className="rounded-full border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass)] hover:bg-[var(--brass)]/20"
+                          className="rounded-full border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass-dim)] hover:bg-[var(--brass)]/20"
                         >
                           {l.label}
                         </a>
@@ -164,7 +164,7 @@ export function ChatWidget() {
                         <Link
                           key={l.href + l.label}
                           href={l.href}
-                          className="rounded-full border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass)] hover:bg-[var(--brass)]/20"
+                          className="rounded-full border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass-dim)] hover:bg-[var(--brass)]/20"
                         >
                           {l.label}
                         </Link>

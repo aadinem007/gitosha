@@ -16,7 +16,7 @@ function PlanCard({
       <div className="flex min-w-0 items-start justify-between gap-2">
         <p className="font-display text-xl leading-tight tracking-wide">{plan.name}</p>
         {plan.badge && (
-          <span className="shrink-0 border border-[var(--brass)]/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--brass)]">
+          <span className="shrink-0 border border-[var(--brass)]/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--brass-dim)]">
             {plan.badge}
           </span>
         )}
@@ -64,7 +64,7 @@ export default function PricingPage() {
             </p>
             <h1 className="animate-rise-delay mt-3">
               Clear price.
-              <span className="block text-[var(--brass)]">Packed value.</span>
+              <span className="block text-[var(--brass-dim)]">Packed value.</span>
             </h1>
             <div className="rule mt-6 max-w-[8rem]" />
             <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
@@ -74,7 +74,7 @@ export default function PricingPage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
-              <Link href="/foundry-kit" className="text-[var(--brass)] hover:underline">
+              <Link href="/foundry-kit" className="text-[var(--brass-dim)] hover:underline">
                 Buy Foundry →
               </Link>
               <Link href="/faq" className="text-[var(--support)] hover:text-[var(--ink)]">
@@ -135,15 +135,15 @@ export default function PricingPage() {
             Operator launch price ($15/mo) applies to the first 100 paying seats, then returns to
             $19/mo. Prices shown in USD. Checkout uses your configured payment provider. By
             purchasing you agree to{" "}
-            <a href="/terms" className="text-[var(--brass)] hover:underline">
+            <a href="/terms" className="text-[var(--brass-dim)] hover:underline">
               Terms
             </a>
             ,{" "}
-            <a href="/privacy" className="text-[var(--brass)] hover:underline">
+            <a href="/privacy" className="text-[var(--brass-dim)] hover:underline">
               Privacy
             </a>
             , and{" "}
-            <a href="/refund" className="text-[var(--brass)] hover:underline">
+            <a href="/refund" className="text-[var(--brass-dim)] hover:underline">
               Refund
             </a>{" "}
             policies.

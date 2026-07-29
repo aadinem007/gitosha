@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 /**
- * Real PBR hero prop — DamagedHelmet GLB, dark studio, NO bloom (bloom was the white blob).
+ * Abstract chrome / glass sculpture cluster — dark studio, drag orbit.
+ * No helmet. No external GLB.
  */
 export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "quiet" | "stage" }) {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -17,12 +17,15 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hero = intensity === "full";
+    const quiet = intensity === "quiet";
     let w = mount.clientWidth || window.innerWidth;
     let h = mount.clientHeight || window.innerHeight;
     let disposed = false;
     let visible = true;
     let raf = 0;
     let running = true;
+
+    const bg = 0x0c0c0c;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -31,12 +34,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(w, h, false);
-    // Dark charcoal — metal reads; never wash to white
-    const bg = 0x0e100c;
     renderer.setClearColor(bg, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 0.92;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.domElement.style.cssText =
@@ -49,168 +50,200 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     const scene = new THREE.Scene();
     scene.environment = envTex;
     scene.background = new THREE.Color(bg);
-    scene.fog = new THREE.FogExp2(bg, 0.028);
+    scene.fog = new THREE.FogExp2(bg, quiet ? 0.045 : 0.022);
 
-    const camera = new THREE.PerspectiveCamera(hero ? 42 : 38, w / h, 0.1, 60);
+    const camera = new THREE.PerspectiveCamera(hero ? 40 : 36, w / h, 0.1, 60);
     const camBase = hero
-      ? { x: 0.9, y: 0.2, z: 5.2 }
-      : { x: 0.05, y: 0.1, z: 4.0 };
+      ? { x: 0.55, y: 0.35, z: 5.6 }
+      : { x: 0.1, y: 0.2, z: 4.4 };
     camera.position.set(camBase.x, camBase.y, camBase.z);
 
     const root = new THREE.Group();
     scene.add(root);
     const stage = new THREE.Group();
-    stage.position.set(hero ? 1.45 : 0, -0.05, 0);
+    stage.position.set(hero ? 1.35 : 0, hero ? 0.05 : 0, 0);
     root.add(stage);
 
-    // Soft studio lights — no neon blowout
-    scene.add(new THREE.AmbientLight(0xb8c0b0, 0.28));
-    const key = new THREE.DirectionalLight(0xfff2e0, 2.2);
-    key.position.set(5, 7, 4);
+    // Soft studio — metal reads, no bleach
+    scene.add(new THREE.AmbientLight(0xa8b0a4, 0.22));
+    const key = new THREE.DirectionalLight(0xfff1e4, 1.35);
+    key.position.set(4.5, 6.5, 3.5);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
     key.shadow.camera.near = 0.5;
     key.shadow.camera.far = 28;
-    key.shadow.camera.left = -7;
-    key.shadow.camera.right = 7;
-    key.shadow.camera.top = 7;
-    key.shadow.camera.bottom = -7;
-    key.shadow.bias = -0.00025;
+    key.shadow.camera.left = -8;
+    key.shadow.camera.right = 8;
+    key.shadow.camera.top = 8;
+    key.shadow.camera.bottom = -8;
+    key.shadow.bias = -0.0003;
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0x8aa0b8, 0.55);
-    fill.position.set(-5, 2, 2);
+    const fill = new THREE.DirectionalLight(0x7a90a8, 0.42);
+    fill.position.set(-5, 1.5, 2);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xc8ff00, 0.55);
-    rim.position.set(-2, 3, -6);
+    const rim = new THREE.DirectionalLight(0xc8ff00, 0.38);
+    rim.position.set(-2.5, 2.5, -5);
     scene.add(rim);
 
     const materials: THREE.Material[] = [];
     const geometries: THREE.BufferGeometry[] = [];
-    const floaters: THREE.Mesh[] = [];
+    const floaters: THREE.Object3D[] = [];
 
-    // Dark metal ground disc
-    const pedGeo = new THREE.CircleGeometry(2.2, 64);
-    geometries.push(pedGeo);
+    const track = (geo: THREE.BufferGeometry, mat: THREE.Material) => {
+      geometries.push(geo);
+      materials.push(mat);
+    };
+
+    // Soft contact disc
+    const pedGeo = new THREE.CircleGeometry(2.4, 64);
     const pedMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1e18,
-      metalness: 0.85,
-      roughness: 0.35,
-      envMapIntensity: 0.9,
+      color: 0x141414,
+      metalness: 0.7,
+      roughness: 0.55,
+      envMapIntensity: 0.55,
     });
-    materials.push(pedMat);
+    track(pedGeo, pedMat);
     const ped = new THREE.Mesh(pedGeo, pedMat);
     ped.rotation.x = -Math.PI / 2;
-    ped.position.y = -1.2;
+    ped.position.y = -1.35;
     ped.receiveShadow = true;
     stage.add(ped);
 
-    const ringGeo = new THREE.TorusGeometry(1.55, 0.012, 12, 96);
-    geometries.push(ringGeo);
+    const ringGeo = new THREE.TorusGeometry(1.65, 0.01, 12, 96);
     const ringMat = new THREE.MeshStandardMaterial({
       color: 0xc8ff00,
       emissive: 0xc8ff00,
-      emissiveIntensity: 0.35,
-      metalness: 0.4,
-      roughness: 0.4,
+      emissiveIntensity: 0.28,
+      metalness: 0.35,
+      roughness: 0.45,
     });
-    materials.push(ringMat);
+    track(ringGeo, ringMat);
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = -Math.PI / 2;
-    ring.position.y = -1.17;
+    ring.position.y = -1.32;
     stage.add(ring);
 
-    // Tasteful floating metal accents around the hero prop
+    const cluster = new THREE.Group();
+    stage.add(cluster);
+
+    // Hero knot — chrome
+    const knotGeo = new THREE.TorusKnotGeometry(0.85, 0.28, 180, 24);
+    const chromeMat = new THREE.MeshPhysicalMaterial({
+      color: 0xc4c8ce,
+      metalness: 1,
+      roughness: 0.18,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.2,
+      envMapIntensity: 1.15,
+    });
+    track(knotGeo, chromeMat);
+    const knot = new THREE.Mesh(knotGeo, chromeMat);
+    knot.castShadow = true;
+    knot.receiveShadow = true;
+    knot.position.set(0, 0.15, 0);
+    knot.rotation.set(0.35, 0.4, 0.15);
+    cluster.add(knot);
+    floaters.push(knot);
+
+    // Glass orb
+    const orbGeo = new THREE.IcosahedronGeometry(0.55, 2);
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      color: 0xe8ece8,
+      metalness: 0.05,
+      roughness: 0.08,
+      transmission: 0.72,
+      thickness: 0.9,
+      ior: 1.45,
+      transparent: true,
+      opacity: 1,
+      envMapIntensity: 1.2,
+    });
+    track(orbGeo, glassMat);
+    const orb = new THREE.Mesh(orbGeo, glassMat);
+    orb.castShadow = true;
+    orb.position.set(hero ? -1.35 : -1.1, 0.85, 0.55);
+    cluster.add(orb);
+    floaters.push(orb);
+
+    // Smaller chrome sphere
+    const ballGeo = new THREE.SphereGeometry(0.32, 48, 48);
+    const ballMat = new THREE.MeshStandardMaterial({
+      color: 0xb8b4ac,
+      metalness: 0.98,
+      roughness: 0.14,
+      envMapIntensity: 1.2,
+    });
+    track(ballGeo, ballMat);
+    const ball = new THREE.Mesh(ballGeo, ballMat);
+    ball.castShadow = true;
+    ball.position.set(1.15, -0.15, 0.85);
+    cluster.add(ball);
+    floaters.push(ball);
+
+    // Lime-rim ring (vertical)
+    const accentRingGeo = new THREE.TorusGeometry(0.72, 0.028, 16, 80);
+    const accentRingMat = new THREE.MeshStandardMaterial({
+      color: 0xc8ff00,
+      emissive: 0xc8ff00,
+      emissiveIntensity: 0.22,
+      metalness: 0.55,
+      roughness: 0.3,
+      envMapIntensity: 0.9,
+    });
+    track(accentRingGeo, accentRingMat);
+    const accentRing = new THREE.Mesh(accentRingGeo, accentRingMat);
+    accentRing.position.set(0.95, 0.95, -0.4);
+    accentRing.rotation.set(1.1, 0.3, 0.5);
+    cluster.add(accentRing);
+    floaters.push(accentRing);
+
+    // Thin orbit ring
+    const orbitGeo = new THREE.TorusGeometry(1.35, 0.012, 12, 96);
+    const orbitMat = new THREE.MeshStandardMaterial({
+      color: 0x9aa3ab,
+      metalness: 0.95,
+      roughness: 0.25,
+      envMapIntensity: 1.1,
+    });
+    track(orbitGeo, orbitMat);
+    const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+    orbit.rotation.set(Math.PI / 2.4, 0.2, 0);
+    orbit.position.y = 0.2;
+    cluster.add(orbit);
+    floaters.push(orbit);
+
     if (hero || intensity === "stage") {
-      const accentSpecs = [
-        { geo: new THREE.IcosahedronGeometry(0.18, 0), x: -1.55, y: 0.85, z: 0.6, spin: 0.55 },
-        { geo: new THREE.OctahedronGeometry(0.14, 0), x: 1.35, y: 1.1, z: -0.35, spin: -0.4 },
-        { geo: new THREE.BoxGeometry(0.22, 0.22, 0.22), x: -0.9, y: -0.35, z: 1.1, spin: 0.7 },
+      const specs = [
+        { geo: new THREE.OctahedronGeometry(0.16, 0), x: -1.6, y: -0.2, z: 0.9, spin: 0.6, lime: false },
+        { geo: new THREE.IcosahedronGeometry(0.14, 0), x: 1.45, y: 1.15, z: -0.55, spin: -0.45, lime: true },
+        { geo: new THREE.BoxGeometry(0.2, 0.2, 0.2), x: -0.55, y: 1.35, z: 0.75, spin: 0.75, lime: false },
       ];
-      accentSpecs.forEach((spec, i) => {
-        geometries.push(spec.geo);
+      specs.forEach((spec) => {
         const mat = new THREE.MeshStandardMaterial({
-          color: i === 1 ? 0xc8ff00 : 0xb8b4ac,
+          color: spec.lime ? 0xc8ff00 : 0xb0aea8,
           metalness: 0.95,
-          roughness: 0.22,
-          emissive: i === 1 ? 0xc8ff00 : 0x000000,
-          emissiveIntensity: i === 1 ? 0.18 : 0,
+          roughness: 0.2,
+          emissive: spec.lime ? 0xc8ff00 : 0x000000,
+          emissiveIntensity: spec.lime ? 0.16 : 0,
           envMapIntensity: 1.1,
         });
-        materials.push(mat);
+        track(spec.geo, mat);
         const mesh = new THREE.Mesh(spec.geo, mat);
         mesh.position.set(spec.x, spec.y, spec.z);
         mesh.castShadow = true;
         mesh.userData.spin = spec.spin;
         mesh.userData.baseY = spec.y;
-        stage.add(mesh);
+        mesh.userData.float = true;
+        cluster.add(mesh);
         floaters.push(mesh);
       });
     }
 
-    const prop = new THREE.Group();
-    stage.add(prop);
-
-    let modelReady = false;
-    const loader = new GLTFLoader();
-    loader.load(
-      "/models/helmet.glb",
-      (gltf) => {
-        if (disposed) return;
-        const solid = gltf.scene;
-        solid.traverse((obj) => {
-          const mesh = obj as THREE.Mesh;
-          if (!mesh.isMesh) return;
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
-          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          mats.forEach((m) => {
-            const std = m as THREE.MeshStandardMaterial;
-            if (std.envMapIntensity !== undefined) std.envMapIntensity = 1.15;
-            // Keep PBR maps — do not force bright emissive
-            if (std.emissiveIntensity !== undefined) {
-              std.emissiveIntensity = Math.min(std.emissiveIntensity ?? 0, 0.35);
-            }
-          });
-        });
-
-        const box = new THREE.Box3().setFromObject(solid);
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z) || 1;
-        const target = hero ? 2.7 : 2.4;
-        solid.scale.setScalar(target / maxDim);
-        box.setFromObject(solid);
-        solid.position.sub(box.getCenter(new THREE.Vector3()));
-        solid.position.y += 0.2;
-        solid.rotation.y = Math.PI * 0.18;
-        prop.add(solid);
-        modelReady = true;
-      },
-      undefined,
-      () => {
-        if (disposed) return;
-        // Fallback: chrome icosa — still readable on dark
-        const geo = new THREE.IcosahedronGeometry(1.2, 2);
-        geometries.push(geo);
-        const mat = new THREE.MeshPhysicalMaterial({
-          color: 0xc8c4bc,
-          metalness: 1,
-          roughness: 0.18,
-          clearcoat: 0.8,
-          envMapIntensity: 1.3,
-        });
-        materials.push(mat);
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.castShadow = true;
-        prop.add(mesh);
-        modelReady = true;
-      }
-    );
-
     const canvas = renderer.domElement;
-    let orbitX = 0.4;
-    let orbitY = -0.1;
-    let targetOrbitX = 0.4;
-    let targetOrbitY = -0.1;
+    let orbitX = 0.35;
+    let orbitY = -0.08;
+    let targetOrbitX = 0.35;
+    let targetOrbitY = -0.08;
     let dragging = false;
     let lastPtrX = 0;
     let lastPtrY = 0;
@@ -218,13 +251,13 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     let parallaxY = 0;
     let targetParallaxX = 0;
     let targetParallaxY = 0;
-    const look = new THREE.Vector3(hero ? 1.2 : 0, 0.05, 0);
+    const look = new THREE.Vector3(hero ? 1.15 : 0, 0.1, 0);
     const clock = new THREE.Clock();
 
     const onPointer = (e: PointerEvent) => {
       const rect = mount.getBoundingClientRect();
-      targetParallaxX = (((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1) * 0.5;
-      targetParallaxY = (((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1) * 0.3;
+      targetParallaxX = (((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1) * 0.55;
+      targetParallaxY = (((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 - 1) * 0.32;
     };
 
     const onDown = (e: PointerEvent) => {
@@ -254,12 +287,12 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       onPointer(e);
       if (!dragging) return;
       targetOrbitX = Math.max(
-        -1.8,
-        Math.min(2, targetOrbitX + ((e.clientX - lastPtrX) / window.innerWidth) * 4)
+        -1.9,
+        Math.min(2.1, targetOrbitX + ((e.clientX - lastPtrX) / window.innerWidth) * 4.2)
       );
       targetOrbitY = Math.max(
-        -0.7,
-        Math.min(0.7, targetOrbitY + ((e.clientY - lastPtrY) / window.innerHeight) * 2.4)
+        -0.75,
+        Math.min(0.75, targetOrbitY + ((e.clientY - lastPtrY) / window.innerHeight) * 2.5)
       );
       lastPtrX = e.clientX;
       lastPtrY = e.clientY;
@@ -289,35 +322,47 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     window.addEventListener("resize", onResize);
 
     const paint = (t: number, animate: boolean) => {
-      parallaxX += (targetParallaxX - parallaxX) * (animate ? 0.08 : 1);
-      parallaxY += (targetParallaxY - parallaxY) * (animate ? 0.08 : 1);
+      parallaxX += (targetParallaxX - parallaxX) * (animate ? 0.07 : 1);
+      parallaxY += (targetParallaxY - parallaxY) * (animate ? 0.07 : 1);
       orbitX += (targetOrbitX - orbitX) * (animate ? 0.1 : 1);
       orbitY += (targetOrbitY - orbitY) * (animate ? 0.1 : 1);
 
-      prop.rotation.y = orbitX + (animate && modelReady ? t * 0.12 : 0);
-      prop.rotation.x = orbitY * 0.6;
-      prop.position.y = Math.sin(animate ? t * 0.8 : 0) * 0.04;
-      ring.rotation.z = animate ? t * 0.12 : 0;
+      cluster.rotation.y = orbitX + (animate ? t * 0.1 : 0);
+      cluster.rotation.x = orbitY * 0.55;
+      cluster.position.y = Math.sin(animate ? t * 0.7 : 0) * 0.05;
+      ring.rotation.z = animate ? t * 0.1 : 0;
 
-      floaters.forEach((mesh, i) => {
-        const spin = mesh.userData.spin as number;
-        const baseY = mesh.userData.baseY as number;
-        mesh.rotation.x = animate ? t * spin : 0;
-        mesh.rotation.y = animate ? t * spin * 0.8 : 0;
-        mesh.position.y = baseY + Math.sin((animate ? t : 0) * 1.1 + i) * 0.08;
+      knot.rotation.x = 0.35 + (animate ? t * 0.15 : 0);
+      knot.rotation.y = 0.4 + (animate ? t * 0.22 : 0);
+      orb.position.y = 0.85 + Math.sin(animate ? t * 1.1 : 0) * 0.1;
+      ball.position.y = -0.15 + Math.cos(animate ? t * 0.9 : 0) * 0.08;
+      accentRing.rotation.z = animate ? t * 0.35 : 0;
+      orbit.rotation.z = animate ? t * -0.18 : 0;
+
+      floaters.forEach((obj, i) => {
+        if (!obj.userData.float) return;
+        const spin = obj.userData.spin as number;
+        const baseY = obj.userData.baseY as number;
+        obj.rotation.x = animate ? t * spin : 0;
+        obj.rotation.y = animate ? t * spin * 0.85 : 0;
+        obj.position.y = baseY + Math.sin((animate ? t : 0) * 1.05 + i) * 0.09;
       });
 
-      camera.position.x = camBase.x + parallaxX * 0.45 + orbitX * 0.08;
-      camera.position.y = camBase.y + parallaxY * 0.3;
+      // Soft magnetic lean toward pointer
+      stage.rotation.y = parallaxX * 0.12;
+      stage.rotation.x = -parallaxY * 0.08;
+
+      camera.position.x = camBase.x + parallaxX * 0.4 + orbitX * 0.06;
+      camera.position.y = camBase.y + parallaxY * 0.28;
       camera.position.z = camBase.z;
-      look.set((hero ? 1.2 : 0) + parallaxX * 0.1, 0.05, 0);
+      look.set((hero ? 1.15 : 0) + parallaxX * 0.08, 0.1, 0);
       camera.lookAt(look);
 
       renderer.render(scene, camera);
     };
 
     if (reduced) {
-      const freeze = window.setTimeout(() => paint(1, false), 500);
+      const freeze = window.setTimeout(() => paint(1, false), 400);
       return () => {
         disposed = true;
         window.clearTimeout(freeze);
@@ -344,14 +389,6 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       window.removeEventListener("resize", onResize);
       geometries.forEach((g) => g.dispose());
       materials.forEach((m) => m.dispose());
-      scene.traverse((obj) => {
-        const mesh = obj as THREE.Mesh;
-        if (mesh.isMesh) {
-          mesh.geometry?.dispose();
-          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          mats.forEach((m) => m?.dispose?.());
-        }
-      });
       envTex.dispose();
       pmrem.dispose();
       renderer.dispose();

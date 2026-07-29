@@ -9,7 +9,7 @@ const CinematicTrack = dynamic(
 );
 
 /**
- * Dark studio WebGL field — no CSS glow blobs, no bloom washout.
+ * Dark studio WebGL field — abstract chrome/glass sculpture cluster.
  */
 export function TrackField({
   intensity = "full",

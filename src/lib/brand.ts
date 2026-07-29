@@ -10,6 +10,9 @@ export const BRAND = {
   nameUpper: "GITOSHA",
   /** Public one-liner */
   tagline: "Know what to build. Then ship it.",
+  /** Hero support — polished B2B product line under the tagline */
+  heroSupport:
+    "International USD pricing. Scored opportunities with clear build-or-pass decisions — plus a payment-ready foundation so your team ships the right product faster.",
   /** Slightly longer meta / footer line */
   description:
     "Know what to build, then ship it. USD-priced Vault research and a production-ready Foundry foundation for international operators.",
@@ -20,6 +23,8 @@ export const BRAND = {
     vaultFull: "The Vault",
     foundry: "Foundry",
   },
+  /** Vault chapter one-liner under the product name */
+  vaultLead: "Scored opportunities and clear build-or-pass decisions — before you spend a quarter.",
   /** Live deploy until custom domain (gitosha.com) is wired — updated after Vercel rename */
   defaultSiteUrl: "https://gitosha.vercel.app",
   /** Fallback Resend from-address; set EMAIL_FROM in Vercel for production */

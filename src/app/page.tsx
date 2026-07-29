@@ -92,10 +92,7 @@ export default function Home() {
           <div className="hero-stage">
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
-            <p className="hero-support animate-rise">
-              USD pricing for international operators. Clear go/no-go criteria. A production-ready
-              foundation that already takes payments — so you ship the right thing, fast.
-            </p>
+            <p className="hero-support animate-rise">{BRAND.heroSupport}</p>
             <div className="hero-cta animate-rise-delay">
               <Link href="/pricing" className="btn-primary">
                 View pricing
@@ -131,6 +128,7 @@ export default function Home() {
         {/* 01 Vault */}
         <section className="chapter chapter-vault" id="vault" data-reveal>
           <div className="chapter-visual">
+            <TrackField intensity="stage" />
             <div className="chapter-visual-frame" aria-label="Live scoreboard sample">
               <p className="chapter-visual-label">01 · Research plane</p>
               <ul className="hud-scoreboard">
@@ -149,10 +147,10 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="chapter-inner copy-scrim-soft">
+          <div className="chapter-inner chapter-inner-vault copy-scrim-soft">
             <p className="chapter-index">01</p>
-            <p className="chapter-eyebrow">{BRAND.products.vault}</p>
-            <h2 className="chapter-title">Filter weak ideas early.</h2>
+            <h2 className="chapter-title chapter-title-product">{BRAND.products.vault}</h2>
+            <p className="chapter-lead">{BRAND.vaultLead}</p>
             <p className="chapter-copy">
               Operator unlocks every teardown, financial sketch, and launch checklist — from $15/mo
               launch for the first 100 seats.

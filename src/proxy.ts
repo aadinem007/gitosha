@@ -101,6 +101,7 @@ function maxBodyBytes(path: string): number {
   if (path.startsWith("/api/razorpay/webhook")) return 256_000;
   if (path.startsWith("/api/chat")) return 16_384;
   if (path.startsWith("/api/waitlist")) return 8_192;
+  if (path.startsWith("/api/auth/magic-link")) return 8_192;
   if (path.startsWith("/api/")) return 32_768;
   return 1_048_576;
 }

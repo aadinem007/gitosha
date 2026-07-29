@@ -291,8 +291,8 @@ export default function Home() {
             <div className="sample-card copy-scrim">
               <div className="sample-head">
                 <div>
+                  <p className="sample-cat-badge">{SAMPLE.category}</p>
                   <p className="sample-name">{SAMPLE.name}</p>
-                  <p className="sample-cat">{SAMPLE.category}</p>
                 </div>
                 <p className="sample-score">
                   {SAMPLE_SCORE}
@@ -302,10 +302,10 @@ export default function Home() {
               <p className="sample-line">{SAMPLE.oneLiner}</p>
               <p className="sample-excerpt">{SAMPLE.teardownMd.slice(0, 220)}…</p>
               <div className="sample-actions">
-                <Link href={`/ideas/${SAMPLE.slug}`} className="story-link">
+                <Link href={`/ideas/${SAMPLE.slug}`} className="btn-ghost" style={{ marginTop: "1.25rem" }}>
                   Open public page →
                 </Link>
-                <Link href="/pricing" className="story-link story-link-dim">
+                <Link href="/pricing" className="btn-primary" style={{ marginTop: "1.25rem" }}>
                   Unlock Operator →
                 </Link>
               </div>
@@ -333,7 +333,7 @@ export default function Home() {
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
-                <Link href="/pricing" className="proof-link">
+                <Link href="/pricing" className="btn-primary" style={{ marginTop: "1.5rem" }}>
                   Unlock Operator →
                 </Link>
               </div>
@@ -348,8 +348,8 @@ export default function Home() {
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
-                <Link href="/foundry-kit" className="proof-link">
-                  Open Foundry →
+                <Link href="/foundry-kit" className="btn-primary" style={{ marginTop: "1.5rem" }}>
+                  Foundry Solo — $99 →
                 </Link>
               </div>
             </div>

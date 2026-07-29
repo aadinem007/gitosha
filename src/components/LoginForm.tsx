@@ -11,20 +11,32 @@ export function LoginForm({ next }: { next: string }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
-    const supabase = createSupabaseBrowserClient();
 
-    // Always use NEXT_PUBLIC_SITE_URL when set (production), not window.location.
-    // Supabase will reject / overwrite redirects that aren't in the allow list —
-    // Site URL must also be https://gitosha.vercel.app in the Supabase dashboard.
-    const emailRedirectTo = authCallbackUrl(next);
+    try {
+      const res = await fetch("/api/auth/magic-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, next }),
+      });
+      const data = (await res.json()) as { ok?: boolean; branded?: boolean; fallback?: boolean };
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo,
-      },
-    });
-    setStatus(error ? "error" : "sent");
+      if (res.ok && data.branded) {
+        setStatus("sent");
+        return;
+      }
+
+      // Fallback: Supabase client OTP (may still use default Supabase template)
+      const supabase = createSupabaseBrowserClient();
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: authCallbackUrl(next),
+        },
+      });
+      setStatus(error ? "error" : "sent");
+    } catch {
+      setStatus("error");
+    }
   }
 
   if (status === "sent") {

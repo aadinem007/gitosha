@@ -32,10 +32,21 @@ Save.
 
 ## 3. Email branding (kill “Supabase Auth”)
 
+### Preferred: branded Resend path (app code)
+
+If Vercel has **both**:
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `RESEND_API_KEY`
+- `EMAIL_FROM=Gitosha <your-verified-domain@…>`
+
+…then `/login` uses `POST /api/auth/magic-link`, which generates the link with Supabase Admin and sends a **Gitosha-branded** HTML email via Resend. No “Supabase Auth” heading.
+
+### Fallback: Supabase template (if Resend/admin missing)
+
 Open **Authentication → Email Templates → Magic Link**:
 
 - **Subject:** `Sign in to Gitosha`
-- **Body:** replace the default heading with Gitosha copy, e.g.
+- **Body:**
 
 ```html
 <h2>Sign in to Gitosha</h2>
@@ -45,7 +56,7 @@ Open **Authentication → Email Templates → Magic Link**:
 <p>— Gitosha</p>
 ```
 
-Optional: **Project Settings → Authentication → SMTP** (or email sender name) so the From line isn’t “Supabase Auth”.
+Also set sender name under **Project Settings → Authentication** (or custom SMTP) so From isn’t “Supabase Auth”.
 
 ## 4. Optional: script
 

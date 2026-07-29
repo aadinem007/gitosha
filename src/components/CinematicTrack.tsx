@@ -45,33 +45,33 @@ const CONFIG: Record<TrackIntensity, StageConfig> = {
   },
   // Chapter overlays: softer, still readable under HUD
   quiet: {
-    cam: { x: 0.2, y: 0.12, z: 4.4, fov: 38 },
-    stageX: 0.35,
-    stageY: -0.1,
-    lookX: 0.25,
-    targetSize: 2.2,
-    fog: 0.028,
-    bloom: 0.07,
-    rim: 0.7,
-    kick: 5,
-    wire: 0.22,
-    dust: 70,
-    exposure: 1.0,
+    cam: { x: 0.15, y: 0.1, z: 4.2, fov: 36 },
+    stageX: 0.2,
+    stageY: -0.08,
+    lookX: 0.15,
+    targetSize: 2.35,
+    fog: 0.02,
+    bloom: 0.14,
+    rim: 1.1,
+    kick: 9,
+    wire: 0.28,
+    dust: 90,
+    exposure: 1.12,
   },
-  // Mega-split panels: centered, close, hard presence
+  // Mega-split panels: centered, close, hard presence on dark field
   stage: {
-    cam: { x: 0.05, y: 0.08, z: 3.85, fov: 36 },
+    cam: { x: 0.05, y: 0.08, z: 3.7, fov: 34 },
     stageX: 0,
     stageY: -0.05,
     lookX: 0,
-    targetSize: 2.55,
-    fog: 0.012,
-    bloom: 0.1,
-    rim: 1.15,
-    kick: 10,
-    wire: 0.32,
-    dust: 110,
-    exposure: 1.08,
+    targetSize: 2.7,
+    fog: 0.01,
+    bloom: 0.16,
+    rim: 1.4,
+    kick: 12,
+    wire: 0.35,
+    dust: 120,
+    exposure: 1.18,
   },
 };
 
@@ -99,10 +99,12 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, intensity === "full" ? 2 : 1.65));
     renderer.setSize(w, h, false);
-    renderer.setClearColor(0xf3f3ee, 1);
+    const clear =
+      intensity === "full" ? 0xf3f3ee : 0x121410;
+    renderer.setClearColor(clear, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = cfg.exposure;
+    renderer.toneMappingExposure = intensity === "full" ? cfg.exposure : 1.15;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.domElement.style.cssText =
@@ -114,8 +116,8 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
 
     const scene = new THREE.Scene();
     scene.environment = envTex;
-    scene.background = new THREE.Color(0xf3f3ee);
-    scene.fog = new THREE.FogExp2(0xf3f3ee, cfg.fog);
+    scene.background = new THREE.Color(clear);
+    scene.fog = new THREE.FogExp2(clear, intensity === "full" ? cfg.fog : cfg.fog * 0.65);
 
     const camera = new THREE.PerspectiveCamera(cfg.cam.fov, w / h, 0.1, 80);
     const camBase = { ...cfg.cam };
@@ -128,8 +130,8 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
     stage.position.set(cfg.stageX, cfg.stageY, 0);
     root.add(stage);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.38));
-    const key = new THREE.DirectionalLight(0xfff4ea, intensity === "stage" ? 2.6 : 2.2);
+    scene.add(new THREE.AmbientLight(0xffffff, intensity === "full" ? 0.38 : 0.22));
+    const key = new THREE.DirectionalLight(0xfff4ea, intensity === "stage" ? 2.8 : intensity === "quiet" ? 2.4 : 2.2);
     key.position.set(4.5, 7, 3.5);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -142,29 +144,29 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
     key.shadow.bias = -0.0002;
     scene.add(key);
 
-    const fill = new THREE.DirectionalLight(0xb8c8d8, 0.62);
+    const fill = new THREE.DirectionalLight(0xb8c8d8, intensity === "full" ? 0.62 : 0.35);
     fill.position.set(-5, 2.2, 2.5);
     scene.add(fill);
 
-    const rim = new THREE.DirectionalLight(0xc8ff00, cfg.rim);
+    const rim = new THREE.DirectionalLight(0xc8ff00, intensity === "full" ? cfg.rim : cfg.rim * 1.35);
     rim.position.set(-2.5, 3, -5);
     scene.add(rim);
 
-    const kick = new THREE.PointLight(0xc8ff00, cfg.kick, 14, 2);
+    const kick = new THREE.PointLight(0xc8ff00, intensity === "full" ? cfg.kick : cfg.kick * 1.4, 14, 2);
     kick.position.set(1.6, 1.4, 2.2);
     stage.add(kick);
 
     const materials: THREE.Material[] = [];
     const geometries: THREE.BufferGeometry[] = [];
 
-    // Soft lit floor disc
+    // Soft lit floor disc — darker on stage panels
     const pedGeo = new THREE.CircleGeometry(intensity === "stage" ? 2.1 : 2.0, 72);
     geometries.push(pedGeo);
     const pedMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      metalness: 0.28,
-      roughness: 0.42,
-      envMapIntensity: 0.7,
+      color: intensity === "full" ? 0xffffff : 0x2a2e28,
+      metalness: intensity === "full" ? 0.28 : 0.75,
+      roughness: intensity === "full" ? 0.42 : 0.28,
+      envMapIntensity: intensity === "full" ? 0.7 : 1.1,
       transparent: true,
       opacity: 0.97,
     });
@@ -175,13 +177,13 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
     ped.receiveShadow = true;
     stage.add(ped);
 
-    // Contact shadow blob under prop (reads as real 3D on light BG)
+    // Contact shadow blob under prop
     const shadowGeo = new THREE.CircleGeometry(1.05, 48);
     geometries.push(shadowGeo);
     const shadowMat = new THREE.MeshBasicMaterial({
-      color: 0x0a0a0a,
+      color: 0x000000,
       transparent: true,
-      opacity: 0.14,
+      opacity: intensity === "full" ? 0.14 : 0.45,
       depthWrite: false,
     });
     materials.push(shadowMat);
@@ -266,10 +268,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: TrackIntens
           if (!mesh.isMesh) return;
           mesh.castShadow = false;
           mesh.material = new THREE.MeshBasicMaterial({
-            color: 0x0a0a0a,
+            color: intensity === "full" ? 0x0a0a0a : 0xc8ff00,
             wireframe: true,
             transparent: true,
-            opacity: cfg.wire,
+            opacity: intensity === "full" ? cfg.wire : Math.min(0.45, cfg.wire + 0.12),
             depthWrite: false,
           });
           materials.push(mesh.material as THREE.Material);

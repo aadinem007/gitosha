@@ -7,6 +7,70 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 const FROM = process.env.EMAIL_FROM ?? BRAND.emailFrom;
 const SITE = siteUrl();
 
+export function isResendConfigured(): boolean {
+  return Boolean(process.env.RESEND_API_KEY);
+}
+
+/** Branded magic-link email — never uses Supabase’s “Supabase Auth” template. */
+export async function sendMagicLinkEmail(email: string, actionLink: string): Promise<boolean> {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set — cannot send branded magic link");
+    return false;
+  }
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Sign in to ${BRAND.name}`,
+    text: `Sign in to ${BRAND.name}
+
+Open this link to finish signing in (expires in about an hour):
+${actionLink}
+
+If you didn’t request this, ignore this email.
+
+— ${BRAND.name}
+${SITE}`,
+    html: `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f3f3ee;font-family:DM Sans,Helvetica,Arial,sans-serif;color:#0a0a0a;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f3f3ee;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width:480px;background:#ffffff;border:2px solid #0a0a0a;box-shadow:6px 6px 0 #0a0a0a;">
+          <tr>
+            <td style="background:#c8ff00;padding:18px 24px;border-bottom:2px solid #0a0a0a;">
+              <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;">${BRAND.name}</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 24px 12px;">
+              <h1 style="margin:0 0 12px;font-size:26px;line-height:1.2;">Sign in to ${BRAND.name}</h1>
+              <p style="margin:0 0 20px;font-size:15px;line-height:1.55;color:#1f1f1c;">
+                Click below to finish signing in. This link expires in about an hour.
+              </p>
+              <a href="${actionLink}" style="display:inline-block;background:#c8ff00;color:#0a0a0a;font-weight:800;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;padding:14px 22px;border:2px solid #0a0a0a;box-shadow:4px 4px 0 #0a0a0a;">
+                Sign in to ${BRAND.name}
+              </a>
+              <p style="margin:22px 0 0;font-size:12px;line-height:1.5;color:#5a5a52;">
+                If you didn’t request this, ignore this email.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 24px 24px;font-size:12px;color:#5a5a52;">— ${BRAND.name}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
+  });
+
+  return true;
+}
+
 export async function sendLicenseKeyEmail(email: string, key: string, tier: string) {
   const downloadUrl = `${SITE}/license?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`;
 

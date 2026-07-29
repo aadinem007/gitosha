@@ -142,8 +142,8 @@ export function CheckoutButton({
     }
   }
 
-  // Primary CTAs use brand fill; ghost uses outline
-  const style = primary ? "btn-primary w-full" : "btn-ghost w-full";
+  // Paid checkouts always get the hard Lando CTA (never a dull outline)
+  const style = "btn-primary w-full";
 
   if (!open) {
     return (

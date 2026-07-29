@@ -80,9 +80,10 @@ body {
   left: 0;
   right: 0;
   z-index: 40;
-  background: linear-gradient(180deg, rgba(243, 243, 238, 0.86) 0%, rgba(243, 243, 238, 0.4) 70%, transparent 100%);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid transparent;
+  background: rgba(243, 243, 238, 0.92);
+  backdrop-filter: blur(14px) saturate(1.15);
+  border-bottom: 2px solid var(--ink);
+  box-shadow: 0 8px 0 rgba(200, 255, 0, 0.35);
 }
 
 .site-nav-inner {
@@ -148,15 +149,20 @@ body {
 
 .site-nav-signin {
   color: var(--ink);
-  border: 1px solid var(--line);
-  padding: 0.35rem 0.7rem;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  border: 2px solid var(--ink);
+  background: var(--brass);
+  font-weight: 800;
+  padding: 0.45rem 0.85rem;
+  box-shadow: 3px 3px 0 rgba(10, 10, 10, 0.9);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
 .site-nav-signin:hover {
-  border-color: var(--ink);
-  background: var(--brass);
+  filter: brightness(1.05);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(10, 10, 10, 0.95);
   color: var(--ink);
+  background: var(--brass);
 }
 
 .hero-signin {
@@ -327,7 +333,7 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   align-items: stretch;
-  border-top: 1px solid var(--line);
+  border-top: 2px solid var(--ink);
   background: var(--hull);
   padding: 0;
   overflow: hidden;
@@ -355,11 +361,11 @@ body {
   position: relative;
   min-height: 48vh;
   overflow: hidden;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--ink);
   background:
-    radial-gradient(ellipse 55% 50% at 50% 48%, rgba(200, 255, 0, 0.12), transparent 58%),
-    linear-gradient(180deg, #ffffff 0%, var(--hull) 100%);
-  box-shadow: inset 0 0 80px rgba(10, 10, 10, 0.04);
+    radial-gradient(ellipse 55% 50% at 50% 48%, rgba(200, 255, 0, 0.16), transparent 58%),
+    linear-gradient(180deg, #1a1c18 0%, #121410 100%);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.45);
 }
 
 .mega-split-visual::after {
@@ -369,20 +375,20 @@ body {
   inset: 0;
   z-index: 2;
   background:
-    linear-gradient(90deg, rgba(243, 243, 238, 0.35) 0%, transparent 18%, transparent 82%, rgba(243, 243, 238, 0.35) 100%),
-    linear-gradient(180deg, transparent 70%, rgba(243, 243, 238, 0.45) 100%);
+    linear-gradient(90deg, rgba(18, 20, 16, 0.35) 0%, transparent 22%, transparent 78%, rgba(18, 20, 16, 0.35) 100%),
+    linear-gradient(180deg, transparent 72%, rgba(18, 20, 16, 0.55) 100%);
 }
 
 @media (min-width: 960px) {
   .mega-split-visual {
     min-height: 100%;
     border-bottom: none;
-    border-right: 1px solid var(--line);
+    border-right: 2px solid var(--ink);
   }
 
   .mega-split-alt .mega-split-visual {
     border-right: none;
-    border-left: 1px solid var(--line);
+    border-left: 2px solid var(--ink);
   }
 }
 
@@ -549,15 +555,15 @@ body {
 
 .track-field-stage {
   background:
-    radial-gradient(ellipse 58% 48% at 50% 46%, rgba(200, 255, 0, 0.2), transparent 55%),
-    radial-gradient(ellipse 40% 30% at 70% 20%, rgba(255, 255, 255, 0.5), transparent 50%),
-    linear-gradient(180deg, #ffffff 0%, var(--hull) 100%);
+    radial-gradient(ellipse 58% 48% at 50% 46%, rgba(200, 255, 0, 0.22), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 70% 20%, rgba(200, 255, 0, 0.08), transparent 50%),
+    linear-gradient(180deg, #1f221c 0%, #121410 100%);
 }
 
 .track-field-quiet {
   background:
-    radial-gradient(ellipse 60% 45% at 50% 30%, rgba(200, 255, 0, 0.12), transparent 60%),
-    linear-gradient(180deg, var(--panel) 0%, var(--hull) 100%);
+    radial-gradient(ellipse 60% 45% at 50% 30%, rgba(200, 255, 0, 0.14), transparent 60%),
+    linear-gradient(180deg, #1a1c18 0%, #121410 100%);
 }
 
 .cinematic-canvas {
@@ -717,7 +723,7 @@ body {
 /* ── Chapter splits (Vault / Foundry) — visual + copy, no black voids ── */
 .chapter {
   position: relative;
-  border-top: 1px solid var(--line);
+  border-top: 2px solid var(--ink);
   min-height: min(78vh, 720px);
   display: grid;
   grid-template-columns: 1fr;
@@ -745,19 +751,20 @@ body {
   position: relative;
   min-height: 280px;
   overflow: hidden;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--ink);
+  background: linear-gradient(180deg, #1a1c18 0%, #121410 100%);
 }
 
 @media (min-width: 900px) {
   .chapter-visual {
     min-height: 100%;
     border-bottom: none;
-    border-right: 1px solid var(--line);
+    border-right: 2px solid var(--ink);
   }
 
   .chapter-visual-end {
     border-right: none;
-    border-left: 1px solid var(--line);
+    border-left: 2px solid var(--ink);
     order: 2;
   }
 
@@ -776,11 +783,11 @@ body {
   z-index: 3;
   max-width: 22rem;
   padding: 1.05rem 1.15rem 1.15rem;
-  border: 1px solid rgba(200, 255, 0, 0.4);
+  border: 2px solid var(--ink);
   background: var(--scrim);
   backdrop-filter: blur(14px) saturate(1.1);
   -webkit-backdrop-filter: blur(14px) saturate(1.1);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 6px 0 rgba(200, 255, 0, 0.85);
 }
 
 .chapter-visual-label {
@@ -1061,20 +1068,25 @@ body {
 
 .proof-link {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 1.5rem;
-  font-size: 0.9rem;
+  width: fit-content;
+  font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink);
-  border-bottom: 3px solid var(--brass);
-  padding-bottom: 3px;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  background: var(--brass);
+  border: 2px solid var(--ink);
+  padding: 0.85rem 1.25rem;
+  box-shadow: 5px 5px 0 rgba(10, 10, 10, 0.9);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .proof-link:hover {
-  transform: translateX(3px);
-  border-color: var(--ink);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 rgba(10, 10, 10, 0.95);
 }
 
 .proof-compare {
@@ -1232,22 +1244,22 @@ body {
   justify-content: center;
   border-radius: 0;
   border: 2px solid var(--ink);
-  background: transparent;
+  background: var(--panel);
   color: var(--ink);
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.9rem 1.5rem;
-  box-shadow: 4px 4px 0 rgba(10, 10, 10, 0.15);
+  box-shadow: 5px 5px 0 rgba(10, 10, 10, 0.88);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .btn-ghost:hover {
   background: var(--ink);
-  color: var(--panel);
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 rgba(200, 255, 0, 0.85);
+  color: var(--brass);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 rgba(200, 255, 0, 0.95);
 }
 
 /* ── Plan shells — soft foundry depth ── */
@@ -1831,6 +1843,24 @@ a.site-footer-brand:hover {
 .sample-card {
   margin-top: 2rem;
   max-width: 42rem;
+  overflow: visible;
+  border: 2px solid var(--ink) !important;
+  box-shadow: 8px 8px 0 rgba(10, 10, 10, 0.9);
+  background: var(--panel) !important;
+}
+
+.sample-cat-badge {
+  display: inline-block;
+  margin-bottom: 0.55rem;
+  background: var(--brass);
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.55rem;
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 rgba(10, 10, 10, 0.85);
 }
 
 .sample-head {
@@ -1849,11 +1879,7 @@ a.site-footer-brand:hover {
 }
 
 .sample-cat {
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
+  display: none;
 }
 
 .sample-score {
@@ -1863,8 +1889,10 @@ a.site-footer-brand:hover {
   color: var(--ink);
   background: var(--brass);
   display: inline-block;
-  padding: 0.15rem 0.4rem;
+  padding: 0.35rem 0.55rem;
   line-height: 1;
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 rgba(10, 10, 10, 0.9);
 }
 
 .sample-score span {
@@ -1893,6 +1921,7 @@ a.site-footer-brand:hover {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  gap: 0.75rem;
 }
 
 /* Login — readable panel over quiet 3D */

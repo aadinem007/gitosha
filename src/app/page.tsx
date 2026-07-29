@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { TrackField } from "@/components/TrackField";
+import { SiteIntro } from "@/components/SiteIntro";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { BRAND } from "@/lib/brand";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
@@ -83,29 +84,43 @@ const PROOF_COMPARE = [
 export default function Home() {
   return (
     <>
+      <SiteIntro />
       <Nav />
       <main className="flex-1">
         <section className="hero-cinematic">
           <TrackField />
-          <div className="hero-stage copy-scrim">
+          <div className="hero-stage">
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
             <p className="hero-support animate-rise">
-              Scored opportunities with kill criteria — plus a production scaffold that already takes
-              payments. Built for operators who ship.
+              Global USD pricing. Honest scores. A scaffold that already takes payments.
             </p>
             <div className="hero-cta animate-rise-delay">
               <Link href="/pricing" className="btn-primary">
-                Get pricing
+                View pricing
               </Link>
               <Link href="/foundry-kit" className="btn-ghost">
                 Open Foundry
               </Link>
-              <Link href="/login" className="hero-signin">
-                Sign in
-              </Link>
             </div>
-            <p className="hero-orbit-hint animate-rise-delay-2">Drag to orbit · move pointer for depth</p>
+            <p className="hero-orbit-hint animate-rise-delay-2">Drag to orbit · scroll into the track</p>
+          </div>
+        </section>
+
+        {/* Lando-scale split chapter */}
+        <section className="mega-split" id="know">
+          <div className="mega-split-inner">
+            <h2 className="mega-split-title" aria-label="Know what">
+              <span className="mega-split-word">Know</span>
+              <span className="mega-split-word mega-split-word-accent">what</span>
+            </h2>
+            <p className="mega-split-copy">
+              Ten dimensions. Kill criteria. Public rejects. Research built for operators who decide
+              in one sitting — not scroll Twitter lists.
+            </p>
+            <Link href="/#vault" className="mega-split-link">
+              Enter the Vault →
+            </Link>
           </div>
         </section>
 
@@ -136,11 +151,27 @@ export default function Home() {
             <p className="chapter-eyebrow">{BRAND.products.vault}</p>
             <h2 className="chapter-title">Kill bad ideas early.</h2>
             <p className="chapter-copy">
-              Ten dimensions. Honest scores. Kill criteria that tell you what not to build — so your
-              next quarter isn’t spent on vanity lists.
+              Operator unlocks every teardown, financial sketch, and launch checklist — from $15/mo
+              launch for the first 100 seats.
             </p>
             <Link href="/pricing" className="chapter-link">
               See {BRAND.products.vault} plans →
+            </Link>
+          </div>
+        </section>
+
+        <section className="mega-split mega-split-alt" id="ship">
+          <div className="mega-split-inner">
+            <h2 className="mega-split-title" aria-label="Then ship">
+              <span className="mega-split-word">Then</span>
+              <span className="mega-split-word mega-split-word-accent">ship</span>
+            </h2>
+            <p className="mega-split-copy">
+              Foundry is the production zip — auth, checkout, webhooks, deploy docs. Pay once in USD.
+              Download the same minute.
+            </p>
+            <Link href="/foundry-kit" className="mega-split-link">
+              Inspect Foundry →
             </Link>
           </div>
         </section>
@@ -152,8 +183,8 @@ export default function Home() {
             <p className="chapter-eyebrow">{BRAND.products.foundry}</p>
             <h2 className="chapter-title">Ship on day one.</h2>
             <p className="chapter-copy">
-              Auth, database, checkout, webhooks, deploy docs — one zip. Pay once. Download the same
-              minute. Solo for your product. Agency for every client after.
+              Solo $99 for your product. Agency $249 for every client after. Same stack Gitosha runs
+              — not a toy demo.
             </p>
             <Link href="/foundry-kit" className="chapter-link">
               Open {BRAND.products.foundry} →
@@ -222,13 +253,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 05 Who + outcomes */}
+        {/* 05 Who */}
         <section className="story-plane" id="for">
           <div className="story-inner">
             <p className="story-kicker">05 · Who it’s for</p>
             <h2 className="story-title">Outcomes, not vibes.</h2>
             <p className="story-lede">
-              Gitosha is for people who ship products — and hate spending a quarter on the wrong one.
+              Built for international operators who ship products — and hate spending a quarter on
+              the wrong one.
             </p>
             <div className="who-grid">
               {WHO_FOR.map((w) => (
@@ -241,7 +273,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 06 Sample scored idea */}
+        {/* 06 Sample */}
         <section className="story-plane story-plane-alt" id="sample">
           <div className="story-inner">
             <p className="story-kicker">06 · Sample score</p>
@@ -274,10 +306,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Unpack — delayed until after story */}
         <section className="proof-plane" id="proof">
           <div className="proof-inner">
-            <p className="proof-kicker">Unpack</p>
+            <p className="proof-kicker">Unpack · USD</p>
             <h2 className="proof-title">Operator and Foundry, unpacked.</h2>
             <p className="proof-lede">
               Dense enough to justify the price. Clear enough to decide in one scroll — after you’ve
@@ -343,19 +374,19 @@ export default function Home() {
         </section>
 
         <section className="closing">
+          <div className="closing-visual" aria-hidden="true">
+            <TrackField intensity="quiet" />
+          </div>
           <div className="closing-inner">
             <h2 className="closing-title">
               Every week you wait is another week building the wrong thing.
             </h2>
             <div className="closing-cta">
               <Link href="/pricing" className="btn-primary">
-                Get pricing
+                Get pricing · USD
               </Link>
               <Link href="/foundry-kit" className="btn-ghost">
                 Buy Foundry
-              </Link>
-              <Link href="/refund" className="hero-signin">
-                Refunds
               </Link>
             </div>
             <div className="closing-waitlist">

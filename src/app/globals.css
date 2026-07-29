@@ -235,16 +235,16 @@ body {
 
 .brand-mark {
   font-family: var(--font-display), sans-serif;
-  font-size: clamp(5.5rem, 22vw, 14rem);
-  line-height: 0.82;
+  font-size: clamp(6.5rem, 26vw, 18rem);
+  line-height: 0.78;
   font-weight: 400;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--ink);
   text-shadow:
-    0 0 40px rgba(5, 5, 5, 0.85),
-    0 2px 24px rgba(0, 0, 0, 0.7),
-    0 0 80px rgba(255, 90, 31, 0.12);
+    0 0 60px rgba(5, 5, 5, 0.9),
+    0 4px 40px rgba(0, 0, 0, 0.75),
+    0 0 120px rgba(255, 90, 31, 0.22);
   position: relative;
   z-index: 3;
 }
@@ -285,6 +285,114 @@ body {
   text-transform: uppercase;
   color: var(--support);
   opacity: 0.85;
+}
+
+/* ── LOAD GITOSHA intro (Lando-style flash) ── */
+.site-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: end center;
+  padding-bottom: 2.5rem;
+  background: var(--brass);
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.55s;
+}
+
+.site-intro-boot {
+  opacity: 0;
+}
+
+.site-intro-hold {
+  opacity: 1;
+}
+
+.site-intro-exit {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.site-intro-mark {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.1rem, 3.5vw, 1.65rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #050505;
+  font-weight: 400;
+}
+
+/* ── Mega split chapters (ON / TRACK energy) ── */
+.mega-split {
+  position: relative;
+  min-height: 70svh;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 90, 31, 0.1), transparent 55%),
+    linear-gradient(180deg, #070707 0%, #050505 100%);
+  padding: 4.5rem 1.5rem;
+  overflow: hidden;
+}
+
+.mega-split-alt {
+  background:
+    radial-gradient(ellipse 70% 50% at 80% 40%, rgba(255, 90, 31, 0.08), transparent 50%),
+    linear-gradient(180deg, #050505 0%, #080808 100%);
+}
+
+.mega-split-inner {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 80rem;
+}
+
+.mega-split-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+}
+
+.mega-split-word {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(5.5rem, 20vw, 14rem);
+  line-height: 0.82;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.mega-split-word-accent {
+  color: var(--brass);
+  text-shadow: 0 0 80px rgba(255, 90, 31, 0.35);
+}
+
+.mega-split-copy {
+  margin-top: 1.75rem;
+  max-width: 34rem;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  line-height: 1.5;
+  color: var(--support);
+}
+
+.mega-split-link {
+  display: inline-flex;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass);
+  border-bottom: 1px solid rgba(255, 90, 31, 0.4);
+  padding-bottom: 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.mega-split-link:hover {
+  color: var(--ink);
+  border-color: var(--ink);
 }
 
 /* Abstract track field — CSS underlay + WebGL canvas owns the frame */
@@ -883,13 +991,28 @@ body {
 
 /* ── Closing CTA ── */
 .closing {
+  position: relative;
   border-top: 1px solid var(--line);
   padding: 5.5rem 1.5rem 6.5rem;
+  overflow: hidden;
+  min-height: 70svh;
+  display: flex;
+  align-items: flex-end;
+}
+
+.closing-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.55;
 }
 
 .closing-inner {
+  position: relative;
+  z-index: 2;
   margin: 0 auto;
   max-width: 42rem;
+  width: 100%;
 }
 
 .closing-title {
@@ -1629,6 +1752,10 @@ a.site-footer-brand:hover {
   .track-ribbons,
   .track-horizon {
     animation: none;
+  }
+
+  .site-intro {
+    display: none;
   }
 
   .hero-orbit-hint {

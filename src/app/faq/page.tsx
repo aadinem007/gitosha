@@ -42,7 +42,7 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
   },
   {
     q: "How do payments work?",
-    a: "Pay securely at checkout (card and UPI where available). List prices are in USD; amounts are locked on the server.",
+    a: "Pay securely at checkout with cards worldwide. List prices are in USD; amounts are locked on the server.",
     links: [{ label: "Pricing", href: "/pricing" }],
   },
   {

@@ -74,7 +74,7 @@ export function CheckoutButton({
           name: data.name,
           description: data.description,
           prefill: { email: data.email },
-          theme: { color: "#d4a05a" },
+          theme: { color: "#ff5a1f" },
           handler: async (response: {
             razorpay_payment_id: string;
             razorpay_order_id?: string;

@@ -9,7 +9,7 @@ export function Footer() {
       <div className="site-footer-inner">
         <div className="site-footer-quiet">
           <Link href="/" className="site-footer-brand">
-            {BRAND.nameUpper}
+            {BRAND.name}
           </Link>
           <nav className="site-footer-links" aria-label="Footer">
             <Link href="/">Home</Link>

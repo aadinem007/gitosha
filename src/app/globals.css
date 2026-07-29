@@ -42,9 +42,10 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-display), var(--font-body), sans-serif;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
   text-transform: none;
+  font-weight: 500;
 }
 
 .font-mono {
@@ -80,9 +81,9 @@ body {
   left: 0;
   right: 0;
   z-index: 40;
-  background: linear-gradient(180deg, rgba(238, 241, 244, 0.86) 0%, rgba(238, 241, 244, 0.4) 70%, transparent 100%);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-bottom: 1px solid var(--line);
 }
 
 .site-nav-inner {
@@ -96,10 +97,10 @@ body {
 }
 
 .site-nav-brand {
-  font-family: var(--font-display), sans-serif;
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
   color: var(--ink);
   text-transform: none;
   transition: color 0.2s ease;
@@ -115,9 +116,10 @@ body {
   align-items: center;
   justify-content: flex-end;
   gap: 0.25rem 1.35rem;
-  font-size: 0.9rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  font-weight: 500;
   color: var(--fog);
 }
 
@@ -154,9 +156,9 @@ body {
 }
 
 .site-nav-signin:hover {
-  border-color: var(--ink);
+  border-color: var(--brass);
   background: var(--brass);
-  color: var(--ink);
+  color: #fff7f2;
 }
 
 .hero-signin {
@@ -194,7 +196,7 @@ body {
   );
 }
 
-/* ── Cinematic hero — true full viewport, edge-to-edge 3D world ── */
+/* ── Cinematic hero — ink forge field, edge-to-edge 3D ── */
 .hero-cinematic {
   position: relative;
   min-height: 100svh;
@@ -205,6 +207,13 @@ body {
   overflow: hidden;
   padding: 0 1.5rem 4rem;
   margin: 0;
+  background: #12151c;
+  border: none;
+  box-shadow: none;
+}
+
+.hero-cinematic::after {
+  content: none;
 }
 
 @media (min-width: 640px) {
@@ -235,37 +244,43 @@ body {
 }
 
 .brand-mark {
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(4.5rem, 18vw, 11rem);
-  line-height: 0.9;
-  font-weight: 700;
-  letter-spacing: -0.045em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3.75rem, 14vw, 8.5rem);
+  line-height: 0.92;
+  font-weight: 600;
+  letter-spacing: -0.035em;
   text-transform: none;
-  color: var(--ink);
-  text-shadow: none;
+  color: #f4f1ea;
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
   position: relative;
   z-index: 3;
 }
 
+.brand-mark em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--brass);
+}
+
 .hero-line {
-  margin-top: 1.15rem;
-  max-width: 28rem;
-  font-size: clamp(1.35rem, 2.9vw, 1.85rem);
-  font-weight: 600;
-  line-height: 1.22;
-  letter-spacing: -0.025em;
-  color: var(--ink);
+  margin-top: 1.25rem;
+  max-width: 30rem;
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: #f4f1ea;
   text-transform: none;
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-display), Georgia, serif;
 }
 
 .hero-support {
-  margin-top: 0.95rem;
-  max-width: 32rem;
-  font-size: clamp(1.08rem, 1.7vw, 1.22rem);
-  line-height: 1.55;
+  margin-top: 1rem;
+  max-width: 34rem;
+  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+  line-height: 1.6;
   font-weight: 450;
-  color: var(--support);
+  color: rgba(244, 241, 234, 0.72);
 }
 
 .hero-cta {
@@ -278,11 +293,187 @@ body {
 .hero-orbit-hint {
   margin-top: 1.15rem;
   font-family: var(--font-mono), monospace;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 234, 0.4);
+}
+
+.hero-cinematic .btn-ghost {
+  border-color: rgba(244, 241, 234, 0.45);
+  color: #f4f1ea;
+  background: transparent;
+}
+
+.hero-cinematic .btn-ghost:hover {
+  background: #f4f1ea;
+  color: #12151c;
+  box-shadow: 0 12px 28px rgba(255, 90, 31, 0.25);
+}
+
+.hero-cinematic .track-field {
+  background:
+    radial-gradient(ellipse 50% 45% at 68% 48%, rgba(255, 90, 31, 0.22), transparent 58%),
+    radial-gradient(ellipse 80% 70% at 50% 100%, rgba(0, 0, 0, 0.45), transparent 55%),
+    linear-gradient(180deg, #161922 0%, #12151c 100%);
+}
+
+.hero-cinematic .track-fog,
+.hero-cinematic .track-sweep,
+.hero-cinematic .track-sweep-2,
+.hero-cinematic .track-dashes,
+.hero-cinematic .track-horizon {
+  display: none;
+}
+
+.hero-cinematic .track-vignette {
+  background: radial-gradient(ellipse 70% 65% at 50% 45%, transparent 40%, rgba(18, 21, 28, 0.55) 100%);
+}
+
+/* Soft handoff from ink hero into light story — no hard seam */
+.hero-cinematic + .story-band {
+  margin-top: 0;
+  border-top: none;
+  background:
+    linear-gradient(180deg, #12151c 0%, var(--hull) 7rem),
+    var(--hull);
+  padding-top: 5rem;
+}
+
+/* ── Story bands — long-form brand narrative ── */
+.story-band {
+  border-top: none;
+  background: var(--hull);
+  padding: 4.5rem 1.5rem 5rem;
+}
+
+.story-band-inner {
+  margin: 0 auto;
+  max-width: 42rem;
+}
+
+.story-band-wide {
+  max-width: 72rem;
+}
+
+.story-band-kicker {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--brass-dim);
+}
+
+.story-band-title {
+  margin-top: 0.85rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.1rem, 4.5vw, 3.35rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.story-band-title em {
+  font-style: italic;
+  color: var(--brass-dim);
+}
+
+.story-band-lede {
+  margin-top: 1.25rem;
+  font-size: clamp(1.12rem, 1.8vw, 1.3rem);
+  line-height: 1.65;
   color: var(--support);
-  opacity: 0.85;
+  font-weight: 450;
+}
+
+.story-band-prose {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1.15rem;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: var(--support);
+}
+
+.story-band-prose strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.story-pillars {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 720px) {
+  .story-pillars {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+.story-pillar {
+  padding: 1.35rem 1.25rem 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 28px rgba(12, 18, 34, 0.05);
+}
+
+.story-pillar-n {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--brass-dim);
+  font-weight: 700;
+}
+
+.story-pillar-title {
+  margin-top: 0.55rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.story-pillar-body {
+  margin-top: 0.55rem;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--support);
+}
+
+.manifesto-list {
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.manifesto-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.08rem;
+  line-height: 1.55;
+  color: var(--support);
+}
+
+.manifesto-list li strong {
+  color: var(--ink);
+}
+
+.manifesto-mark {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--brass);
+  line-height: 1;
 }
 
 /* ── LOAD GITOSHA intro (forge flash) ── */
@@ -747,6 +938,13 @@ body {
   min-height: 280px;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 60% 50% at 40% 40%, rgba(255, 90, 31, 0.1), transparent 60%),
+    linear-gradient(160deg, #ffffff 0%, var(--hull) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
 }
 
 @media (min-width: 900px) {
@@ -906,11 +1104,11 @@ body {
 
 .chapter-title {
   margin-top: 1rem;
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(3rem, 9vw, 6.25rem);
-  line-height: 0.92;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.35rem, 5.5vw, 3.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 600;
   color: var(--ink);
 }
 
@@ -963,12 +1161,11 @@ body {
 
 .proof-title {
   margin-top: 0.85rem;
-  font-family: var(--font-display), sans-serif;
+  font-family: var(--font-display), Georgia, serif;
   font-size: clamp(2.4rem, 6vw, 4.25rem);
   line-height: 0.95;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--ink);
+    color: var(--ink);
 }
 
 .proof-lede {
@@ -1140,9 +1337,12 @@ body {
   border-top: 1px solid var(--line);
   padding: 5.5rem 1.5rem 6.5rem;
   overflow: hidden;
-  min-height: 70svh;
+  min-height: auto;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255, 90, 31, 0.08), transparent 55%),
+    var(--hull);
 }
 
 .closing-visual {
@@ -1161,11 +1361,11 @@ body {
 }
 
 .closing-title {
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(2.35rem, 6.5vw, 4.25rem);
-  line-height: 0.95;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.35rem, 5.5vw, 3.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  font-weight: 600;
   color: var(--ink);
 }
 
@@ -1201,10 +1401,10 @@ body {
   border: 2px solid var(--brass);
   background: var(--brass);
   color: #fff7f2;
-  font-size: 0.9rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: none;
   padding: 0.95rem 1.6rem;
   box-shadow: 0 10px 28px rgba(12, 18, 34, 0.12), 0 2px 0 rgba(12, 18, 34, 0.06);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
@@ -1235,10 +1435,10 @@ body {
   border: 2px solid var(--ink);
   background: transparent;
   color: var(--ink);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
   padding: 0.9rem 1.5rem;
   box-shadow: 0 8px 20px rgba(12, 18, 34, 0.08);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
@@ -1248,7 +1448,7 @@ body {
   background: var(--ink);
   color: var(--panel);
   transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 rgba(255, 90, 31, 0.65);
+  box-shadow: 0 12px 28px rgba(255, 90, 31, 0.22);
 }
 
 /* ── Plan shells — soft foundry depth ── */
@@ -1397,8 +1597,7 @@ body {
   font-family: var(--font-display), sans-serif;
   font-size: 1.15rem;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink);
+    color: var(--ink);
   transition: color 0.2s ease;
 }
 
@@ -1696,11 +1895,11 @@ a.site-footer-brand:hover {
 
 .story-title {
   margin-top: 0.85rem;
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(2.35rem, 5.5vw, 4rem);
-  line-height: 0.95;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.1rem, 4.5vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  font-weight: 600;
   color: var(--ink);
 }
 

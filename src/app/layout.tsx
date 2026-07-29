@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Newsreader, Figtree, JetBrains_Mono } from "next/font/google";
 import { ChatWidget } from "@/components/ChatWidget";
 import { BRAND, siteUrl } from "@/lib/brand";
 import "./globals.css";
 
-const display = Space_Grotesk({
+const display = Newsreader({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
-const body = DM_Sans({
+const body = Figtree({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const mono = JetBrains_Mono({

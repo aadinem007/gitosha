@@ -161,7 +161,7 @@ export function CheckoutButton({
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full min-w-0 border-2 border-[var(--ink)] bg-[var(--panel)] px-3 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[3px_3px_0_var(--brass)]"
+        className="w-full min-w-0 border-2 border-[var(--ink)] bg-[var(--panel)] px-3 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(200,255,0,0.25)]"
       />
       <button type="button" disabled={loading} onClick={startCheckout} className={style}>
         {loading ? "Opening checkout…" : label}

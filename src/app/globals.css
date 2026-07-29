@@ -254,12 +254,12 @@ body {
 
 /* Ghost on dark: dark fill + lime outline + cream text — never white-on-white */
 .hero-cinematic-3d .btn-ghost,
-.mega-split-visual ~ .mega-split-inner .btn-ghost,
-.section-dark .btn-ghost {
+.section-dark .btn-ghost,
+.track-field-dark ~ * .btn-ghost {
   color: #f3f3ee;
   border: 1.5px solid var(--brass);
   background: rgba(12, 12, 12, 0.88);
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .hero-cinematic-3d .btn-ghost:hover,
@@ -267,7 +267,7 @@ body {
   border-color: var(--brass);
   color: #0a0a0a;
   background: var(--brass);
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 @media (min-width: 640px) {
@@ -1448,7 +1448,6 @@ body {
   overflow: hidden;
   border-radius: 0;
   border: none;
-  border-left: 3px solid var(--brass);
   background: var(--panel);
   padding: 2.5rem 1.75rem;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.05);

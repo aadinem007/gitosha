@@ -64,7 +64,7 @@ export function WaitlistForm({
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="min-w-0 flex-1 border-2 border-[var(--ink)] bg-[var(--panel)] px-4 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[3px_3px_0_var(--brass)]"
+        className="min-w-0 flex-1 border-2 border-[var(--ink)] bg-[var(--panel)] px-4 py-2.5 text-sm font-medium text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass-dim)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(200,255,0,0.25)]"
       />
       <button
         type="submit"

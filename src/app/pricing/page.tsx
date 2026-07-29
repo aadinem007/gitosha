@@ -17,7 +17,7 @@ function PlanCard({
           {plan.name}
         </p>
         {plan.badge && (
-          <span className="shrink-0 bg-[var(--brass)] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--ink)] shadow-[3px_3px_0_rgba(10,10,10,0.85)]">
+          <span className="shrink-0 bg-[var(--brass)] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--ink)] shadow-[0_4px_12px_rgba(200,255,0,0.28)]">
             {plan.badge}
           </span>
         )}

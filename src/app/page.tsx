@@ -211,6 +211,8 @@ export default function Home() {
 
         {/* 03 Method */}
         <section className="story-plane" id="method">
+          <span className="float-accent float-accent-a" aria-hidden="true" />
+          <span className="float-accent float-accent-c" aria-hidden="true" />
           <div className="story-inner">
             <p className="story-kicker">03 · Method</p>
             <h2 className="story-title">How scoring actually works.</h2>
@@ -235,6 +237,7 @@ export default function Home() {
 
         {/* 04 Foundry walkthrough */}
         <section className="story-plane story-plane-alt" id="inside">
+          <span className="float-accent float-accent-b" aria-hidden="true" />
           <div className="story-inner">
             <p className="story-kicker">04 · Inside Foundry</p>
             <h2 className="story-title">What’s in the zip.</h2>

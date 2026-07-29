@@ -86,6 +86,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
 
     const materials: THREE.Material[] = [];
     const geometries: THREE.BufferGeometry[] = [];
+    const floaters: THREE.Mesh[] = [];
 
     // Dark metal ground disc
     const pedGeo = new THREE.CircleGeometry(2.2, 64);
@@ -117,6 +118,34 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     ring.rotation.x = -Math.PI / 2;
     ring.position.y = -1.17;
     stage.add(ring);
+
+    // Tasteful floating metal accents around the hero prop
+    if (hero || intensity === "stage") {
+      const accentSpecs = [
+        { geo: new THREE.IcosahedronGeometry(0.18, 0), x: -1.55, y: 0.85, z: 0.6, spin: 0.55 },
+        { geo: new THREE.OctahedronGeometry(0.14, 0), x: 1.35, y: 1.1, z: -0.35, spin: -0.4 },
+        { geo: new THREE.BoxGeometry(0.22, 0.22, 0.22), x: -0.9, y: -0.35, z: 1.1, spin: 0.7 },
+      ];
+      accentSpecs.forEach((spec, i) => {
+        geometries.push(spec.geo);
+        const mat = new THREE.MeshStandardMaterial({
+          color: i === 1 ? 0xc8ff00 : 0xb8b4ac,
+          metalness: 0.95,
+          roughness: 0.22,
+          emissive: i === 1 ? 0xc8ff00 : 0x000000,
+          emissiveIntensity: i === 1 ? 0.18 : 0,
+          envMapIntensity: 1.1,
+        });
+        materials.push(mat);
+        const mesh = new THREE.Mesh(spec.geo, mat);
+        mesh.position.set(spec.x, spec.y, spec.z);
+        mesh.castShadow = true;
+        mesh.userData.spin = spec.spin;
+        mesh.userData.baseY = spec.y;
+        stage.add(mesh);
+        floaters.push(mesh);
+      });
+    }
 
     const prop = new THREE.Group();
     stage.add(prop);
@@ -269,6 +298,14 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       prop.rotation.x = orbitY * 0.6;
       prop.position.y = Math.sin(animate ? t * 0.8 : 0) * 0.04;
       ring.rotation.z = animate ? t * 0.12 : 0;
+
+      floaters.forEach((mesh, i) => {
+        const spin = mesh.userData.spin as number;
+        const baseY = mesh.userData.baseY as number;
+        mesh.rotation.x = animate ? t * spin : 0;
+        mesh.rotation.y = animate ? t * spin * 0.8 : 0;
+        mesh.position.y = baseY + Math.sin((animate ? t : 0) * 1.1 + i) * 0.08;
+      });
 
       camera.position.x = camBase.x + parallaxX * 0.45 + orbitX * 0.08;
       camera.position.y = camBase.y + parallaxY * 0.3;

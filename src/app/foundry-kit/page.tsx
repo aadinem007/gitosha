@@ -1,7 +1,6 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
-import { TrackField } from "@/components/TrackField";
 import Link from "next/link";
 import { FOUNDRY_PLANS } from "@/lib/pricing";
 
@@ -61,24 +60,22 @@ export default function FoundryKitPage() {
     <>
       <Nav />
       <main className="flex-1">
-        <section className="page-hero page-hero-atmos">
-          <TrackField intensity="quiet" />
-          <div className="page-hero-content">
-            <p className="page-kicker animate-rise">Production scaffold · USD</p>
-            <h1 className="animate-rise-delay mt-3">Foundry</h1>
-            <div className="rule mt-6 max-w-xs" />
-            <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
-              Auth, database, checkout, webhooks, security headers, deploy docs — packaged so you build
-              the product, not the plumbing. Pay once. Download the zip the same minute. Agency is built
-              for studios shipping many client products from one license.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
-              <Link href="/license" className="font-semibold text-[var(--brass-dim)] hover:underline">
-                Already paid? License portal →
-              </Link>
-              <Link href="/faq" className="text-[var(--support)] hover:text-[var(--ink)]">
-                FAQ
-              </Link>
+        <section className="page-hero">
+          <p className="page-kicker animate-rise">Production scaffold · USD</p>
+          <h1 className="animate-rise-delay mt-3">Foundry</h1>
+          <div className="rule mt-6 max-w-xs" />
+          <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
+            Auth, database, checkout, webhooks, security headers, deploy docs — packaged so you build
+            the product, not the plumbing. Pay once. Download the zip the same minute. Agency is built
+            for studios shipping many client products from one license.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
+            <Link href="/license" className="font-semibold text-[var(--brass-dim)] hover:underline">
+              Already paid? License portal →
+            </Link>
+            <Link href="/faq" className="text-[var(--support)] hover:text-[var(--ink)]">
+              FAQ
+            </Link>
               <Link href="/whats-inside" className="text-[var(--support)] hover:text-[var(--ink)]">
                 What’s inside
               </Link>
@@ -86,7 +83,6 @@ export default function FoundryKitPage() {
                 Solo vs Agency
               </a>
             </div>
-          </div>
         </section>
 
         <section className="mx-auto max-w-5xl px-6 pb-20">

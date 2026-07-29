@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { TrackField } from "@/components/TrackField";
-import { SiteIntro } from "@/components/SiteIntro";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { BRAND } from "@/lib/brand";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
@@ -84,11 +82,9 @@ const PROOF_COMPARE = [
 export default function Home() {
   return (
     <>
-      <SiteIntro />
       <Nav />
       <main className="flex-1">
         <section className="hero-cinematic">
-          <TrackField />
           <div className="hero-stage">
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
@@ -104,14 +100,16 @@ export default function Home() {
                 Open Foundry
               </Link>
             </div>
-            <p className="hero-orbit-hint animate-rise-delay-2">Drag to orbit</p>
           </div>
         </section>
 
         {/* Editorial split chapters */}
         <section className="mega-split" id="know">
-          <div className="mega-split-visual" aria-hidden="true">
-            <TrackField intensity="stage" />
+          <div className="mega-split-visual mega-split-visual-static" aria-hidden="true">
+            <div className="mega-glyph">
+              <span>01</span>
+              <p>Vault</p>
+            </div>
           </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Know what">
@@ -131,7 +129,6 @@ export default function Home() {
         {/* 01 Vault */}
         <section className="chapter chapter-vault" id="vault">
           <div className="chapter-visual">
-            <TrackField intensity="quiet" />
             <div className="chapter-visual-frame" aria-label="Live scoreboard sample">
               <p className="chapter-visual-label">01 · Research plane</p>
               <ul className="hud-scoreboard">
@@ -165,8 +162,11 @@ export default function Home() {
         </section>
 
         <section className="mega-split mega-split-alt" id="ship">
-          <div className="mega-split-visual" aria-hidden="true">
-            <TrackField intensity="stage" />
+          <div className="mega-split-visual mega-split-visual-static" aria-hidden="true">
+            <div className="mega-glyph">
+              <span>02</span>
+              <p>Foundry</p>
+            </div>
           </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Then ship">
@@ -198,7 +198,6 @@ export default function Home() {
             </Link>
           </div>
           <div className="chapter-visual chapter-visual-end">
-            <TrackField intensity="quiet" />
             <div className="chapter-visual-frame" aria-label="Foundry delivery checklist">
               <p className="chapter-visual-label">02 · Delivery plane</p>
               <ul className="chapter-kit-list">
@@ -381,9 +380,6 @@ export default function Home() {
         </section>
 
         <section className="closing">
-          <div className="closing-visual" aria-hidden="true">
-            <TrackField intensity="quiet" />
-          </div>
           <div className="closing-inner">
             <h2 className="closing-title">
               Every week you wait is another week building the wrong thing.

@@ -8,21 +8,18 @@ const CinematicTrack = dynamic(
   { ssr: false, loading: () => null }
 );
 
-function StaticStudioFallback({ rich }: { rich?: boolean }) {
+function StaticStudioFallback() {
   return (
     <>
       <div className="studio-void" />
-      <div className="studio-glow" />
-      <div className="studio-topo" />
-      {rich ? <div className="studio-ring" /> : null}
+      <div className="studio-glow studio-glow-side" />
       <div className="track-grain" />
     </>
   );
 }
 
 /**
- * Full-bleed studio 3D atmosphere (Lando-style layered relic).
- * CSS underlay until WebGL owns the frame.
+ * Full-bleed studio 3D — real GLB prop, Lando-style right weight.
  */
 export function TrackField({
   intensity = "full",
@@ -32,7 +29,7 @@ export function TrackField({
   const [webglReady, setWebglReady] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setWebglReady(true), 60);
+    const t = window.setTimeout(() => setWebglReady(true), 40);
     return () => window.clearTimeout(t);
   }, []);
 
@@ -44,7 +41,7 @@ export function TrackField({
       aria-hidden="true"
     >
       <div className="track-fallback">
-        <StaticStudioFallback rich={intensity === "full"} />
+        <StaticStudioFallback />
       </div>
       <CinematicTrack intensity={intensity} />
       <div className="track-fog track-fog-soft" />

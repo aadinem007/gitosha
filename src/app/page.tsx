@@ -103,7 +103,7 @@ export default function Home() {
                 Open Foundry
               </Link>
             </div>
-            <p className="hero-orbit-hint animate-rise-delay-2">Drag to orbit · move for depth</p>
+            <p className="hero-orbit-hint animate-rise-delay-2">Drag to orbit</p>
           </div>
         </section>
 

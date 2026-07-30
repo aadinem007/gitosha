@@ -6,10 +6,13 @@ Magic links were redirecting to `http://localhost:3000` because Supabase **Site 
 
 ## Security posture (app)
 
+- **No passwords** — magic-link only; no Argon2/bcrypt in this app (Supabase owns the OTP link).
 - Branded magic links use **server-only** `SUPABASE_SERVICE_ROLE_KEY` via `src/lib/supabase/admin.ts` — never `NEXT_PUBLIC_*`.
 - `/api/auth/magic-link` is rate-limited per IP (5/min) and per email (3/hour); responses do not reveal whether an account exists.
-- `/api/auth/callback` requires a `code`; `next` is restricted to same-site relative paths (`safeRedirectPath`).
-- Session cookies: `SameSite=Lax`, `Secure` in production (via `@supabase/ssr` + proxy/server clients).
+- `/api/auth/callback` requires a `code`; `next` is restricted to same-site relative paths (`safeRedirectPath`). Failed exchanges log `[security] auth_callback_exchange_failed`.
+- Session cookies: `HttpOnly`, `SameSite=Lax`, `Secure` in production (forced in `src/lib/supabase/server.ts` + `src/proxy.ts`).
+- **Sign out / session revocation:** Vault UI → `POST /api/auth/sign-out` → `supabase.auth.signOut()` clears HttpOnly cookies (browser JS cannot delete them).
+- **MFA:** not productized. Scaffolding = Supabase Auth MFA when you enable it in the dashboard; no app TOTP UI yet. Operators should use 2FA on Supabase/Stripe/Vercel.
 - `/vault` is gated in `src/proxy.ts` **and** redirects unauthenticated users in the page itself (defense-in-depth against proxy bypass CVEs).
 
 ## 1. Vercel env

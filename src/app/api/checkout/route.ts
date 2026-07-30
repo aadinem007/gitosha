@@ -197,6 +197,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("checkout_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many checkout attempts. Wait a minute." }, { status: 429 });
   }
 

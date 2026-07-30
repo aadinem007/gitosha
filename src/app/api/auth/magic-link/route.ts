@@ -24,6 +24,7 @@ const bodySchema = z.object({
  */
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
+    securityLog("magic_link_origin_blocked", { ip: clientIp(req) });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   if (!requireJsonContentType(req)) {
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("magic_link_ip_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

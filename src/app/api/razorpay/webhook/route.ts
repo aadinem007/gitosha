@@ -6,6 +6,8 @@ import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getRazorpay } from "@/lib/razorpay";
 import { safeEqual, securityLog } from "@/lib/secure";
 
+export const maxDuration = 30;
+
 type RazorpayWebhookBody = {
   event: string;
   payload: {
@@ -52,6 +54,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("razorpay_webhook_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

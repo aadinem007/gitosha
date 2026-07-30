@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { SignOutButton } from "@/components/SignOutButton";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -50,6 +51,7 @@ export default async function VaultPage() {
                   Export CSV
                 </a>
               )}
+              <SignOutButton />
             </div>
           </div>
 

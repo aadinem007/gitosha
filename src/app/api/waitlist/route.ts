@@ -11,6 +11,7 @@ const bodySchema = z.object({
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
+    securityLog("waitlist_origin_blocked", { ip: clientIp(req) });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   if (!requireJsonContentType(req)) {
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("waitlist_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

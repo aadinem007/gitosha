@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { securityLog } from "@/lib/secure";
+
+export const maxDuration = 15;
 
 export async function GET(req: Request) {
   const limited = rateLimit({
@@ -10,12 +13,14 @@ export async function GET(req: Request) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("vault_export_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many exports" }, { status: 429 });
   }
 
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.auth.getUser();
   if (!data.user?.email) {
+    securityLog("vault_export_unauthenticated", { ip: clientIp(req) });
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   }
 
@@ -24,6 +29,7 @@ export async function GET(req: Request) {
   });
   const isPro = subscriber?.tier === "PRO" || subscriber?.tier === "TEAM";
   if (!isPro || subscriber?.status !== "ACTIVE") {
+    securityLog("vault_export_forbidden", { ip: clientIp(req), tier: subscriber?.tier ?? "none" });
     return NextResponse.json({ error: "Operator access required" }, { status: 403 });
   }
 

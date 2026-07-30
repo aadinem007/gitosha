@@ -1,11 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+/** Session cookies: HttpOnly + Secure (prod) + SameSite=Lax. Our flags win over library defaults. */
 const cookieOptions = {
   path: "/",
   sameSite: "lax" as const,
-  // Secure in prod; do not force httpOnly — @supabase/ssr needs readable chunk cookies in the browser
   secure: process.env.NODE_ENV === "production",
+  httpOnly: true,
 };
 
 // Server-side Supabase client. Used in Server Components, Route Handlers,
@@ -25,11 +26,11 @@ export async function createSupabaseServerClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, { ...cookieOptions, ...options })
+              cookieStore.set(name, value, { ...options, ...cookieOptions })
             );
           } catch {
             // Called from a Server Component render — safe to ignore because
-            // middleware refreshes the session cookie on every request.
+            // proxy refreshes the session cookie on every request.
           }
         },
       },

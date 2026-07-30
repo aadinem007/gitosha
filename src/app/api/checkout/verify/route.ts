@@ -7,6 +7,8 @@ import { getRazorpay } from "@/lib/razorpay";
 import { readJsonLimited, safeEqual, assertSameOrigin, requireJsonContentType, securityLog } from "@/lib/secure";
 import { getPaymentsProvider, getStripe, isStripeConfigured } from "@/lib/stripe";
 
+export const maxDuration = 20;
+
 const razorpaySchema = z.object({
   provider: z.literal("razorpay").optional(),
   mode: z.enum(["payment", "subscription"]),
@@ -197,6 +199,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("verify_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

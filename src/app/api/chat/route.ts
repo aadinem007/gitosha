@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { assertSameOrigin, readJsonLimited, requireJsonContentType, stripControlChars } from "@/lib/secure";
+import {
+  assertSameOrigin,
+  readJsonLimited,
+  requireJsonContentType,
+  stripControlChars,
+  securityLog,
+} from "@/lib/secure";
 import { matchKnowledge, type ChatReply } from "@/lib/chat-knowledge";
+
+export const maxDuration = 15;
 
 const bodySchema = z.object({
   message: z.string().min(1).max(500),
@@ -69,6 +77,7 @@ Allowed links (mention only if relevant): ${(grounded.links ?? []).map((l) => l.
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
+    securityLog("chat_origin_blocked", { ip: clientIp(req) });
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   if (!requireJsonContentType(req)) {
@@ -81,6 +90,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("chat_rate_limited", { ip: clientIp(req) });
     return NextResponse.json(
       { error: "Slow down a second — too many messages." },
       { status: 429 }

@@ -13,6 +13,7 @@ const bodySchema = z.object({
 });
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("license_dl_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many download attempts. Wait a minute." }, { status: 429 });
   }
 
@@ -51,6 +53,7 @@ export async function POST(req: NextRequest) {
 
   const license = await prisma.licenseKey.findUnique({ where: { key } });
   if (!license || !safeEqualDigest(license.email.toLowerCase(), email)) {
+    securityLog("license_dl_not_found", { ip: clientIp(req) });
     return NextResponse.json({ error: "License not found for that email + key." }, { status: 404 });
   }
 

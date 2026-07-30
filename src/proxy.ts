@@ -102,6 +102,7 @@ function maxBodyBytes(path: string): number {
   if (path.startsWith("/api/chat")) return 16_384;
   if (path.startsWith("/api/waitlist")) return 8_192;
   if (path.startsWith("/api/auth/magic-link")) return 8_192;
+  if (path.startsWith("/api/auth/sign-out")) return 1_024;
   if (path.startsWith("/api/")) return 32_768;
   return 1_048_576;
 }
@@ -218,6 +219,7 @@ export async function proxy(request: NextRequest) {
           path: "/",
           sameSite: "lax",
           secure: process.env.NODE_ENV === "production",
+          httpOnly: true,
         },
         cookies: {
           getAll() {
@@ -227,10 +229,11 @@ export async function proxy(request: NextRequest) {
             cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
             cookiesToSet.forEach(({ name, value, options }) =>
               response.cookies.set(name, value, {
+                ...options,
                 path: "/",
                 sameSite: "lax",
                 secure: process.env.NODE_ENV === "production",
-                ...options,
+                httpOnly: true,
               })
             );
           },

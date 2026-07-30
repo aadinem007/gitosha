@@ -7,6 +7,7 @@ import { securityLog } from "@/lib/secure";
 import { getStripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
+export const maxDuration = 30;
 
 async function fulfillFromSession(session: Stripe.Checkout.Session) {
   if (
@@ -59,6 +60,7 @@ export async function POST(req: NextRequest) {
     windowMs: 60_000,
   });
   if (!limited.ok) {
+    securityLog("stripe_webhook_rate_limited", { ip: clientIp(req) });
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

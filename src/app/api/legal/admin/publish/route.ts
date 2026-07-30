@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireLegalAdmin } from "@/lib/legal/admin";
-import { buildDefaultLegalConfig } from "@/lib/legal/config";
+import { buildDefaultLegalConfig, legalConfigGaps } from "@/lib/legal/config";
 import { publishLegalConfig } from "@/lib/legal/publish";
 import { getLegalConfig } from "@/lib/legal/resolve";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
@@ -20,7 +20,11 @@ export async function GET() {
   }
   const config = await getLegalConfig();
   const defaults = buildDefaultLegalConfig();
-  return NextResponse.json({ config, defaultsHint: { processors: defaults.processors } });
+  return NextResponse.json({
+    config,
+    defaultsHint: { processors: defaults.processors },
+    gaps: legalConfigGaps(config),
+  });
 }
 
 const publishSchema = z.object({
@@ -84,10 +88,7 @@ export async function POST(req: NextRequest) {
       entityNameConfigured: Boolean(
         parsed.data.business?.entityName?.trim() || current.business.entityNameConfigured
       ),
-      addressConfigured: Boolean(
-        parsed.data.business?.address?.trim() &&
-          !parsed.data.business.address.includes("Configuration pending")
-      ),
+      addressConfigured: Boolean(parsed.data.business?.address?.trim()),
     },
     regions: current.regions.map((r) => ({
       ...r,

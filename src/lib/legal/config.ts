@@ -1,6 +1,7 @@
 import { BRAND } from "@/lib/brand";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
 import { getPaymentsProvider } from "@/lib/payments";
+import { isLegalEmailConfigured, LEGAL_EMAIL_UNSET } from "@/lib/legal/email";
 import type {
   ConsentPreferences,
   CookieCategory,
@@ -9,7 +10,7 @@ import type {
   ThirdPartyProcessor,
 } from "@/lib/legal/types";
 
-const CONFIG_PENDING = "Configuration pending — contact the site operator.";
+export { isLegalEmailConfigured, LEGAL_EMAIL_UNSET } from "@/lib/legal/email";
 
 function envTrim(key: string): string | undefined {
   const v = process.env[key]?.trim();
@@ -33,15 +34,11 @@ function isOpenAiConfigured(): boolean {
 }
 
 function contactEmail(): string {
-  return (
-    envTrim("LEGAL_CONTACT_EMAIL") ??
-    envTrim("LEGAL_PRIVACY_EMAIL") ??
-    "configuration-pending@operator.local (set LEGAL_CONTACT_EMAIL)"
-  );
+  return envTrim("LEGAL_CONTACT_EMAIL") ?? envTrim("LEGAL_PRIVACY_EMAIL") ?? LEGAL_EMAIL_UNSET;
 }
 
 function privacyEmail(): string {
-  return envTrim("LEGAL_PRIVACY_EMAIL") ?? contactEmail();
+  return envTrim("LEGAL_PRIVACY_EMAIL") ?? envTrim("LEGAL_CONTACT_EMAIL") ?? LEGAL_EMAIL_UNSET;
 }
 
 function buildProcessors(): ThirdPartyProcessor[] {
@@ -97,7 +94,7 @@ function buildProcessors(): ThirdPartyProcessor[] {
     {
       id: "openai",
       name: "OpenAI",
-      purpose: `Optional LLM polish for the ${BRAND.chatName} chat widget when OPENAI_API_KEY is set. Chat still works from grounded on-site knowledge without OpenAI.`,
+      purpose: `Optional LLM polish for the ${BRAND.chatName} chat widget when an AI provider is connected. Chat still works from grounded on-site knowledge without an external AI API.`,
       dataCategories: ["chat message text", "short conversation context sent for reply generation"],
       policyUrl: "https://openai.com/policies/privacy-policy",
       active: openaiOn,
@@ -152,7 +149,7 @@ function buildCookies(aiActive: boolean): CookieCategory[] {
       enabled: aiActive,
       examples: aiActive
         ? ["Chat messages may be sent to OpenAI to generate a short reply"]
-        : ["AI provider not configured — category inactive"],
+        : ["Category inactive in this environment"],
     },
   ];
 }
@@ -281,13 +278,13 @@ export function buildDefaultLegalConfig(): LegalConfig {
     lastUpdated: envTrim("LEGAL_LAST_UPDATED") ?? "2026-07-30",
     productName: BRAND.name,
     business: {
-      entityName: entityName ?? `${BRAND.name} (legal entity name pending configuration)`,
+      entityName: entityName ?? BRAND.name,
       entityNameConfigured: Boolean(entityName),
       productName: BRAND.name,
       contactEmail: contact,
       privacyEmail: privacy,
       dpoEmail: dpo,
-      address: address ?? CONFIG_PENDING,
+      address: address ?? "",
       addressConfigured: Boolean(address),
       governingLaw: envTrim("LEGAL_GOVERNING_LAW") ?? "India",
       jurisdictionNote:
@@ -406,8 +403,8 @@ export function buildDefaultLegalConfig(): LegalConfig {
       usesOptionalLlm: openaiOn,
       llmProvider: openaiOn ? "OpenAI" : null,
       disclosure: openaiOn
-        ? `${BRAND.chatName} answers product questions from grounded on-site knowledge. When OPENAI_API_KEY is configured, message text may be sent to OpenAI to polish a short reply. This is not a general-purpose AI assistant and is not a social network.`
-        : `${BRAND.chatName} answers from grounded on-site knowledge. No LLM provider API key is configured in this environment, so chat replies are not sent to an external AI API.`,
+        ? `${BRAND.chatName} answers product questions from grounded on-site knowledge. When an optional AI provider is connected, message text may be sent to OpenAI to polish a short reply. This is not a general-purpose AI assistant and is not a social network.`
+        : `${BRAND.chatName} answers from grounded on-site knowledge. Chat replies are not sent to an external AI API in this environment.`,
       dataSent: openaiOn
         ? ["user chat message text", "limited recent chat context", "system grounding text"]
         : ["none to external AI — grounded matcher only"],
@@ -415,7 +412,7 @@ export function buildDefaultLegalConfig(): LegalConfig {
     children: {
       minAge: 18,
       audience: "Adult operators and B2B builders deciding what software to ship",
-      statement: `${BRAND.name} is intended for adults building businesses (operators, studios, agencies). We do not knowingly collect personal data from children under 18. If you believe a minor has provided data, contact ${privacy} so we can delete it.`,
+      statement: `${BRAND.name} is intended for adults building businesses (operators, studios, agencies). We do not knowingly collect personal data from children under 18. If you believe a minor has provided data, contact us via the site support channels so we can delete it.`,
     },
     shipping: {
       physicalGoods: false,
@@ -428,10 +425,10 @@ export function buildDefaultLegalConfig(): LegalConfig {
       agentEmail: dmcaEmail,
       notice: dmcaEmail
         ? `Copyright notices may be sent to ${dmcaEmail}. Include the URL of the allegedly infringing material, your contact information, and a good-faith statement.`
-        : "DMCA / copyright agent contact is not configured. Set LEGAL_DMCA_EMAIL (and preferably LEGAL_CONTACT_EMAIL) before relying on a formal notice channel. Until then, use the privacy/contact email for copyright concerns.",
+        : "For copyright concerns, contact us via the site support channels or the privacy contact listed on this site. Include the URL of the allegedly infringing material, your contact information, and a good-faith statement.",
     },
     accessibility: {
-      statement: `${BRAND.name} aims for accessible marketing and product pages (skip link, semantic landmarks, keyboard-reachable forms). We do not claim WCAG certification. Report barriers to ${privacy}.`,
+      statement: `${BRAND.name} aims for accessible marketing and product pages (skip link, semantic landmarks, keyboard-reachable forms). We do not claim WCAG certification. Report barriers via the site support channels.`,
       contactEmail: privacy,
     },
     humanReviewRequired: true,
@@ -462,4 +459,31 @@ export function regionDisclaimer(): string {
 
 export function legalFooterDisclaimer(): string {
   return "Not legal advice. Policies are generated from this deployment's configuration and require human legal review before you rely on them as a compliance program.";
+}
+
+/** Operator-facing gaps for /admin/legal — not for public pages. */
+export function legalConfigGaps(config: LegalConfig): string[] {
+  const gaps: string[] = [];
+  if (!config.business.entityNameConfigured) {
+    gaps.push("LEGAL_ENTITY_NAME — legal entity name not set");
+  }
+  if (!config.business.addressConfigured) {
+    gaps.push("LEGAL_ADDRESS — business address not set (do not invent one)");
+  }
+  if (!isLegalEmailConfigured(config.business.contactEmail)) {
+    gaps.push("LEGAL_CONTACT_EMAIL — public contact email not set");
+  }
+  if (!isLegalEmailConfigured(config.business.privacyEmail)) {
+    gaps.push("LEGAL_PRIVACY_EMAIL — privacy contact email not set");
+  }
+  if (!config.business.dpoEmail) {
+    gaps.push("LEGAL_DPO_EMAIL — optional DPO email not set");
+  }
+  if (!config.dmca.configured) {
+    gaps.push("LEGAL_DMCA_EMAIL — DMCA / copyright agent email not set");
+  }
+  if (!config.regions.some((r) => r.enabled)) {
+    gaps.push("LEGAL_ENABLED_REGIONS — no regional notice modules enabled (e.g. IN_DPDP,GDPR,CPRA)");
+  }
+  return gaps;
 }

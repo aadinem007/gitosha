@@ -15,13 +15,6 @@ export default async function DmcaPage() {
   return (
     <LegalShell title="DMCA / copyright notices" config={config}>
       <p>{config.dmca.notice}</p>
-      {!config.dmca.configured && (
-        <p>
-          <strong>Human legal review flag:</strong> set <code>LEGAL_DMCA_EMAIL</code> before treating
-          this page as a formal US DMCA designated-agent channel. This software does not register an
-          agent with the Copyright Office for you.
-        </p>
-      )}
       {config.dmca.agentEmail && (
         <p>
           Agent email: <ContactMailto email={config.dmca.agentEmail} />

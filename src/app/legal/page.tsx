@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LegalShell } from "@/components/LegalShell";
 import { BRAND } from "@/lib/brand";
 import { getLegalConfig } from "@/lib/legal/resolve";
-import { ContactMailto, LEGAL_NAV } from "@/lib/legal/sections";
+import { LEGAL_NAV, OperatorContactBlock } from "@/lib/legal/sections";
 
 export const metadata: Metadata = {
   title: `Legal — ${BRAND.name}`,
@@ -31,11 +31,7 @@ export default async function LegalIndexPage() {
           <Link href="/legal/refunds">/legal/refunds</Link>
         </li>
       </ul>
-      <h2>Operator contact</h2>
-      <p>
-        <ContactMailto email={config.business.contactEmail} /> · Privacy:{" "}
-        <ContactMailto email={config.business.privacyEmail} />
-      </p>
+      <OperatorContactBlock config={config} />
       <p className="text-sm text-[var(--muted)]">
         Chat ({config.ai.chatWidgetName}) is a product guide, not a public community network — there
         are no separate &quot;community guidelines&quot; for user-generated social content.

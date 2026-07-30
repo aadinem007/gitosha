@@ -23,12 +23,12 @@ export default async function PrivacyPage() {
         this deployment&apos;s real integrations ({activeProcessors.join(", ") || "hosting only"}),
         not a generic template pasted from another company.
       </p>
-      <p>
-        Operator: {config.business.entityName}
-        {!config.business.entityNameConfigured && " — set LEGAL_ENTITY_NAME when known"}. Address:{" "}
-        {config.business.address}
-        {!config.business.addressConfigured && " (no street address invented)"}.
-      </p>
+      {(config.business.entityNameConfigured || config.business.addressConfigured) && (
+        <p>
+          {config.business.entityNameConfigured ? <>Operator: {config.business.entityName}. </> : null}
+          {config.business.addressConfigured ? <>Address: {config.business.address}</> : null}
+        </p>
+      )}
 
       <h2>1. Data we collect</h2>
       <ul>
@@ -124,9 +124,7 @@ export default async function PrivacyPage() {
             {" "}
             · DPO: <ContactMailto email={config.business.dpoEmail} />
           </>
-        ) : (
-          " · DPO email not configured (set LEGAL_DPO_EMAIL if applicable)"
-        )}
+        ) : null}
       </p>
     </LegalShell>
   );

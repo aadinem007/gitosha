@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import type { LegalConfig, JurisdictionId } from "@/lib/legal/types";
+import { isLegalEmailConfigured } from "@/lib/legal/email";
 
 export function LegalAdminPanel() {
   const [config, setConfig] = useState<LegalConfig | null>(null);
+  const [gaps, setGaps] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [changeSummary, setChangeSummary] = useState("");
   const [effectiveDate, setEffectiveDate] = useState("");
@@ -23,12 +25,23 @@ export function LegalAdminPanel() {
         setError(res.status === 401 ? "Sign in required" : "Forbidden — not a legal admin");
         return;
       }
-      const data = (await res.json()) as { config: LegalConfig };
+      const data = (await res.json()) as { config: LegalConfig; gaps?: string[] };
       setConfig(data.config);
-      setEntityName(data.config.business.entityName);
-      setContactEmail(data.config.business.contactEmail);
-      setPrivacyEmail(data.config.business.privacyEmail);
-      setAddress(data.config.business.address);
+      setGaps(data.gaps ?? []);
+      setEntityName(
+        data.config.business.entityNameConfigured ? data.config.business.entityName : ""
+      );
+      setContactEmail(
+        isLegalEmailConfigured(data.config.business.contactEmail)
+          ? data.config.business.contactEmail
+          : ""
+      );
+      setPrivacyEmail(
+        isLegalEmailConfigured(data.config.business.privacyEmail)
+          ? data.config.business.privacyEmail
+          : ""
+      );
+      setAddress(data.config.business.addressConfigured ? data.config.business.address : "");
       setEffectiveDate(data.config.effectiveDate);
       setRegionIds(data.config.regions.filter((r) => r.enabled).map((r) => r.id));
     })();
@@ -104,6 +117,25 @@ export function LegalAdminPanel() {
         </p>
       </div>
 
+      {gaps.length > 0 && (
+        <section className="rounded-sm border border-[var(--line)] bg-[var(--panel)] p-4">
+          <h2 className="font-display text-xl tracking-wide text-[var(--ink)]">
+            Missing configuration
+          </h2>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Visible only here — public legal pages hide these operator hints.
+          </p>
+          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[var(--fog)]">
+            {gaps.map((g) => (
+              <li key={g}>
+                <code className="text-xs">{g.split(" — ")[0]}</code>
+                {g.includes(" — ") ? ` — ${g.split(" — ").slice(1).join(" — ")}` : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section className="form-stack">
         <h2 className="font-display text-2xl tracking-wide">Business contacts</h2>
         <label className="form-label" htmlFor="entity">
@@ -114,6 +146,7 @@ export function LegalAdminPanel() {
           className="form-input"
           value={entityName}
           onChange={(e) => setEntityName(e.target.value)}
+          placeholder="Set LEGAL_ENTITY_NAME or publish here"
         />
         <label className="form-label" htmlFor="contact">
           Contact email
@@ -124,6 +157,7 @@ export function LegalAdminPanel() {
           className="form-input"
           value={contactEmail}
           onChange={(e) => setContactEmail(e.target.value)}
+          placeholder="Set LEGAL_CONTACT_EMAIL or publish here"
         />
         <label className="form-label" htmlFor="privacy">
           Privacy email
@@ -134,6 +168,7 @@ export function LegalAdminPanel() {
           className="form-input"
           value={privacyEmail}
           onChange={(e) => setPrivacyEmail(e.target.value)}
+          placeholder="Set LEGAL_PRIVACY_EMAIL or publish here"
         />
         <label className="form-label" htmlFor="address">
           Address (do not invent)
@@ -143,13 +178,15 @@ export function LegalAdminPanel() {
           className="form-input min-h-[5rem]"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          placeholder="Set LEGAL_ADDRESS or publish here"
         />
       </section>
 
       <section className="form-stack">
         <h2 className="font-display text-2xl tracking-wide">Regional notice modules</h2>
         <p className="text-sm text-[var(--muted)]">
-          Informational only — enabling a module does not certify compliance.
+          Informational only — enabling a module does not certify compliance. Or set{" "}
+          <code>LEGAL_ENABLED_REGIONS</code>.
         </p>
         {config.regions.map((r) => (
           <label key={r.id} className="flex items-start gap-3 text-sm">

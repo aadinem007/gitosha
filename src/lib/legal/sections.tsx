@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { legalFooterDisclaimer, regionDisclaimer } from "@/lib/legal/config";
+import { isLegalEmailConfigured } from "@/lib/legal/email";
 import type { LegalConfig } from "@/lib/legal/types";
 
 export function formatDisplayDate(iso: string): string {
@@ -14,11 +15,38 @@ export function formatDisplayDate(iso: string): string {
   });
 }
 
+const SOFT_CONTACT = "Contact us via the site support channels.";
+
 export function ContactMailto({ email, children }: { email: string; children?: ReactNode }) {
-  if (email.includes("configuration-pending") || email.includes("operator.local")) {
-    return <span>{children ?? "contact email not configured (set LEGAL_CONTACT_EMAIL)"}</span>;
+  if (!isLegalEmailConfigured(email)) {
+    return <span>{children ?? SOFT_CONTACT}</span>;
   }
   return <a href={`mailto:${email}`}>{children ?? email}</a>;
+}
+
+/** Public operator contact — omit env hints; soft line when emails are unset. */
+export function OperatorContactBlock({ config }: { config: LegalConfig }) {
+  const contactOk = isLegalEmailConfigured(config.business.contactEmail);
+  const privacyOk = isLegalEmailConfigured(config.business.privacyEmail);
+  if (!contactOk && !privacyOk) {
+    return (
+      <>
+        <h2>Operator contact</h2>
+        <p>{SOFT_CONTACT}</p>
+      </>
+    );
+  }
+  return (
+    <>
+      <h2>Operator contact</h2>
+      <p>
+        {contactOk ? <ContactMailto email={config.business.contactEmail} /> : null}
+        {contactOk && privacyOk ? " · Privacy: " : null}
+        {!contactOk && privacyOk ? "Privacy: " : null}
+        {privacyOk ? <ContactMailto email={config.business.privacyEmail} /> : null}
+      </p>
+    </>
+  );
 }
 
 export function LegalMetaBlock({ config }: { config: LegalConfig }) {
@@ -46,10 +74,7 @@ export function RegionModules({ config }: { config: LegalConfig }) {
     return (
       <>
         <h2>Regional notices</h2>
-        <p>
-          No regional notice modules are enabled for this deployment. Operators can set{" "}
-          <code>LEGAL_ENABLED_REGIONS</code> (e.g. <code>IN_DPDP,GDPR,CPRA</code>).
-        </p>
+        <p>No regional notice modules are currently enabled for this deployment.</p>
         <p className="text-sm text-[var(--muted)]">{regionDisclaimer()}</p>
       </>
     );

@@ -17,10 +17,13 @@ export function Footer() {
             <Link href="/#vault">{BRAND.products.vault}</Link>
             <Link href="/#foundry">{BRAND.products.foundry}</Link>
             <Link href="/faq">FAQ</Link>
-            <Link href="/refund">Refunds</Link>
+            <Link href="/legal">Legal</Link>
+            <Link href="/legal/refunds">Refunds</Link>
             <Link href="/terms">Terms</Link>
             <Link href="/privacy">Privacy</Link>
-            <a href="mailto:aaditya.shah8005@gmail.com">Contact</a>
+            <Link href="/legal/cookies">Cookies</Link>
+            <Link href="/legal/preferences">Preferences</Link>
+            <Link href="/legal/rights">Your rights</Link>
           </nav>
         </div>
         <div className="site-footer-bottom">

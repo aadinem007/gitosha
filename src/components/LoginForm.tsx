@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { authCallbackUrl } from "@/lib/site";
 
@@ -25,7 +26,6 @@ export function LoginForm({ next }: { next: string }) {
         return;
       }
 
-      // Fallback: Supabase client OTP (may still use default Supabase template)
       const supabase = createSupabaseBrowserClient();
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -65,6 +65,17 @@ export function LoginForm({ next }: { next: string }) {
         onChange={(e) => setEmail(e.target.value)}
         className="form-input"
       />
+      <p className="text-xs leading-snug text-[var(--muted)]">
+        By continuing you agree to our{" "}
+        <Link href="/terms" className="underline">
+          Terms
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
       <button type="submit" disabled={status === "loading"} className="btn-primary form-submit">
         {status === "loading" ? "Sending…" : "Email me a magic link"}
       </button>

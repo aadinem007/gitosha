@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ChatLink, ChatReply } from "@/lib/chat-knowledge";
 import { CHAT_GREETING } from "@/lib/chat-knowledge";
+import { hasAiProcessingConsent } from "@/lib/legal/consent-client";
 
 type Msg = {
   id: string;
@@ -87,7 +88,11 @@ export function ChatWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, history }),
+        body: JSON.stringify({
+          message,
+          history,
+          aiProcessingConsent: hasAiProcessingConsent(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {

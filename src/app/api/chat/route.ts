@@ -23,6 +23,8 @@ const bodySchema = z.object({
     )
     .max(12)
     .optional(),
+  /** Client must opt in before optional LLM — grounded replies always available */
+  aiProcessingConsent: z.boolean().optional(),
 });
 
 async function maybeLlmReply(message: string, grounded: ChatReply): Promise<ChatReply | null> {
@@ -113,7 +115,8 @@ export async function POST(req: NextRequest) {
   }
 
   const grounded = matchKnowledge(message);
-  const enhanced = await maybeLlmReply(message, grounded);
+  const allowLlm = parsed.data.aiProcessingConsent === true;
+  const enhanced = allowLlm ? await maybeLlmReply(message, grounded) : null;
   const reply = enhanced ?? grounded;
 
   return NextResponse.json({

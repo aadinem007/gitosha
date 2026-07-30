@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 declare global {
   interface Window {
@@ -34,6 +35,7 @@ export function CheckoutButton({
   void _primary;
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [open, setOpen] = useState(false);
 
   async function startCheckout() {
@@ -41,12 +43,16 @@ export function CheckoutButton({
       setOpen(true);
       return;
     }
+    if (!accepted) {
+      alert("Please accept the Terms and Privacy Policy to continue.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId, email }),
+        body: JSON.stringify({ planId, email, acceptedTerms: true }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -55,13 +61,11 @@ export function CheckoutButton({
         return;
       }
 
-      // Stripe Checkout (default): redirect to hosted page
       if (data.url) {
         window.location.href = data.url as string;
         return;
       }
 
-      // Optional Razorpay path (PAYMENTS_PROVIDER=razorpay)
       if (data.provider === "razorpay" || data.keyId) {
         const ready = await loadRazorpayScript();
         if (!ready || !window.Razorpay) {
@@ -85,17 +89,10 @@ export function CheckoutButton({
             const verifyRes = await fetch("/api/checkout/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                provider: "razorpay",
-                mode: data.mode,
-                planId: data.planId,
-                email: data.email,
-                ...response,
-              }),
+              body: JSON.stringify(response),
             });
             if (verifyRes.ok) {
               const result = await verifyRes.json();
-              // Keep license off the URL (history / Referer leak)
               try {
                 sessionStorage.setItem(
                   "gitosha_checkout",
@@ -106,7 +103,7 @@ export function CheckoutButton({
                   })
                 );
               } catch {
-                /* private mode — fall through without key in URL */
+                /* private mode */
               }
               const params = new URLSearchParams({
                 product: result.product ?? "foundry",
@@ -143,7 +140,6 @@ export function CheckoutButton({
     }
   }
 
-  // Paid checkouts always get the hard Lando CTA (never a dull outline)
   const style = "btn-primary w-full";
 
   if (!open) {
@@ -172,7 +168,32 @@ export function CheckoutButton({
         onChange={(e) => setEmail(e.target.value)}
         className="form-input"
       />
-      <button type="button" disabled={loading} onClick={startCheckout} className={`${style} form-submit`}>
+      <label className="flex items-start gap-2 text-xs leading-snug text-[var(--fog)]">
+        <input
+          type="checkbox"
+          className="mt-0.5"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+          required
+        />
+        <span>
+          I agree to the{" "}
+          <Link href="/terms" className="underline" target="_blank">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="underline" target="_blank">
+            Privacy Policy
+          </Link>
+          .
+        </span>
+      </label>
+      <button
+        type="button"
+        disabled={loading || !accepted}
+        onClick={startCheckout}
+        className={`${style} form-submit`}
+      >
         {loading ? "Opening checkout…" : label}
       </button>
     </div>

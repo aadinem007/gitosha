@@ -72,7 +72,7 @@ const BLOCKED_SUBSTRINGS = [
 ];
 
 /** APIs that legitimately accept GET. Everything else under /api is POST-only. */
-const GET_ALLOWED_APIS = ["/api/auth/callback", "/api/vault/export"];
+const GET_ALLOWED_APIS = ["/api/auth/callback", "/api/vault/export", "/api/legal/admin/publish"];
 
 /** Webhooks / payment callbacks — do not apply browser-bot UA heuristics. */
 const UA_EXEMPT_PREFIXES = ["/api/stripe/webhook", "/api/razorpay/webhook"];
@@ -101,6 +101,8 @@ function maxBodyBytes(path: string): number {
   if (path.startsWith("/api/razorpay/webhook")) return 256_000;
   if (path.startsWith("/api/chat")) return 16_384;
   if (path.startsWith("/api/waitlist")) return 8_192;
+  if (path.startsWith("/api/legal/admin")) return 64_000;
+  if (path.startsWith("/api/legal/")) return 8_192;
   if (path.startsWith("/api/auth/magic-link")) return 8_192;
   if (path.startsWith("/api/auth/sign-out")) return 1_024;
   if (path.startsWith("/api/")) return 32_768;
@@ -266,6 +268,7 @@ function isPublicMarketingPath(path: string): boolean {
     "/terms",
     "/privacy",
     "/refund",
+    "/legal",
     "/login",
     "/license",
     "/security",
@@ -273,6 +276,7 @@ function isPublicMarketingPath(path: string): boolean {
   ]);
   if (exact.has(path)) return true;
   if (path.startsWith("/ideas/")) return true;
+  if (path.startsWith("/legal/")) return true;
   return false;
 }
 

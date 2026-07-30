@@ -91,6 +91,9 @@ Absolute security does not exist; this is a strong SaaS baseline for Gitosha on 
 | auth callback | 30 / min |
 | magic-link | 5 / min IP + 3 / hour email |
 | auth sign-out | 20 / min |
+| legal consent | 20 / min |
+| legal rights | 6 / min IP + 8 / hour email |
+| legal admin publish | 10 / min (allowlisted email) |
 | stripe / razorpay webhook | 120 / min |
 
 ### Money path

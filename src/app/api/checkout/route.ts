@@ -3,6 +3,7 @@ import { z } from "zod";
 import { VAULT_PLANS, FOUNDRY_PLANS, CURRENCY, usdCentsToInrPaise } from "@/lib/pricing";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { assertSameOrigin, readJsonLimited, requireJsonContentType, securityLog } from "@/lib/secure";
+import { writeLegalAuditLog } from "@/lib/legal/audit";
 import {
   getPaymentsProvider,
   getStripe,
@@ -16,6 +17,7 @@ import { razorpay, RAZORPAY_KEY_ID, PLAN_IDS } from "@/lib/razorpay";
 const bodySchema = z.object({
   planId: z.string().max(64),
   email: z.string().email().max(254),
+  acceptedTerms: z.literal(true),
 });
 
 function siteUrl(): string {
@@ -208,16 +210,27 @@ export async function POST(req: NextRequest) {
 
   const parsed = bodySchema.safeParse(body.data);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request — accept Terms and Privacy to continue." },
+      { status: 400 }
+    );
   }
 
   const { planId, email } = parsed.data;
+  const normalizedEmail = email.toLowerCase();
+
+  await writeLegalAuditLog({
+    action: "policy_acceptance_checkout",
+    subjectEmail: normalizedEmail,
+    detail: { planId, acceptedTerms: true },
+    ip: clientIp(req),
+  });
 
   try {
     if (getPaymentsProvider() === "razorpay") {
-      return await createRazorpayCheckout(planId, email.toLowerCase());
+      return await createRazorpayCheckout(planId, normalizedEmail);
     }
-    return await createStripeCheckout(planId, email.toLowerCase());
+    return await createStripeCheckout(planId, normalizedEmail);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Checkout failed";
     if (message.includes("STRIPE_SECRET_KEY") || message.includes("RAZORPAY")) {

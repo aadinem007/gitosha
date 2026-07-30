@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ChatWidget } from "@/components/ChatWidget";
+import { ConsentBannerHost } from "@/components/ConsentBannerHost";
 import { BRAND, siteUrl } from "@/lib/brand";
 import "./globals.css";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
         </a>
         {children}
         <ChatWidget />
+        <ConsentBannerHost />
       </body>
     </html>
   );

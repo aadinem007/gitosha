@@ -219,7 +219,8 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       links: [
         { label: "Terms", href: "/terms" },
         { label: "Privacy", href: "/privacy" },
-        { label: "Refunds", href: "/refund" },
+        { label: "Legal", href: "/legal" },
+        { label: "Refunds", href: "/legal/refunds" },
       ],
       suggestions: ["How do I get Foundry after paying?", "Show pricing", "Contact support"],
     },

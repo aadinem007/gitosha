@@ -88,3 +88,118 @@ model Issue {
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
 }
+
+// --- Legal / privacy / consent (operator-configurable) ---
+
+model LegalConfig {
+  id          String    @id @default(cuid())
+  /** Semantic version string mirrored in published documents */
+  version     String
+  effectiveDate DateTime
+  publishedAt DateTime  @default(now())
+  isActive    Boolean   @default(false)
+  changeSummary String?
+  /** Full LegalConfig JSON blob */
+  configJson  Json
+  publishedBy String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  versions    LegalDocumentVersion[]
+
+  @@index([isActive, publishedAt])
+}
+
+model LegalDocumentVersion {
+  id            String   @id @default(cuid())
+  legalConfigId String?
+  legalConfig   LegalConfig? @relation(fields: [legalConfigId], references: [id], onDelete: SetNull)
+  /** privacy | terms | cookies | … */
+  slug          String
+  version       String
+  effectiveDate DateTime
+  changeSummary String?
+  /** Snapshot of rendered policy metadata / sections JSON */
+  contentJson   Json
+  createdAt     DateTime @default(now())
+  createdBy     String?
+
+  @@index([slug, version])
+  @@index([effectiveDate])
+}
+
+model ConsentRecord {
+  id           String   @id @default(cuid())
+  email        String?
+  anonymousId  String?
+  /** ConsentPreferences JSON */
+  preferences  Json
+  policyVersion String
+  source       String   @default("banner")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
+  @@index([anonymousId])
+}
+
+enum DataRightsRequestType {
+  ACCESS
+  CORRECT
+  DELETE
+  EXPORT
+  WITHDRAW_CONSENT
+  COMMUNICATION_PREFS
+}
+
+enum DataRightsRequestStatus {
+  RECEIVED
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+  NEEDS_OPERATOR
+}
+
+model DataRightsRequest {
+  id          String                   @id @default(cuid())
+  type        DataRightsRequestType
+  status      DataRightsRequestStatus  @default(RECEIVED)
+  email       String
+  userId      String?
+  details     String?
+  /** Operator notes — never returned to requester via public API */
+  operatorNote String?
+  resultJson  Json?
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  completedAt DateTime?
+
+  @@index([email, createdAt])
+  @@index([status])
+}
+
+model LegalAuditLog {
+  id           String   @id @default(cuid())
+  action       String
+  actorEmail   String?
+  subjectEmail String?
+  detailJson   Json?
+  ip           String?
+  createdAt    DateTime @default(now())
+
+  @@index([action, createdAt])
+  @@index([actorEmail])
+}
+
+model ThirdPartyProcessor {
+  id             String   @id @default(cuid())
+  processorId    String   @unique
+  name           String
+  purpose        String
+  dataCategories String[]
+  policyUrl      String
+  active         Boolean  @default(true)
+  optional       Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now())
+}

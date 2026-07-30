@@ -123,3 +123,46 @@ Export the scoreboard anytime (Operator+): ${SITE}/api/vault/export
 — ${BRAND.name}`,
   });
 }
+
+/** Receipt email — never includes card numbers or payment secrets. */
+export async function sendReceiptEmail(opts: {
+  email: string;
+  planName: string;
+  product: string;
+  amountLabel: string;
+  currency: string;
+  provider: string;
+  licenseKey?: string;
+  transactionId?: string;
+}): Promise<boolean> {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set — skipping receipt email for", opts.email);
+    return false;
+  }
+
+  const receiptUrl = opts.transactionId
+    ? `${SITE}/account/receipts/${opts.transactionId}`
+    : `${SITE}/license`;
+
+  await resend.emails.send({
+    from: FROM,
+    to: opts.email,
+    subject: `Receipt — ${opts.planName} · ${BRAND.name}`,
+    text: `Payment receipt from ${BRAND.name}
+
+Plan: ${opts.planName}
+Product: ${opts.product}
+Amount: ${opts.amountLabel} (${opts.currency})
+Provider: ${opts.provider}
+${opts.licenseKey ? `License key: ${opts.licenseKey}\n` : ""}
+View / download receipt: ${receiptUrl}
+License portal: ${SITE}/license
+Refund policy: ${SITE}/legal/refunds
+
+No card details are stored by ${BRAND.name} — checkout is hosted by the payment provider.
+
+— ${BRAND.name}
+${SITE}`,
+  });
+  return true;
+}

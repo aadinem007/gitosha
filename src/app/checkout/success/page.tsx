@@ -70,6 +70,7 @@ export default async function CheckoutSuccessPage({
     email?: string;
     product?: string;
     session_id?: string;
+    receipt?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -131,6 +132,14 @@ export default async function CheckoutSuccessPage({
           )}
 
           <div className="mt-10 flex justify-center gap-4 text-sm">
+            {params.receipt && (
+              <Link
+                href={`/account/receipts/${params.receipt}`}
+                className="text-[var(--muted)] hover:text-[var(--ink)]"
+              >
+                View receipt
+              </Link>
+            )}
             <Link href="/license" className="text-[var(--muted)] hover:text-[var(--ink)]">
               License portal
             </Link>

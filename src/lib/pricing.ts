@@ -1,3 +1,8 @@
+import {
+  usdCentsToInrPaise,
+  USD_CENTS_TO_INR_PAISE_FACTOR,
+} from "@/lib/payments/currencies";
+
 export type PricingPlan = {
   id:
     | "vault-free"
@@ -25,16 +30,36 @@ export type PricingPlan = {
 export const CURRENCY = "usd" as const;
 export const CURRENCY_DISPLAY = "USD";
 
+/** Configured charge/display currencies — fixed price lists, not live FX. */
+export const PRICING_CURRENCIES = ["USD", "INR"] as const;
+export type PricingCurrency = (typeof PRICING_CURRENCIES)[number];
+
 /** Post-launch Operator list price (first 100 seats use launch amountCents on vault-pro). */
 export const OPERATOR_LIST_PRICE_CENTS = 1900;
 
 /**
- * Approx INR paise for Razorpay (Indian merchant accounts).
- * Site displays USD; Razorpay still charges INR so existing keys keep working.
- * $1 ≈ ₹83 → paise ≈ amountCents * 83
+ * Fixed configured INR conversion for Razorpay India settlement.
+ * NOT a live FX rate — do not present as market FX.
+ * Re-exported from payments layer for a single source of truth.
  */
-export function usdCentsToInrPaise(amountCents: number): number {
-  return Math.round(amountCents * 83);
+export { usdCentsToInrPaise, USD_CENTS_TO_INR_PAISE_FACTOR };
+
+/** Display helper: list price in USD (catalog) vs approximate INR label for UI preference. */
+export function formatPlanPrice(
+  amountCents: number,
+  display: PricingCurrency = "USD"
+): { label: string; note?: string } {
+  if (display === "INR") {
+    const paise = usdCentsToInrPaise(amountCents);
+    return {
+      label: `₹${Math.round(paise / 100).toLocaleString("en-IN")}`,
+      note: "Approx. INR display from fixed configured conversion — charge currency follows payment provider.",
+    };
+  }
+  const dollars = amountCents / 100;
+  return {
+    label: `$${dollars % 1 === 0 ? dollars.toFixed(0) : dollars.toFixed(2)}`,
+  };
 }
 
 export const VAULT_PLANS: PricingPlan[] = [

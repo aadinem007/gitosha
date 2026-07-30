@@ -1,188 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { VAULT_PLANS, FOUNDRY_PLANS, CURRENCY, usdCentsToInrPaise } from "@/lib/pricing";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { assertSameOrigin, readJsonLimited, requireJsonContentType, securityLog } from "@/lib/secure";
 import { writeLegalAuditLog } from "@/lib/legal/audit";
 import {
-  getPaymentsProvider,
-  getStripe,
-  isStripeConfigured,
-  stripePriceEnvForPlan,
-  STRIPE_PRICE_IDS,
-} from "@/lib/stripe";
-import { paymentsUnavailableMessage } from "@/lib/payments";
-import { razorpay, RAZORPAY_KEY_ID, PLAN_IDS } from "@/lib/razorpay";
+  createCheckout,
+  PaymentServiceError,
+  paymentsUnavailableMessage,
+  userPaymentMessage,
+} from "@/lib/payments";
 
 const bodySchema = z.object({
   planId: z.string().max(64),
   email: z.string().email().max(254),
   acceptedTerms: z.literal(true),
+  idempotencyKey: z.string().min(8).max(128).optional(),
+  displayCurrency: z.enum(["USD", "INR"]).optional(),
 });
-
-function siteUrl(): string {
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-    (process.env.NODE_ENV === "production" ? "https://gitosha.vercel.app" : "http://localhost:3000")
-  );
-}
-
-async function createStripeCheckout(planId: string, email: string) {
-  if (!isStripeConfigured()) {
-    return NextResponse.json({ error: paymentsUnavailableMessage() }, { status: 500 });
-  }
-
-  const plan = [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
-  if (!plan || plan.mode === "none" || !plan.amountCents) {
-    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
-  }
-
-  const stripe = getStripe();
-  const priceKey = stripePriceEnvForPlan(plan.id);
-  const priceId = priceKey ? STRIPE_PRICE_IDS[priceKey] : "";
-
-  const lineItems = priceId
-    ? [{ price: priceId, quantity: 1 }]
-    : [
-        {
-          quantity: 1,
-          price_data: {
-            currency: CURRENCY,
-            unit_amount: plan.amountCents,
-            product_data: {
-              name: `Gitosha ${plan.name}`,
-              description: plan.description.slice(0, 400),
-            },
-            ...(plan.mode === "subscription"
-              ? { recurring: { interval: "month" as const } }
-              : {}),
-          },
-        },
-      ];
-
-  const session = await stripe.checkout.sessions.create({
-    mode: plan.mode === "subscription" ? "subscription" : "payment",
-    customer_email: email,
-    line_items: lineItems,
-    success_url: `${siteUrl()}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${siteUrl()}/pricing`,
-    metadata: {
-      planId: plan.id,
-      product: plan.product,
-      email,
-    },
-    ...(plan.mode === "subscription"
-      ? {
-          subscription_data: {
-            metadata: { planId: plan.id, product: plan.product, email },
-          },
-        }
-      : {
-          payment_intent_data: {
-            metadata: { planId: plan.id, product: plan.product, email },
-          },
-        }),
-  });
-
-  if (!session.url) {
-    return NextResponse.json({ error: "Could not start checkout." }, { status: 500 });
-  }
-
-  return NextResponse.json({
-    provider: "stripe",
-    mode: plan.mode,
-    url: session.url,
-    sessionId: session.id,
-    planId: plan.id,
-    product: plan.product,
-    email,
-  });
-}
-
-async function createRazorpayCheckout(planId: string, email: string) {
-  if (!RAZORPAY_KEY_ID || RAZORPAY_KEY_ID.includes("placeholder")) {
-    return NextResponse.json({ error: paymentsUnavailableMessage() }, { status: 500 });
-  }
-
-  const plan = [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
-  if (!plan || plan.mode === "none" || !plan.amountCents) {
-    return NextResponse.json({ error: "Unknown plan" }, { status: 400 });
-  }
-
-  // Site lists USD; Razorpay India settles in INR (paise).
-  const amount = usdCentsToInrPaise(plan.amountCents);
-
-  if (plan.mode === "payment") {
-    const order = await razorpay.orders.create({
-      amount,
-      currency: "INR",
-      receipt: `sy_${Date.now()}`.slice(0, 40),
-      notes: { planId: plan.id, product: plan.product, email, usdCents: String(plan.amountCents) },
-    });
-
-    return NextResponse.json({
-      provider: "razorpay",
-      mode: "payment",
-      keyId: RAZORPAY_KEY_ID,
-      orderId: order.id,
-      amount,
-      currency: "INR",
-      planId: plan.id,
-      product: plan.product,
-      email,
-      name: "Gitosha",
-      description: plan.name,
-    });
-  }
-
-  if (plan.mode === "subscription") {
-    const planIdRzp = plan.planEnvVar ? PLAN_IDS[plan.planEnvVar] : "";
-
-    if (planIdRzp) {
-      const subscription = await razorpay.subscriptions.create({
-        plan_id: planIdRzp,
-        total_count: 120,
-        customer_notify: true,
-        notes: { planId: plan.id, product: plan.product, email },
-      });
-
-      return NextResponse.json({
-        provider: "razorpay",
-        mode: "subscription",
-        keyId: RAZORPAY_KEY_ID,
-        subscriptionId: subscription.id,
-        planId: plan.id,
-        product: plan.product,
-        email,
-        name: "Gitosha",
-        description: plan.name,
-      });
-    }
-
-    const order = await razorpay.orders.create({
-      amount,
-      currency: "INR",
-      receipt: `sy_${Date.now()}`.slice(0, 40),
-      notes: { planId: plan.id, product: plan.product, email, usdCents: String(plan.amountCents) },
-    });
-
-    return NextResponse.json({
-      provider: "razorpay",
-      mode: "payment",
-      keyId: RAZORPAY_KEY_ID,
-      orderId: order.id,
-      amount,
-      currency: "INR",
-      planId: plan.id,
-      product: plan.product,
-      email,
-      name: "Gitosha",
-      description: `${plan.name} (first billing period)`,
-    });
-  }
-
-  return NextResponse.json({ error: "Unsupported plan" }, { status: 400 });
-}
 
 export async function POST(req: NextRequest) {
   if (!assertSameOrigin(req)) {
@@ -200,7 +34,7 @@ export async function POST(req: NextRequest) {
   });
   if (!limited.ok) {
     securityLog("checkout_rate_limited", { ip: clientIp(req) });
-    return NextResponse.json({ error: "Too many checkout attempts. Wait a minute." }, { status: 429 });
+    return NextResponse.json({ error: userPaymentMessage("rate_limited") }, { status: 429 });
   }
 
   const body = await readJsonLimited(req);
@@ -216,7 +50,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { planId, email } = parsed.data;
+  const { planId, email, idempotencyKey, displayCurrency } = parsed.data;
   const normalizedEmail = email.toLowerCase();
 
   await writeLegalAuditLog({
@@ -227,15 +61,41 @@ export async function POST(req: NextRequest) {
   });
 
   try {
-    if (getPaymentsProvider() === "razorpay") {
-      return await createRazorpayCheckout(planId, normalizedEmail);
-    }
-    return await createStripeCheckout(planId, normalizedEmail);
+    const session = await createCheckout({
+      planId,
+      email: normalizedEmail,
+      idempotencyKey,
+      displayCurrency,
+    });
+
+    // Stable client shape for CheckoutButton (Stripe redirect + Razorpay Checkout.js)
+    return NextResponse.json({
+      provider: session.provider,
+      mode: session.mode,
+      url: session.url,
+      sessionId: session.sessionId,
+      keyId: session.keyId,
+      orderId: session.orderId,
+      subscriptionId: session.subscriptionId,
+      amount: session.amount,
+      currency: session.currency,
+      chargeLabel: session.chargeLabel,
+      planId: session.planId,
+      product: session.product,
+      email: session.email,
+      name: session.name,
+      description: session.description,
+      transactionId: session.transactionId,
+      idempotencyKey: session.idempotencyKey,
+    });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Checkout failed";
-    if (message.includes("STRIPE_SECRET_KEY") || message.includes("RAZORPAY")) {
-      return NextResponse.json({ error: paymentsUnavailableMessage() }, { status: 500 });
+    if (err instanceof PaymentServiceError) {
+      const message =
+        err.code === "unavailable" ? paymentsUnavailableMessage() : err.message;
+      securityLog("checkout_error", { ip: clientIp(req), code: err.code });
+      return NextResponse.json({ error: message }, { status: err.httpStatus });
     }
+    const message = err instanceof Error ? err.message : "Checkout failed";
     securityLog("checkout_error", { ip: clientIp(req), message: message.slice(0, 120) });
     return NextResponse.json({ error: "Could not start checkout." }, { status: 500 });
   }

@@ -203,3 +203,93 @@ model ThirdPartyProcessor {
   updatedAt      DateTime @updatedAt
   createdAt      DateTime @default(now())
 }
+
+// --- Payments (provider-agnostic ledger; secrets stay in env) ---
+
+enum PaymentTxStatus {
+  pending
+  requires_action
+  succeeded
+  failed
+  canceled
+  refunded
+  partially_refunded
+}
+
+enum PaymentWebhookStatus {
+  received
+  processed
+  ignored
+  failed
+}
+
+enum PaymentRefundStatus {
+  pending
+  succeeded
+  failed
+}
+
+model PaymentTransaction {
+  id             String         @id @default(cuid())
+  provider       String
+  providerRef    String?
+  userEmail      String
+  planId         String
+  amount         Int
+  currency       String
+  status         PaymentTxStatus @default(pending)
+  idempotencyKey String         @unique
+  /** Safe metadata only — no card data / secrets */
+  metadata       Json           @default("{}")
+  receiptNumber  String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  refunds        PaymentRefund[]
+
+  @@index([userEmail, createdAt])
+  @@index([provider, providerRef])
+  @@index([status, createdAt])
+}
+
+model PaymentWebhookEvent {
+  id             String               @id @default(cuid())
+  provider       String
+  eventId        String
+  /** Redacted summary — never store raw signed payloads with secrets */
+  payloadSummary Json
+  processedAt    DateTime?
+  status         PaymentWebhookStatus @default(received)
+  createdAt      DateTime             @default(now())
+
+  @@unique([provider, eventId])
+  @@index([status, createdAt])
+}
+
+model PaymentRefund {
+  id            String              @id @default(cuid())
+  transactionId String
+  transaction   PaymentTransaction  @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  amount        Int
+  currency      String
+  status        PaymentRefundStatus @default(pending)
+  providerRef   String?
+  reason        String?
+  actorEmail    String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@index([transactionId])
+}
+
+/** Public toggles only — secrets remain in environment variables. */
+model PaymentProviderConfig {
+  id                   String   @id @default(cuid())
+  providerId           String   @unique
+  enabled              Boolean  @default(false)
+  /** JSON array of currency codes, e.g. ["USD","INR"] */
+  supportedCurrencies  Json     @default("[\"USD\"]")
+  /** Non-secret operator notes / dashboard hints */
+  publicConfig         Json     @default("{}")
+  updatedAt            DateTime @updatedAt
+  createdAt            DateTime @default(now())
+}

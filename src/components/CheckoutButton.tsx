@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { CurrencyPreference } from "@/components/CurrencyPreference";
+import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 
 declare global {
   interface Window {
@@ -23,6 +25,15 @@ function loadRazorpayScript(): Promise<boolean> {
   });
 }
 
+function idempotencyKeyFor(planId: string, email: string): string {
+  try {
+    const key = `ck_${planId}_${email}_${Math.floor(Date.now() / 60_000)}`;
+    return key.slice(0, 120);
+  } catch {
+    return `ck_${Date.now()}`;
+  }
+}
+
 export function CheckoutButton({
   planId,
   label,
@@ -37,6 +48,10 @@ export function CheckoutButton({
   const [email, setEmail] = useState("");
   const [accepted, setAccepted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [chargeHint, setChargeHint] = useState<string | null>(null);
+
+  const plan = [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
 
   async function startCheckout() {
     if (!email) {
@@ -44,21 +59,32 @@ export function CheckoutButton({
       return;
     }
     if (!accepted) {
-      alert("Please accept the Terms and Privacy Policy to continue.");
+      setError("Please accept the Terms and Privacy Policy to continue.");
       return;
     }
     setLoading(true);
+    setError(null);
+    setChargeHint(null);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId, email, acceptedTerms: true }),
+        body: JSON.stringify({
+          planId,
+          email,
+          acceptedTerms: true,
+          idempotencyKey: idempotencyKeyFor(planId, email),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error ?? "Checkout unavailable.");
+        setError(data.error ?? "Checkout unavailable.");
         setLoading(false);
         return;
+      }
+
+      if (data.chargeLabel && data.currency) {
+        setChargeHint(`You will be charged ${data.chargeLabel} (${data.currency}).`);
       }
 
       if (data.url) {
@@ -69,7 +95,7 @@ export function CheckoutButton({
       if (data.provider === "razorpay" || data.keyId) {
         const ready = await loadRazorpayScript();
         if (!ready || !window.Razorpay) {
-          alert("Could not load checkout. Check your connection and try again.");
+          setError("Could not load checkout. Check your connection and try again.");
           setLoading(false);
           return;
         }
@@ -89,7 +115,13 @@ export function CheckoutButton({
             const verifyRes = await fetch("/api/checkout/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(response),
+              body: JSON.stringify({
+                provider: "razorpay",
+                mode: data.mode,
+                planId: data.planId,
+                email: data.email,
+                ...response,
+              }),
             });
             if (verifyRes.ok) {
               const result = await verifyRes.json();
@@ -100,6 +132,9 @@ export function CheckoutButton({
                     product: result.product ?? "foundry",
                     email: result.email ?? data.email,
                     licenseKey: result.licenseKey ?? "",
+                    transactionId: result.transactionId ?? data.transactionId ?? "",
+                    chargeLabel: data.chargeLabel ?? "",
+                    currency: data.currency ?? "",
                   })
                 );
               } catch {
@@ -108,15 +143,19 @@ export function CheckoutButton({
               const params = new URLSearchParams({
                 product: result.product ?? "foundry",
               });
+              if (result.transactionId) params.set("receipt", result.transactionId);
               window.location.href = `/checkout/success?${params.toString()}`;
             } else {
               const err = await verifyRes.json();
-              alert(err.error ?? "Payment received but verification failed.");
+              setError(err.error ?? "Payment received but verification failed. Check your email before retrying.");
               setLoading(false);
             }
           },
           modal: {
-            ondismiss: () => setLoading(false),
+            ondismiss: () => {
+              setLoading(false);
+              setError("Checkout canceled. No charge was made.");
+            },
           },
         };
 
@@ -132,10 +171,10 @@ export function CheckoutButton({
         return;
       }
 
-      alert("Checkout unavailable.");
+      setError("Checkout unavailable.");
       setLoading(false);
     } catch {
-      alert("Something went wrong starting checkout.");
+      setError("Network error starting checkout. Please try again.");
       setLoading(false);
     }
   }
@@ -152,6 +191,18 @@ export function CheckoutButton({
 
   return (
     <div className="form-stack form-stack-tight relative isolate w-full min-w-0 overflow-visible">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+        Order summary
+      </p>
+      <p className="text-sm text-[var(--ink)]">
+        {plan?.name ?? planId}
+        {plan?.price ? (
+          <span className="text-[var(--muted)]"> · catalog {plan.price}</span>
+        ) : null}
+      </p>
+      {plan?.amountCents != null && (
+        <CurrencyPreference amountCents={plan.amountCents} className="mt-1" />
+      )}
       <label htmlFor={`checkout-email-${planId}`} className="form-label">
         Email for receipt
       </label>
@@ -185,9 +236,23 @@ export function CheckoutButton({
           <Link href="/privacy" className="underline" target="_blank">
             Privacy Policy
           </Link>
+          . Digital goods — see{" "}
+          <Link href="/legal/refunds" className="underline" target="_blank">
+            refunds
+          </Link>
           .
         </span>
       </label>
+      {chargeHint && (
+        <p className="text-xs font-semibold text-[var(--ink)]" role="status">
+          {chargeHint}
+        </p>
+      )}
+      {error && (
+        <p className="text-xs text-[var(--signal)]" role="alert">
+          {error}
+        </p>
+      )}
       <button
         type="button"
         disabled={loading || !accepted}

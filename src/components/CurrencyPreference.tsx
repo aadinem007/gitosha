@@ -1,0 +1,102 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { formatPlanPrice, type PricingCurrency } from "@/lib/pricing";
+
+const STORAGE_KEY = "gitosha_display_currency";
+const COOKIE_KEY = "gitosha_display_currency";
+
+function readPreference(): PricingCurrency {
+  if (typeof window === "undefined") return "USD";
+  try {
+    const fromLs = localStorage.getItem(STORAGE_KEY);
+    if (fromLs === "USD" || fromLs === "INR") return fromLs;
+  } catch {
+    /* private mode */
+  }
+  const match = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_KEY}=([^;]*)`));
+  const fromCookie = match?.[1];
+  if (fromCookie === "USD" || fromCookie === "INR") return fromCookie;
+  return "USD";
+}
+
+function writePreference(c: PricingCurrency) {
+  try {
+    localStorage.setItem(STORAGE_KEY, c);
+  } catch {
+    /* ignore */
+  }
+  document.cookie = `${COOKIE_KEY}=${c};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+}
+
+export function CurrencyPreference({
+  amountCents,
+  className = "",
+}: {
+  amountCents?: number;
+  className?: string;
+}) {
+  const [currency, setCurrency] = useState<PricingCurrency>("USD");
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setCurrency(readPreference());
+    setReady(true);
+  }, []);
+
+  function onChange(next: PricingCurrency) {
+    setCurrency(next);
+    writePreference(next);
+  }
+
+  if (!ready) return null;
+
+  const priced =
+    typeof amountCents === "number" ? formatPlanPrice(amountCents, currency) : null;
+
+  return (
+    <div className={className}>
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-[var(--muted)]">Display</span>
+        {(["USD", "INR"] as const).map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => onChange(c)}
+            className={`border px-2 py-1 font-semibold ${
+              currency === c
+                ? "border-[var(--ink)] bg-[var(--brass)]"
+                : "border-[var(--line)] text-[var(--muted)]"
+            }`}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+      {priced && (
+        <p className="mt-2 text-sm text-[var(--support)]">
+          {priced.label}
+          {priced.note && (
+            <span className="mt-1 block text-[11px] text-[var(--fog)]">{priced.note}</span>
+          )}
+        </p>
+      )}
+      <p className="mt-1 text-[11px] text-[var(--fog)]">
+        Charge currency is set by the payment provider (Razorpay → INR, Stripe → USD), not this
+        display toggle.{" "}
+        <Link href="/legal/refunds" className="underline">
+          Refunds
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+export function useDisplayCurrency(): PricingCurrency {
+  const [currency, setCurrency] = useState<PricingCurrency>("USD");
+  useEffect(() => {
+    setCurrency(readPreference());
+  }, []);
+  return currency;
+}

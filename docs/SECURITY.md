@@ -94,13 +94,18 @@ Absolute security does not exist; this is a strong SaaS baseline for Gitosha on 
 | legal consent | 20 / min |
 | legal rights | 6 / min IP + 8 / hour email |
 | legal admin publish | 10 / min (allowlisted email) |
+| admin payments | 20 / min toggle · 10 / min refund (allowlisted email) |
+| account receipts | 30 / min |
 | stripe / razorpay webhook | 120 / min |
 
 ### Money path
 - Server plan table only — never trust client amounts
+- Provider-agnostic service layer (`src/lib/payments/`) — Razorpay + Stripe adapters; scaffolds disabled
 - Razorpay: verify HMAC + fetch order notes server-side; webhook prefers order notes
 - Stripe: paid-only; unknown plans rejected
+- Webhook + checkout idempotency via Prisma payment ledger (after `db:push`)
 - License zip: fixed Content-Disposition filenames; 50 download hard cap (atomic)
+- Details: `docs/PAYMENTS.md`
 
 ### Public `/security`
 - Redirects home on purpose (not a marketing firewall page).

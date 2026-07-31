@@ -9,7 +9,7 @@ export type ProviderId =
   | "payoneer";
 
 /** ISO-ish currency codes we actually charge or display. */
-export type Currency = "USD" | "INR";
+export type Currency = "USD" | "INR" | "EUR";
 
 export type CheckoutMode = "payment" | "subscription";
 
@@ -64,8 +64,12 @@ export type CheckoutSession = {
 
 export type VerifyPaymentInput = {
   provider: ProviderId;
-  /** Stripe */
+  /** Stripe Checkout session / PayPal order / Xflow intent */
   sessionId?: string;
+  /** PayPal Orders v2 */
+  paypalOrderId?: string;
+  /** Xflow TransactionIntent */
+  xflowIntentId?: string;
   /** Razorpay */
   mode?: CheckoutMode;
   planId?: string;
@@ -150,6 +154,8 @@ export type GetTransactionResult = {
   updatedAt: Date;
 };
 
+export type ProviderCapability = "checkout" | "payout";
+
 export type ProviderPublicConfig = {
   providerId: ProviderId;
   enabled: boolean;
@@ -158,7 +164,13 @@ export type ProviderPublicConfig = {
   supportedCurrencies: Currency[];
   /** Human-facing note for operators */
   secretEnvVars: string[];
+  /** Legacy: true only for unfinished stubs (none currently). */
   scaffoldOnly?: boolean;
+  /** When false, registry will not route customer checkout here. */
+  supportsCheckout?: boolean;
+  capability?: ProviderCapability;
+  /** Honest operator-facing constraint (shown in admin). */
+  operatorNote?: string;
 };
 
 export type UserFacingPaymentErrorCode =

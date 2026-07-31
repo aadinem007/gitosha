@@ -47,6 +47,8 @@ export const razorpayProvider: PaymentProvider = {
       credentialsConfigured: credentialsOk(),
       supportedCurrencies: ["INR"],
       secretEnvVars: ["RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET", "RAZORPAY_WEBHOOK_SECRET"],
+      supportsCheckout: true,
+      capability: "checkout",
     };
   },
 

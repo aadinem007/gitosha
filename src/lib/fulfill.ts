@@ -4,7 +4,7 @@ import { sendLicenseKeyEmail, sendWelcomeEmail } from "@/lib/email";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
 import { securityLog } from "@/lib/secure";
 
-export type PaymentProvider = "stripe" | "razorpay";
+export type PaymentProvider = "stripe" | "razorpay" | "paypal" | "xflow";
 
 /** Paid plan ids only — never trust arbitrary client/webhook plan strings. */
 export const FULFILLABLE_PLAN_IDS = new Set(
@@ -33,7 +33,24 @@ export async function fulfillVaultSubscription(opts: {
     existing.tier === tier &&
     (provider === "stripe"
       ? Boolean(opts.subscriptionId) && existing.stripeSubscriptionId === opts.subscriptionId
-      : Boolean(opts.subscriptionId) && existing.razorpaySubscriptionId === opts.subscriptionId);
+      : provider === "razorpay"
+        ? Boolean(opts.subscriptionId) && existing.razorpaySubscriptionId === opts.subscriptionId
+        : existing.status === "ACTIVE" && existing.tier === tier);
+
+  const stripeFields =
+    provider === "stripe"
+      ? {
+          stripeCustomerId: opts.customerId,
+          stripeSubscriptionId: opts.subscriptionId,
+        }
+      : {};
+  const razorpayFields =
+    provider === "razorpay"
+      ? {
+          razorpayCustomerId: opts.customerId,
+          razorpaySubscriptionId: opts.subscriptionId,
+        }
+      : {};
 
   await prisma.subscriber.upsert({
     where: { email: opts.email },
@@ -41,28 +58,14 @@ export async function fulfillVaultSubscription(opts: {
       email: opts.email,
       tier,
       status: "ACTIVE",
-      ...(provider === "stripe"
-        ? {
-            stripeCustomerId: opts.customerId,
-            stripeSubscriptionId: opts.subscriptionId,
-          }
-        : {
-            razorpayCustomerId: opts.customerId,
-            razorpaySubscriptionId: opts.subscriptionId,
-          }),
+      ...stripeFields,
+      ...razorpayFields,
     },
     update: {
       tier,
       status: "ACTIVE",
-      ...(provider === "stripe"
-        ? {
-            stripeCustomerId: opts.customerId,
-            stripeSubscriptionId: opts.subscriptionId,
-          }
-        : {
-            razorpayCustomerId: opts.customerId,
-            razorpaySubscriptionId: opts.subscriptionId,
-          }),
+      ...stripeFields,
+      ...razorpayFields,
     },
   });
 
@@ -83,35 +86,64 @@ export async function fulfillFoundryPurchase(opts: {
   const provider = opts.provider ?? "stripe";
 
   if (opts.paymentId) {
-    const existing =
-      provider === "stripe"
-        ? await prisma.licenseKey.findFirst({
-            where: {
-              OR: [
-                { stripePaymentId: opts.paymentId },
-                ...(opts.orderId ? [{ stripeCheckoutSessionId: opts.orderId }] : []),
-              ],
-            },
-          })
-        : await prisma.licenseKey.findUnique({ where: { razorpayPaymentId: opts.paymentId } });
+    let existing = null;
+    if (provider === "stripe") {
+      existing = await prisma.licenseKey.findFirst({
+        where: {
+          OR: [
+            { stripePaymentId: opts.paymentId },
+            ...(opts.orderId ? [{ stripeCheckoutSessionId: opts.orderId }] : []),
+          ],
+        },
+      });
+    } else if (provider === "razorpay") {
+      existing = await prisma.licenseKey.findUnique({
+        where: { razorpayPaymentId: opts.paymentId },
+      });
+    } else if (provider === "paypal") {
+      existing = await prisma.licenseKey.findFirst({
+        where: {
+          OR: [
+            { paypalCaptureId: opts.paymentId },
+            ...(opts.orderId ? [{ paypalOrderId: opts.orderId }] : []),
+          ],
+        },
+      });
+    } else if (provider === "xflow") {
+      existing = await prisma.licenseKey.findUnique({
+        where: { xflowIntentId: opts.paymentId },
+      });
+    }
     if (existing) return existing.key;
   }
 
   const key = generateLicenseKey();
+  const providerFields =
+    provider === "stripe"
+      ? {
+          stripePaymentId: opts.paymentId,
+          stripeCheckoutSessionId: opts.orderId,
+        }
+      : provider === "razorpay"
+        ? {
+            razorpayPaymentId: opts.paymentId,
+            razorpayOrderId: opts.orderId,
+          }
+        : provider === "paypal"
+          ? {
+              paypalCaptureId: opts.paymentId,
+              paypalOrderId: opts.orderId,
+            }
+          : {
+              xflowIntentId: opts.paymentId,
+            };
+
   await prisma.licenseKey.create({
     data: {
       key,
       email: opts.email,
       tier,
-      ...(provider === "stripe"
-        ? {
-            stripePaymentId: opts.paymentId,
-            stripeCheckoutSessionId: opts.orderId,
-          }
-        : {
-            razorpayPaymentId: opts.paymentId,
-            razorpayOrderId: opts.orderId,
-          }),
+      ...providerFields,
     },
   });
   await sendLicenseKeyEmail(opts.email, key, tier);

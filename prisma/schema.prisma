@@ -54,6 +54,9 @@ model LicenseKey {
   stripeCheckoutSessionId  String?
   razorpayPaymentId        String?     @unique
   razorpayOrderId          String?
+  paypalCaptureId          String?     @unique
+  paypalOrderId            String?
+  xflowIntentId            String?     @unique
   activatedAt              DateTime?
   downloadCount            Int         @default(0)
   lastDownloadedAt         DateTime?
@@ -241,14 +244,42 @@ model PaymentTransaction {
   idempotencyKey String         @unique
   /** Safe metadata only — no card data / secrets */
   metadata       Json           @default("{}")
-  receiptNumber  String?
+  receiptNumber  String?        @unique
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   refunds        PaymentRefund[]
+  invoice        Invoice?
 
   @@index([userEmail, createdAt])
   @@index([provider, providerRef])
   @@index([status, createdAt])
+}
+
+/** Formal tax invoice (distinct from payment receipt). */
+model Invoice {
+  id             String   @id @default(cuid())
+  invoiceNumber  String   @unique
+  transactionId  String?  @unique
+  transaction    PaymentTransaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  userEmail      String
+  planId         String
+  planName       String
+  currency       String
+  /** Minor units */
+  subtotalAmount Int
+  taxAmount      Int      @default(0)
+  taxLabel       String?
+  taxRateBps     Int      @default(0)
+  totalAmount    Int
+  /** JSON line items: [{ description, quantity, unitAmount, amount }] */
+  lineItems      Json
+  status         String   @default("paid")
+  issuedAt       DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userEmail, issuedAt])
+  @@index([status, issuedAt])
 }
 
 model PaymentWebhookEvent {

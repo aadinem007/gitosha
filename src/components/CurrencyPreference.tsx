@@ -11,13 +11,15 @@ function readPreference(): PricingCurrency {
   if (typeof window === "undefined") return "USD";
   try {
     const fromLs = localStorage.getItem(STORAGE_KEY);
-    if (fromLs === "USD" || fromLs === "INR") return fromLs;
+    if (fromLs === "USD" || fromLs === "INR" || fromLs === "EUR") return fromLs;
   } catch {
     /* private mode */
   }
   const match = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_KEY}=([^;]*)`));
   const fromCookie = match?.[1];
-  if (fromCookie === "USD" || fromCookie === "INR") return fromCookie;
+  if (fromCookie === "USD" || fromCookie === "INR" || fromCookie === "EUR") {
+    return fromCookie;
+  }
   return "USD";
 }
 
@@ -32,9 +34,11 @@ function writePreference(c: PricingCurrency) {
 
 export function CurrencyPreference({
   amountCents,
+  planId,
   className = "",
 }: {
   amountCents?: number;
+  planId?: string;
   className?: string;
 }) {
   const [currency, setCurrency] = useState<PricingCurrency>("USD");
@@ -53,13 +57,15 @@ export function CurrencyPreference({
   if (!ready) return null;
 
   const priced =
-    typeof amountCents === "number" ? formatPlanPrice(amountCents, currency) : null;
+    typeof amountCents === "number"
+      ? formatPlanPrice(amountCents, currency, planId)
+      : null;
 
   return (
     <div className={className}>
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="text-[var(--muted)]">Display</span>
-        {(["USD", "INR"] as const).map((c) => (
+        {(["USD", "INR", "EUR"] as const).map((c) => (
           <button
             key={c}
             type="button"
@@ -83,8 +89,8 @@ export function CurrencyPreference({
         </p>
       )}
       <p className="mt-1 text-[11px] text-[var(--fog)]">
-        Charge currency is set by the payment provider (Razorpay → INR, Stripe → USD), not this
-        display toggle.{" "}
+        Charge currency follows the payment provider and the fixed price book (not this display
+        toggle; not live FX).{" "}
         <Link href="/legal/refunds" className="underline">
           Refunds
         </Link>

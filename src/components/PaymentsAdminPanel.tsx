@@ -28,6 +28,7 @@ type WebhookRow = {
 
 function money(amount: number, currency: string) {
   if (currency === "INR") return `₹${(amount / 100).toLocaleString("en-IN")}`;
+  if (currency === "EUR") return `€${(amount / 100).toFixed(2)}`;
   return `$${(amount / 100).toFixed(2)}`;
 }
 
@@ -164,8 +165,9 @@ export function PaymentsAdminPanel() {
       {tab === "providers" && (
         <div className="space-y-4">
           <p className="text-sm text-[var(--muted)]">
-            {envHints || "Secrets stay in env — toggles only enable/disable."} Scaffold providers
-            (PayPal, Xflow, Wise, Payoneer) stay disabled until live adapters exist.
+            {envHints || "Secrets stay in env — toggles only enable/disable."} Wise / Payoneer are
+            payout rails (no customer checkout). PayPal goes live when client + webhook id are set;
+            Xflow is opt-in (INR UPI).
           </p>
           <ul className="space-y-3">
             {providers.map((p) => (
@@ -178,21 +180,38 @@ export function PaymentsAdminPanel() {
                     <p className="font-display text-lg font-semibold capitalize">{p.providerId}</p>
                     <p className="mt-1 text-xs text-[var(--muted)]">
                       Currencies: {p.supportedCurrencies.join(", ")}
+                      {p.supportsCheckout === false || p.capability === "payout"
+                        ? " · payout only"
+                        : ""}
                       {p.scaffoldOnly ? " · scaffold only" : ""}
                       {p.credentialsConfigured ? " · credentials OK" : " · credentials missing"}
-                      {p.enabled ? " · live-ready" : " · off"}
+                      {p.enabled ? " · checkout live" : " · checkout off"}
                     </p>
+                    {p.operatorNote && (
+                      <p className="mt-2 text-[11px] text-[var(--fog)]">{p.operatorNote}</p>
+                    )}
                     <p className="mt-2 text-[11px] text-[var(--fog)]">
                       Env: {p.secretEnvVars.join(", ")}
                     </p>
                   </div>
                   <button
                     type="button"
-                    disabled={busy || Boolean(p.scaffoldOnly)}
+                    disabled={
+                      busy ||
+                      Boolean(p.scaffoldOnly) ||
+                      p.supportsCheckout === false ||
+                      p.capability === "payout"
+                    }
                     onClick={() => void toggleProvider(p, !p.enabled)}
                     className="btn-ghost text-xs"
                   >
-                    {p.scaffoldOnly ? "Scaffold" : p.enabled ? "Disable" : "Enable"}
+                    {p.supportsCheckout === false || p.capability === "payout"
+                      ? "Payout"
+                      : p.scaffoldOnly
+                        ? "Scaffold"
+                        : p.enabled
+                          ? "Disable"
+                          : "Enable"}
                   </button>
                 </div>
               </li>

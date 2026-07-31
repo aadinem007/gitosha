@@ -15,7 +15,7 @@ const bodySchema = z.object({
   email: z.string().email().max(254),
   acceptedTerms: z.literal(true),
   idempotencyKey: z.string().min(8).max(128).optional(),
-  displayCurrency: z.enum(["USD", "INR"]).optional(),
+  displayCurrency: z.enum(["USD", "INR", "EUR"]).optional(),
 });
 
 export async function POST(req: NextRequest) {

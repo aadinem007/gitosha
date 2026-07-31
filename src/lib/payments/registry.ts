@@ -2,13 +2,11 @@ import type { PaymentProvider } from "./provider";
 import type { ProviderId, ProviderPublicConfig } from "./types";
 import { razorpayProvider } from "./providers/razorpay";
 import { stripeProvider } from "./providers/stripe";
-import {
-  paypalProvider,
-  payoneerProvider,
-  wiseProvider,
-  xflowProvider,
-  isScaffoldProvider,
-} from "./providers/stubs";
+import { paypalProvider } from "./providers/paypal";
+import { xflowProvider } from "./providers/xflow";
+import { wiseProvider } from "./providers/wise";
+import { payoneerProvider } from "./providers/payoneer";
+import { isScaffoldProvider } from "./providers/stubs";
 import { prisma } from "@/lib/prisma";
 import { isStripeConfigured } from "@/lib/stripe";
 
@@ -21,11 +19,20 @@ const ADAPTERS: Record<ProviderId, PaymentProvider> = {
   payoneer: payoneerProvider,
 };
 
+const CHECKOUT_FAILOVER_ORDER: ProviderId[] = [
+  "razorpay",
+  "stripe",
+  "paypal",
+  "xflow",
+];
+
 /** Env override for primary provider (legacy PAYMENTS_PROVIDER). */
 export function legacyPrimaryProvider(): ProviderId {
   const raw = (process.env.PAYMENTS_PROVIDER ?? "razorpay").toLowerCase().trim();
   if (raw === "stripe") return "stripe";
   if (raw === "razorpay") return "razorpay";
+  if (raw === "paypal") return "paypal";
+  if (raw === "xflow") return "xflow";
   if (raw === "auto") {
     return isStripeConfigured() ? "stripe" : "razorpay";
   }
@@ -38,9 +45,17 @@ function envEnabled(id: ProviderId): boolean {
   const raw = process.env[key];
   if (raw === "false") return false;
   if (raw === "true") return true;
-  // Default: razorpay/stripe follow credentials + legacy primary preference
-  if (id === "razorpay" || id === "stripe") return true;
+  // Default: checkout providers follow credentials + isLiveReady; payout rails stay off
+  if (id === "razorpay" || id === "stripe" || id === "paypal") return true;
+  // Xflow is opt-in (UPI bridge + connected-account ops)
   return false;
+}
+
+function supportsCheckout(adapter: PaymentProvider, cfg: ProviderPublicConfig): boolean {
+  if (cfg.supportsCheckout === false) return false;
+  if (cfg.capability === "payout") return false;
+  if (cfg.scaffoldOnly) return false;
+  return true;
 }
 
 export function getAdapter(id: ProviderId): PaymentProvider {
@@ -68,17 +83,19 @@ export async function resolveProviderConfigs(): Promise<ProviderPublicConfig[]> 
   return listAdapters().map((adapter) => {
     const base = adapter.getPublicConfig();
     const db = byId.get(adapter.id);
-    const scaffold = isScaffoldProvider(adapter.id);
+    const scaffold = isScaffoldProvider(adapter.id) || Boolean(base.scaffoldOnly);
+    const checkoutCapable = supportsCheckout(adapter, base);
     const enabled =
       !scaffold &&
+      checkoutCapable &&
       (db ? db.enabled && envEnabled(adapter.id) : envEnabled(adapter.id)) &&
       adapter.isLiveReady();
 
     let currencies = base.supportedCurrencies;
     if (db?.supportedCurrencies && Array.isArray(db.supportedCurrencies)) {
       currencies = (db.supportedCurrencies as string[]).filter(
-        (c): c is "USD" | "INR" => c === "USD" || c === "INR"
-      ) as ProviderPublicConfig["supportedCurrencies"];
+        (c): c is CurrencyCode => c === "USD" || c === "INR" || c === "EUR"
+      );
       if (currencies.length === 0) currencies = base.supportedCurrencies;
     }
 
@@ -86,34 +103,45 @@ export async function resolveProviderConfigs(): Promise<ProviderPublicConfig[]> 
       ...base,
       enabled,
       supportedCurrencies: currencies,
-      scaffoldOnly: scaffold || base.scaffoldOnly,
+      scaffoldOnly: scaffold,
+      supportsCheckout: checkoutCapable,
     };
   });
 }
 
+type CurrencyCode = ProviderPublicConfig["supportedCurrencies"][number];
+
 /**
  * Ordered providers for checkout: primary first, then other live-ready enabled adapters.
  * Failover: if primary disabled / not ready, try next enabled live provider.
+ * Payout-only adapters (Wise / Payoneer) are never included.
  */
 export async function resolveCheckoutProviderOrder(
   preferred?: ProviderId
 ): Promise<PaymentProvider[]> {
   const configs = await resolveProviderConfigs();
-  const enabledIds = new Set(configs.filter((c) => c.enabled).map((c) => c.providerId));
+  const enabledIds = new Set(
+    configs
+      .filter((c) => c.enabled && c.supportsCheckout !== false)
+      .map((c) => c.providerId)
+  );
   const primary = preferred ?? legacyPrimaryProvider();
   const order: ProviderId[] = [];
   if (enabledIds.has(primary)) order.push(primary);
-  for (const id of ["razorpay", "stripe"] as ProviderId[]) {
+  for (const id of CHECKOUT_FAILOVER_ORDER) {
     if (!order.includes(id) && enabledIds.has(id)) order.push(id);
   }
   return order.map((id) => ADAPTERS[id]);
 }
 
 export async function getEnabledProvider(id: ProviderId): Promise<PaymentProvider | null> {
-  const configs = await resolveProviderConfigs();
-  const cfg = configs.find((c) => c.providerId === id);
-  if (!cfg?.enabled) return null;
-  return ADAPTERS[id];
+  const adapter = ADAPTERS[id];
+  const base = adapter.getPublicConfig();
+  if (base.supportsCheckout === false || base.capability === "payout") return null;
+  if (!adapter.isLiveReady()) return null;
+  // Respect explicit env disable for refunds/admin
+  if (envEnabled(id) === false) return null;
+  return adapter;
 }
 
 /** Sync helper for thin re-exports (legacy getPaymentsProvider). */

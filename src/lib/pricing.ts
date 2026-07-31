@@ -1,6 +1,8 @@
 import {
+  displayAmountForPlan,
   usdCentsToInrPaise,
   USD_CENTS_TO_INR_PAISE_FACTOR,
+  PLAN_PRICE_BOOK,
 } from "@/lib/payments/currencies";
 
 export type PricingPlan = {
@@ -31,7 +33,7 @@ export const CURRENCY = "usd" as const;
 export const CURRENCY_DISPLAY = "USD";
 
 /** Configured charge/display currencies — fixed price lists, not live FX. */
-export const PRICING_CURRENCIES = ["USD", "INR"] as const;
+export const PRICING_CURRENCIES = ["USD", "INR", "EUR"] as const;
 export type PricingCurrency = (typeof PRICING_CURRENCIES)[number];
 
 /** Post-launch Operator list price (first 100 seats use launch amountCents on vault-pro). */
@@ -42,18 +44,30 @@ export const OPERATOR_LIST_PRICE_CENTS = 1900;
  * NOT a live FX rate — do not present as market FX.
  * Re-exported from payments layer for a single source of truth.
  */
-export { usdCentsToInrPaise, USD_CENTS_TO_INR_PAISE_FACTOR };
+export { usdCentsToInrPaise, USD_CENTS_TO_INR_PAISE_FACTOR, PLAN_PRICE_BOOK };
 
-/** Display helper: list price in USD (catalog) vs approximate INR label for UI preference. */
+/** Display helper: prefer PLAN_PRICE_BOOK; else label approx conversion (not live FX). */
 export function formatPlanPrice(
   amountCents: number,
-  display: PricingCurrency = "USD"
+  display: PricingCurrency = "USD",
+  planId?: string
 ): { label: string; note?: string } {
+  if (planId) {
+    const priced = displayAmountForPlan(planId, amountCents, display);
+    return { label: priced.label, note: priced.note };
+  }
   if (display === "INR") {
     const paise = usdCentsToInrPaise(amountCents);
     return {
       label: `₹${Math.round(paise / 100).toLocaleString("en-IN")}`,
-      note: "Approx. INR display from fixed configured conversion — charge currency follows payment provider.",
+      note: "Approx. INR from fixed configured conversion — not a live FX rate. Charge currency follows payment provider.",
+    };
+  }
+  if (display === "EUR") {
+    const priced = displayAmountForPlan("_", amountCents, "EUR");
+    return {
+      label: priced.label,
+      note: "Approx. EUR from fixed configured conversion — not a live FX rate.",
     };
   }
   const dollars = amountCents / 100;

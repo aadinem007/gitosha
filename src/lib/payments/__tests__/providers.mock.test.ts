@@ -13,7 +13,11 @@ import type {
   VerifyPaymentResult,
 } from "../types";
 import { PaymentServiceError } from "../errors";
-import { isScaffoldProvider, paypalProvider } from "../providers/stubs";
+import { isScaffoldProvider } from "../providers/stubs";
+import { paypalProvider } from "../providers/paypal";
+import { xflowProvider } from "../providers/xflow";
+import { wiseProvider } from "../providers/wise";
+import { payoneerProvider } from "../providers/payoneer";
 
 function mockLiveProvider(overrides: Partial<PaymentProvider> = {}): PaymentProvider {
   const base: PaymentProvider = {
@@ -26,6 +30,8 @@ function mockLiveProvider(overrides: Partial<PaymentProvider> = {}): PaymentProv
         credentialsConfigured: true,
         supportedCurrencies: ["USD"],
         secretEnvVars: ["STRIPE_SECRET_KEY"],
+        supportsCheckout: true,
+        capability: "checkout",
       };
     },
     async createCheckout() {
@@ -182,8 +188,8 @@ describe("provider registry failover stub", () => {
     assert.ok(session.url);
   });
 
-  it("scaffold paypal cannot go live", async () => {
-    assert.equal(isScaffoldProvider("paypal"), true);
+  it("PayPal adapter exists but is not live without env", async () => {
+    assert.equal(isScaffoldProvider("paypal"), false);
     assert.equal(paypalProvider.isLiveReady(), false);
     await assert.rejects(() =>
       paypalProvider.createCheckout({
@@ -197,6 +203,19 @@ describe("provider registry failover stub", () => {
         mode: "payment",
       })
     );
+  });
+
+  it("Xflow is not live without opt-in env", () => {
+    assert.equal(xflowProvider.isLiveReady(), false);
+    assert.equal(xflowProvider.getPublicConfig().supportedCurrencies.includes("INR"), true);
+  });
+
+  it("payout adapters never enter checkout failover set", () => {
+    const checkoutCapable = [paypalProvider, xflowProvider, wiseProvider, payoneerProvider].filter(
+      (p) => p.getPublicConfig().supportsCheckout !== false && p.getPublicConfig().capability !== "payout"
+    );
+    assert.ok(checkoutCapable.every((p) => p.id === "paypal" || p.id === "xflow"));
+    assert.ok(!checkoutCapable.some((p) => p.id === "wise" || p.id === "payoneer"));
   });
 });
 

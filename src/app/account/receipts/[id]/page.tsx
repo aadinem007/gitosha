@@ -23,13 +23,28 @@ export default async function ReceiptPage({
   const sessionEmail = await getSessionEmail();
   const admin = await requireLegalAdmin();
 
-  let tx = null as Awaited<ReturnType<typeof prisma.paymentTransaction.findUnique>> | null;
+  let tx: {
+    id: string;
+    provider: string;
+    userEmail: string;
+    planId: string;
+    amount: number;
+    currency: string;
+    status: string;
+    receiptNumber: string | null;
+    createdAt: Date;
+    refunds: { id: string }[];
+    invoice: { id: string } | null;
+  } | null = null;
+  let invoiceId: string | null = null;
   let dbError = false;
   try {
-    tx = await prisma.paymentTransaction.findUnique({
+    const row = await prisma.paymentTransaction.findUnique({
       where: { id },
-      include: { refunds: true },
+      include: { refunds: true, invoice: { select: { id: true } } },
     });
+    tx = row;
+    invoiceId = row?.invoice?.id ?? null;
   } catch {
     dbError = true;
   }
@@ -111,6 +126,13 @@ export default async function ReceiptPage({
                 <br />
                 {tx.createdAt.toISOString()}
               </p>
+              {tx.receiptNumber && (
+                <p>
+                  <span className="text-[var(--muted)]">Invoice / receipt #</span>
+                  <br />
+                  {tx.receiptNumber}
+                </p>
+              )}
               <p className="text-xs text-[var(--fog)]">
                 Card data is never stored by {BRAND.name}. Checkout is hosted by the payment
                 provider. See the{" "}
@@ -119,6 +141,16 @@ export default async function ReceiptPage({
                 </Link>
                 .
               </p>
+              {invoiceId && (
+                <p>
+                  <Link
+                    href={`/account/invoices/${invoiceId}`}
+                    className="text-[var(--brass-dim)] underline"
+                  >
+                    Formal invoice
+                  </Link>
+                </p>
+              )}
             </div>
           )}
 

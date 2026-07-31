@@ -50,7 +50,7 @@ export async function GET() {
 const patchSchema = z.object({
   providerId: z.enum(["razorpay", "stripe", "paypal", "xflow", "wise", "payoneer"]),
   enabled: z.boolean(),
-  supportedCurrencies: z.array(z.enum(["USD", "INR"])).min(1).max(4).optional(),
+  supportedCurrencies: z.array(z.enum(["USD", "INR", "EUR"])).min(1).max(4).optional(),
 });
 
 /** POST used instead of PATCH — proxy allowlists GET/POST only on /api. */
@@ -87,6 +87,15 @@ export async function POST(req: NextRequest) {
   }
 
   const { providerId, enabled, supportedCurrencies } = parsed.data;
+  if ((providerId === "wise" || providerId === "payoneer") && enabled) {
+    return NextResponse.json(
+      {
+        error:
+          "Wise and Payoneer are payout/settlement rails — they cannot be enabled for customer checkout. See docs/PAYMENTS.md.",
+      },
+      { status: 400 }
+    );
+  }
   if (isScaffoldProvider(providerId as ProviderId) && enabled) {
     return NextResponse.json(
       {

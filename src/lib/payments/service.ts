@@ -10,6 +10,7 @@ import {
 } from "./currencies";
 import { PaymentServiceError, mapProviderError, paymentsLog, userPaymentMessage } from "./errors";
 import { buildCheckoutIdempotencyKey, claimWebhookEvent, markWebhookProcessed } from "./idempotency";
+import { createInvoiceForTransaction } from "./invoice";
 import {
   getAdapter,
   getEnabledProvider,
@@ -28,6 +29,7 @@ import type {
   VerifyPaymentInput,
   VerifyPaymentResult,
 } from "./types";
+import type { PaymentProvider as FulfillProvider } from "@/lib/fulfill";
 
 function findPlan(planId: string) {
   return [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
@@ -64,7 +66,7 @@ export async function createCheckout(input: CreateCheckoutInput): Promise<Checko
       });
     }
 
-    const amount = resolveChargeAmount(plan.amountCents, currency);
+    const amount = resolveChargeAmount(plan.amountCents, currency, plan.id);
     const idempotencyKey = buildCheckoutIdempotencyKey({
       email,
       planId: plan.id,
@@ -201,23 +203,62 @@ export async function verifyPayment(input: VerifyPaymentInput): Promise<VerifyPa
 async function maybeSendReceipt(result: VerifyPaymentResult): Promise<void> {
   try {
     const plan = findPlan(result.planId);
+    let amount = result.amount;
+    let currency = result.currency;
+    if (result.transactionId && (amount == null || !currency)) {
+      try {
+        const tx = await prisma.paymentTransaction.findUnique({
+          where: { id: result.transactionId },
+        });
+        if (tx) {
+          amount = amount ?? tx.amount;
+          currency = currency ?? (tx.currency as Currency);
+        }
+      } catch {
+        /* ledger optional until db:push */
+      }
+    }
+    let invoiceId: string | undefined;
+    if (result.transactionId && amount != null && currency) {
+      const inv = await createInvoiceForTransaction({
+        transactionId: result.transactionId,
+        provider: result.provider,
+        email: result.email,
+        planId: result.planId,
+        amount,
+        currency,
+      });
+      invoiceId = inv?.invoiceId;
+    }
     await sendReceiptEmail({
       email: result.email,
       planName: plan?.name ?? result.planId,
       product: result.product,
-      amountLabel: result.amount && result.currency
-        ? formatMoney(result.amount, result.currency)
-        : plan?.price ?? "",
-      currency: result.currency ?? "USD",
+      amountLabel:
+        amount != null && currency ? formatMoney(amount, currency) : plan?.price ?? "",
+      currency: currency ?? "USD",
       provider: result.provider,
       licenseKey: result.licenseKey,
       transactionId: result.transactionId,
+      invoiceId,
     });
   } catch (err) {
     paymentsLog("receipt_email_failed", {
       message: err instanceof Error ? err.message.slice(0, 80) : "error",
     });
   }
+}
+
+function toFulfillProvider(provider: ProviderId): FulfillProvider {
+  if (
+    provider === "stripe" ||
+    provider === "razorpay" ||
+    provider === "paypal" ||
+    provider === "xflow"
+  ) {
+    return provider;
+  }
+  return "stripe";
 }
 
 async function markTransactionSucceeded(opts: {
@@ -369,7 +410,7 @@ async function applyPaymentEvent(event: PaymentEvent): Promise<void> {
       orderId: event.orderId,
       subscriptionId: event.subscriptionId,
       customerId: event.customerId,
-      provider: event.provider === "stripe" || event.provider === "razorpay" ? event.provider : "stripe",
+      provider: toFulfillProvider(event.provider),
     });
 
     const txId = await markTransactionSucceeded({

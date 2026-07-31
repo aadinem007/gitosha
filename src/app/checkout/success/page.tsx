@@ -4,11 +4,13 @@ import { Footer } from "@/components/Footer";
 import { CheckoutFulfillClient } from "@/components/CheckoutFulfillClient";
 import { fulfillPurchase, isFulfillablePlanId } from "@/lib/fulfill";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
+import { verifyPayment } from "@/lib/payments";
 
 async function resolveStripeSession(sessionId: string): Promise<{
   product?: string;
   email?: string;
   licenseKey?: string;
+  transactionId?: string;
 }> {
   if (!isStripeConfigured()) return {};
 
@@ -62,6 +64,29 @@ async function resolveStripeSession(sessionId: string): Promise<{
   }
 }
 
+async function resolvePaypalOrder(orderId: string): Promise<{
+  product?: string;
+  email?: string;
+  licenseKey?: string;
+  transactionId?: string;
+}> {
+  try {
+    const result = await verifyPayment({
+      provider: "paypal",
+      sessionId: orderId,
+      paypalOrderId: orderId,
+    });
+    return {
+      product: result.product,
+      email: result.email,
+      licenseKey: result.licenseKey,
+      transactionId: result.transactionId,
+    };
+  } catch {
+    return {};
+  }
+}
+
 export default async function CheckoutSuccessPage({
   searchParams,
 }: {
@@ -71,6 +96,9 @@ export default async function CheckoutSuccessPage({
     product?: string;
     session_id?: string;
     receipt?: string;
+    provider?: string;
+    token?: string;
+    paypal_order_id?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -78,6 +106,7 @@ export default async function CheckoutSuccessPage({
   let email = "";
   let key = "";
   let product = params.product;
+  let receipt = params.receipt;
 
   if (params.session_id) {
     const resolved = await resolveStripeSession(params.session_id);
@@ -86,8 +115,29 @@ export default async function CheckoutSuccessPage({
     if (resolved.product) product = resolved.product;
   }
 
+  const paypalOrderId =
+    params.paypal_order_id ||
+    (params.provider === "paypal" && params.token ? params.token : undefined) ||
+    (params.token && !params.session_id ? params.token : undefined);
+
+  if (paypalOrderId && params.provider === "paypal") {
+    const resolved = await resolvePaypalOrder(paypalOrderId);
+    if (resolved.licenseKey) key = resolved.licenseKey;
+    if (resolved.email) email = resolved.email;
+    if (resolved.product) product = resolved.product;
+    if (resolved.transactionId) receipt = resolved.transactionId;
+  } else if (paypalOrderId && !params.session_id) {
+    // PayPal return_url may omit provider= when token is present
+    const resolved = await resolvePaypalOrder(paypalOrderId);
+    if (resolved.licenseKey) key = resolved.licenseKey;
+    if (resolved.email) email = resolved.email;
+    if (resolved.product) product = resolved.product;
+    if (resolved.transactionId) receipt = resolved.transactionId;
+  }
+
   const isVault = product === "vault";
   const isFoundry = product === "foundry" || product === "bundle" || Boolean(key) || !product;
+  void isFoundry;
 
   return (
     <>
@@ -132,9 +182,9 @@ export default async function CheckoutSuccessPage({
           )}
 
           <div className="mt-10 flex justify-center gap-4 text-sm">
-            {params.receipt && (
+            {receipt && (
               <Link
-                href={`/account/receipts/${params.receipt}`}
+                href={`/account/receipts/${receipt}`}
                 className="text-[var(--muted)] hover:text-[var(--ink)]"
               >
                 View receipt

@@ -32,12 +32,14 @@ export const stripeProvider: PaymentProvider = {
       providerId: "stripe",
       enabled: process.env.PAYMENTS_STRIPE_ENABLED !== "false",
       credentialsConfigured: credentialsOk(),
-      supportedCurrencies: ["USD"],
+      supportedCurrencies: ["USD", "EUR"],
       secretEnvVars: [
         "STRIPE_SECRET_KEY",
         "STRIPE_WEBHOOK_SECRET",
         "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
       ],
+      supportsCheckout: true,
+      capability: "checkout",
     };
   },
 

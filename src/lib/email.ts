@@ -134,6 +134,7 @@ export async function sendReceiptEmail(opts: {
   provider: string;
   licenseKey?: string;
   transactionId?: string;
+  invoiceId?: string;
 }): Promise<boolean> {
   if (!resend) {
     console.warn("RESEND_API_KEY not set — skipping receipt email for", opts.email);
@@ -143,6 +144,9 @@ export async function sendReceiptEmail(opts: {
   const receiptUrl = opts.transactionId
     ? `${SITE}/account/receipts/${opts.transactionId}`
     : `${SITE}/license`;
+  const invoiceUrl = opts.invoiceId
+    ? `${SITE}/account/invoices/${opts.invoiceId}`
+    : "";
 
   await resend.emails.send({
     from: FROM,
@@ -156,7 +160,7 @@ Amount: ${opts.amountLabel} (${opts.currency})
 Provider: ${opts.provider}
 ${opts.licenseKey ? `License key: ${opts.licenseKey}\n` : ""}
 View / download receipt: ${receiptUrl}
-License portal: ${SITE}/license
+${invoiceUrl ? `Formal invoice: ${invoiceUrl}\n` : ""}License portal: ${SITE}/license
 Refund policy: ${SITE}/legal/refunds
 
 No card details are stored by ${BRAND.name} — checkout is hosted by the payment provider.

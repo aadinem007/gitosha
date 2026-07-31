@@ -16,30 +16,57 @@ import {
   USD_CENTS_TO_INR_PAISE_FACTOR,
   formatMoney,
   taxConfig,
+  PLAN_PRICE_BOOK,
+  displayAmountForPlan,
+  fxProviderStub,
 } from "../currencies";
 import { PaymentServiceError, userPaymentMessage, mapProviderError } from "../errors";
 import { buildCheckoutIdempotencyKey } from "../idempotency";
 import { isScaffoldProvider } from "../providers/stubs";
+import { wiseProvider } from "../providers/wise";
+import { payoneerProvider } from "../providers/payoneer";
+import { paypalProvider } from "../providers/paypal";
+import { invoiceHtmlDocument } from "../invoice";
 import { isFulfillablePlanId } from "@/lib/fulfill";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
 
-describe("currency / price table", () => {
-  it("uses fixed configured INR conversion (not live FX)", () => {
+describe("currency / price book", () => {
+  it("uses price book for INR/EUR when present (not live FX)", () => {
     assert.equal(USD_CENTS_TO_INR_PAISE_FACTOR, 83);
-    assert.equal(usdCentsToInrPaise(100), 8300);
-    assert.equal(resolveChargeAmount(9900, "INR"), usdCentsToInrPaise(9900));
-    assert.equal(resolveChargeAmount(9900, "USD"), 9900);
+    assert.equal(PLAN_PRICE_BOOK["foundry-solo"]?.USD, 9900);
+    assert.equal(resolveChargeAmount(9900, "INR", "foundry-solo"), PLAN_PRICE_BOOK["foundry-solo"]!.INR);
+    assert.equal(resolveChargeAmount(9900, "EUR", "foundry-solo"), PLAN_PRICE_BOOK["foundry-solo"]!.EUR);
+    assert.equal(resolveChargeAmount(9900, "USD", "foundry-solo"), 9900);
+  });
+
+  it("falls back to fixed configured INR conversion when plan missing from book", () => {
+    assert.equal(resolveChargeAmount(100, "INR", "unknown-plan"), usdCentsToInrPaise(100));
   });
 
   it("maps charge currency by provider", () => {
     assert.equal(chargeCurrencyForProvider("razorpay"), "INR");
+    assert.equal(chargeCurrencyForProvider("xflow"), "INR");
     assert.equal(chargeCurrencyForProvider("stripe"), "USD");
+    assert.equal(chargeCurrencyForProvider("paypal"), "USD");
+  });
+
+  it("labels display approx when not in price book", () => {
+    const priced = displayAmountForPlan("no-such-plan", 1000, "INR");
+    assert.equal(priced.fromPriceBook, false);
+    assert.match(priced.note ?? "", /approx|fixed configured/i);
   });
 
   it("formats money without inventing tax by default", () => {
     assert.equal(formatMoney(1500, "USD"), "$15");
     assert.match(formatMoney(124500, "INR"), /₹/);
+    assert.match(formatMoney(1400, "EUR"), /€/);
     assert.equal(taxConfig().enabled, false);
+  });
+
+  it("FX stub never claims live rates for charging", () => {
+    const stub = fxProviderStub();
+    assert.equal(stub.configured, false);
+    assert.match(stub.label, /not applied|No live FX/i);
   });
 });
 
@@ -50,22 +77,70 @@ describe("plan allowlist", () => {
     assert.equal(isFulfillablePlanId("foundry-solo"), true);
   });
 
-  it("every paid catalog plan has amountCents", () => {
+  it("every paid catalog plan has amountCents and price-book USD", () => {
     for (const p of [...VAULT_PLANS, ...FOUNDRY_PLANS]) {
       if (p.mode === "none") continue;
       assert.ok(p.amountCents && p.amountCents > 0, p.id);
+      assert.ok(PLAN_PRICE_BOOK[p.id]?.USD, `price book USD for ${p.id}`);
     }
   });
 });
 
-describe("registry / scaffold gates", () => {
-  it("keeps PayPal/Xflow/Wise/Payoneer scaffold-only", () => {
-    assert.equal(isScaffoldProvider("paypal"), true);
-    assert.equal(isScaffoldProvider("xflow"), true);
-    assert.equal(isScaffoldProvider("wise"), true);
-    assert.equal(isScaffoldProvider("payoneer"), true);
-    assert.equal(isScaffoldProvider("razorpay"), false);
-    assert.equal(isScaffoldProvider("stripe"), false);
+describe("registry / capability gates", () => {
+  it("no longer treats PayPal/Xflow/Wise/Payoneer as scaffolds", () => {
+    assert.equal(isScaffoldProvider("paypal"), false);
+    assert.equal(isScaffoldProvider("xflow"), false);
+    assert.equal(isScaffoldProvider("wise"), false);
+    assert.equal(isScaffoldProvider("payoneer"), false);
+  });
+
+  it("Wise / Payoneer refuse customer checkout", async () => {
+    assert.equal(wiseProvider.getPublicConfig().supportsCheckout, false);
+    assert.equal(payoneerProvider.getPublicConfig().supportsCheckout, false);
+    assert.equal(wiseProvider.isLiveReady(), false);
+    assert.equal(payoneerProvider.isLiveReady(), false);
+    await assert.rejects(() =>
+      wiseProvider.createCheckout({
+        planId: "foundry-solo",
+        email: "a@b.com",
+        amount: 9900,
+        currency: "USD",
+        planName: "Solo",
+        planDescription: "x",
+        product: "foundry",
+        mode: "payment",
+      })
+    );
+  });
+
+  it("PayPal is not live without credentials + webhook id", () => {
+    assert.equal(paypalProvider.isLiveReady(), false);
+    assert.equal(paypalProvider.getPublicConfig().supportsCheckout, true);
+  });
+});
+
+describe("invoice HTML", () => {
+  it("renders invoice number, line items, and currency", () => {
+    const html = invoiceHtmlDocument({
+      invoiceNumber: "GIT-2026-000001",
+      userEmail: "buyer@example.com",
+      planName: "Foundry Solo",
+      currency: "USD",
+      subtotalAmount: 9900,
+      taxAmount: 0,
+      taxLabel: null,
+      taxRateBps: 0,
+      totalAmount: 9900,
+      lineItems: [
+        { description: "Foundry Solo", quantity: 1, unitAmount: 9900, amount: 9900 },
+      ],
+      issuedAt: new Date("2026-07-31T00:00:00.000Z"),
+      status: "paid",
+    });
+    assert.match(html, /GIT-2026-000001/);
+    assert.match(html, /buyer@example\.com/);
+    assert.match(html, /Foundry Solo/);
+    assert.match(html, /\$99/);
   });
 });
 

@@ -81,7 +81,12 @@ const GET_ALLOWED_APIS = [
 ];
 
 /** Webhooks / payment callbacks — do not apply browser-bot UA heuristics. */
-const UA_EXEMPT_PREFIXES = ["/api/stripe/webhook", "/api/razorpay/webhook"];
+const UA_EXEMPT_PREFIXES = [
+  "/api/stripe/webhook",
+  "/api/razorpay/webhook",
+  "/api/paypal/webhook",
+  "/api/xflow/webhook",
+];
 
 const BAD_UA_PATTERNS = [
   /sqlmap/i,
@@ -105,6 +110,8 @@ const BAD_UA_PATTERNS = [
 function maxBodyBytes(path: string): number {
   if (path.startsWith("/api/stripe/webhook")) return 256_000;
   if (path.startsWith("/api/razorpay/webhook")) return 256_000;
+  if (path.startsWith("/api/paypal/webhook")) return 256_000;
+  if (path.startsWith("/api/xflow/webhook")) return 256_000;
   if (path.startsWith("/api/chat")) return 16_384;
   if (path.startsWith("/api/waitlist")) return 8_192;
   if (path.startsWith("/api/admin/payments")) return 32_768;

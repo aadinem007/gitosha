@@ -201,7 +201,11 @@ export function CheckoutButton({
         ) : null}
       </p>
       {plan?.amountCents != null && (
-        <CurrencyPreference amountCents={plan.amountCents} className="mt-1" />
+        <CurrencyPreference
+          amountCents={plan.amountCents}
+          planId={plan.id}
+          className="mt-1"
+        />
       )}
       <label htmlFor={`checkout-email-${planId}`} className="form-label">
         Email for receipt

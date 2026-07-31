@@ -34,9 +34,14 @@ export {
   chargeCurrencyForProvider,
   resolveChargeAmount,
   usdCentsToInrPaise,
+  displayAmountForPlan,
+  fxProviderStub,
   DISPLAY_CURRENCIES,
+  PLAN_PRICE_BOOK,
   USD_CENTS_TO_INR_PAISE_FACTOR,
 } from "./currencies";
+
+export { createInvoiceForTransaction, invoiceHtmlDocument } from "./invoice";
 
 export { paymentsLog } from "./errors";
 

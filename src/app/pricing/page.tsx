@@ -3,18 +3,14 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { PlanFeatures } from "@/components/PlanFeatures";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
-
-const FEATURE_PREVIEW = 5;
 
 function PlanCard({
   plan,
 }: {
   plan: (typeof VAULT_PLANS)[number] | (typeof FOUNDRY_PLANS)[number];
 }) {
-  const preview = plan.features.slice(0, FEATURE_PREVIEW);
-  const more = plan.features.length - preview.length;
-
   return (
     <article className={`plan-shell ${plan.highlight ? "is-hot" : ""}`}>
       <div className="plan-shell-body">
@@ -35,16 +31,7 @@ function PlanCard({
           <span className="text-sm font-medium text-[var(--muted)]">{plan.cadence}</span>
         </p>
         <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--support)]">{plan.description}</p>
-        <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
-          {preview.map((f) => (
-            <li key={f} className="leading-snug">
-              — {f}
-            </li>
-          ))}
-          {more > 0 && (
-            <li className="leading-snug font-semibold text-[var(--ink)]">— +{more} more included</li>
-          )}
-        </ul>
+        <PlanFeatures features={plan.features} />
       </div>
       <div className="plan-shell-footer">
         <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">

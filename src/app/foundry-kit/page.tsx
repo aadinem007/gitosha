@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
+import { PlanFeatures } from "@/components/PlanFeatures";
 import Link from "next/link";
 import { FOUNDRY_PLANS } from "@/lib/pricing";
 
@@ -156,16 +157,7 @@ export default function FoundryKitPage() {
                   <p className="mt-3 text-sm leading-relaxed text-[var(--support)]">
                     {plan.description}
                   </p>
-                  <ul className="mt-4 space-y-2 text-[1.02rem] text-[var(--support)]">
-                    {plan.features.slice(0, 14).map((f) => (
-                      <li key={f}>— {f}</li>
-                    ))}
-                    {plan.features.length > 14 && (
-                      <li className="text-[var(--brass-dim)]">
-                        +{plan.features.length - 14} more — see Pricing / What’s inside
-                      </li>
-                    )}
-                  </ul>
+                  <PlanFeatures features={plan.features} previewCount={14} />
                 </div>
                 <div className="plan-shell-footer">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">

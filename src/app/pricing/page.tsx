@@ -3,6 +3,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { EqualHeightPlans } from "@/components/EqualHeightPlans";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 
 function PlanCard({
@@ -11,7 +12,7 @@ function PlanCard({
   plan: (typeof VAULT_PLANS)[number] | (typeof FOUNDRY_PLANS)[number];
 }) {
   return (
-    <div className={`plan-shell isolate ${plan.highlight ? "is-hot" : ""}`}>
+    <article className={`plan-shell ${plan.highlight ? "is-hot" : ""}`}>
       <div className="plan-shell-body">
         <div className="flex min-w-0 items-start justify-between gap-2">
           <p className="font-display text-xl font-semibold leading-tight tracking-tight text-[var(--ink)]">
@@ -50,7 +51,7 @@ function PlanCard({
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -102,11 +103,11 @@ export default function PricingPage() {
             <h2 className="font-display text-2xl font-semibold tracking-tight text-[var(--fog)] sm:text-3xl">
               Vault — scored research
             </h2>
-            <div className="pricing-plan-grid pricing-plan-grid--vault mt-5">
+            <EqualHeightPlans className="pricing-plan-grid pricing-plan-grid--vault mt-5">
               {VAULT_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}
-            </div>
+            </EqualHeightPlans>
 
             <h2 className="mt-20 font-display text-2xl font-semibold tracking-tight text-[var(--fog)] sm:text-3xl">
               Foundry — ship kit &amp; studio license
@@ -116,11 +117,11 @@ export default function PricingPage() {
               priority support, and a year of Studio Vault — so your next three client SaaS builds
               don’t restart from zero.
             </p>
-            <div className="pricing-plan-grid pricing-plan-grid--foundry mt-5">
+            <EqualHeightPlans className="pricing-plan-grid pricing-plan-grid--foundry mt-5">
               {FOUNDRY_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}
-            </div>
+            </EqualHeightPlans>
 
             <div className="cta-band mt-16">
               <p className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">

@@ -1995,145 +1995,88 @@ body {
   color: #b42318;
 }
 
-/* ── Pricing plan grids — CSS subgrid aligns shared footer row ── */
+/* ── Pricing plan grids — flex/grid stretch + JS equalize (EqualHeightPlans) ── */
 .pricing-plan-grid {
   display: grid;
   gap: 1.5rem;
   align-items: stretch;
+  grid-auto-rows: auto;
 }
 
 .pricing-plan-grid--vault {
   grid-template-columns: 1fr;
-  grid-auto-rows: auto;
 }
 
-/* Tablet: 2×2 — each card spans body+footer tracks */
-@media (min-width: 768px) and (max-width: 1279px) {
+@media (min-width: 768px) {
   .pricing-plan-grid--vault {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: auto auto auto auto;
-  }
-
-  .pricing-plan-grid--vault > .plan-shell {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    height: auto;
-    min-height: 0;
-  }
-
-  .pricing-plan-grid--vault > .plan-shell > .plan-shell-footer {
-    margin-top: 0;
   }
 }
 
-/* Desktop: one card-row = body track + footer track */
 @media (min-width: 1280px) {
   .pricing-plan-grid--vault {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: 1fr auto;
-  }
-
-  .pricing-plan-grid--vault > .plan-shell {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    height: auto;
-    min-height: 0;
-  }
-
-  .pricing-plan-grid--vault > .plan-shell > .plan-shell-footer {
-    margin-top: 0;
   }
 }
 
 .pricing-plan-grid--foundry {
   grid-template-columns: 1fr;
-  grid-auto-rows: auto;
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 768px) {
   .pricing-plan-grid--foundry {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: auto auto auto auto;
-  }
-
-  .pricing-plan-grid--foundry > .plan-shell {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    height: auto;
-    min-height: 0;
-  }
-
-  .pricing-plan-grid--foundry > .plan-shell > .plan-shell-footer {
-    margin-top: 0;
   }
 }
 
 @media (min-width: 1024px) {
   .pricing-plan-grid--foundry {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: 1fr auto;
-  }
-
-  .pricing-plan-grid--foundry > .plan-shell {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    height: auto;
-    min-height: 0;
-  }
-
-  .pricing-plan-grid--foundry > .plan-shell > .plan-shell-footer {
-    margin-top: 0;
   }
 }
 
-/* ── Plan shells — direct grid children, thick opaque ink border ── */
+/* ── Plan shells — thick ink frame via inset shadow (always paints) ── */
 .plan-shell,
 .pricing-deck .plan-shell,
 .pricing-plan-grid .plan-shell {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
   align-self: stretch;
   width: 100%;
-  height: auto;
-  min-height: 0;
+  height: 100%;
+  min-height: 100%;
   box-sizing: border-box;
-  /* Thick stroke — !important beats Tailwind preflight border:0 */
-  border: 5px solid #0a0a0a !important;
+  /* Kill thin/zero borders from preflight — paint a real 6px frame */
+  border: 0 !important;
+  outline: none;
   background: var(--panel);
   border-radius: 0;
   padding: 1.55rem 1.5rem 1.65rem;
-  box-shadow: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: inset 0 0 0 6px #0a0a0a !important;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .plan-shell:hover,
 .pricing-deck .plan-shell:hover,
 .pricing-plan-grid .plan-shell:hover {
   transform: translateY(-3px);
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.1);
-  border: 5px solid #0a0a0a !important;
+  box-shadow: inset 0 0 0 6px #0a0a0a, 0 20px 44px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Featured = lime top accent + tint only — same border weight as siblings */
 .plan-shell.is-hot,
 .pricing-deck .plan-shell.is-hot,
 .pricing-plan-grid .plan-shell.is-hot {
-  border: 5px solid #0a0a0a !important;
+  border: 0 !important;
   background: linear-gradient(180deg, rgba(200, 255, 0, 0.16) 0%, transparent 42%), var(--panel);
-  box-shadow: none;
+  box-shadow: inset 0 0 0 6px #0a0a0a !important;
 }
 
 .plan-shell.is-hot:hover,
 .pricing-deck .plan-shell.is-hot:hover,
 .pricing-plan-grid .plan-shell.is-hot:hover {
   transform: translateY(-3px);
-  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.12);
-  border: 5px solid #0a0a0a !important;
+  box-shadow: inset 0 0 0 6px #0a0a0a, 0 22px 48px rgba(0, 0, 0, 0.12) !important;
 }
 
 .plan-shell-body {
@@ -2147,7 +2090,7 @@ body {
 .plan-shell-footer,
 .pricing-deck .plan-shell-footer,
 .pricing-plan-grid .plan-shell-footer {
-  margin-top: auto;
+  margin-top: auto !important;
   flex-shrink: 0;
   flex: 0 0 auto;
   padding-top: 1.25rem;
@@ -2164,8 +2107,7 @@ body {
   justify-content: flex-end;
   flex: 0 0 auto;
   gap: 0.75rem;
-  /* label + 48px input + 48px CTA + gaps — Scout email stack; others pin CTA to bottom */
-  min-height: 8.75rem;
+  min-height: 9.5rem;
 }
 
 .plan-shell-actions .form-stack,

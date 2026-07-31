@@ -19,7 +19,7 @@ Absolute security does not exist; this is a strong SaaS baseline for Gitosha on 
 | MFA | N/A (scaffolding) | App has no TOTP UI. Enable MFA in Supabase Auth dashboard when product needs it; operators should use 2FA on Supabase/Stripe/Vercel |
 | Suspicious login logging | Done | `[security]` on missing code, exchange fail, rate limits, origin blocks |
 | Session revocation | Done | Vault **Sign out** → `POST /api/auth/sign-out` clears HttpOnly cookies via `supabase.auth.signOut()` |
-| AuthZ deny-by-default | Done | `/vault` gated in proxy + page; export requires ACTIVE PRO/TEAM; premium teardowns gated server-side |
+| AuthZ deny-by-default | Done | `/research` gated in proxy + page; export requires ACTIVE PRO/TEAM; premium teardowns gated server-side |
 | No client plan/role trust | Done | Fulfill from server notes/metadata + `isFulfillablePlanId` only |
 | API zod + authn/authz + rate limit + body cap | Done | All mutating `/api/*` routes; webhooks signature-only (no Origin) |
 | Safe errors | Done | Generic client messages; details only in redacted `securityLog` |
@@ -59,7 +59,7 @@ Absolute security does not exist; this is a strong SaaS baseline for Gitosha on 
 - API method allowlist; non-allowlisted `GET` on APIs → `405` (exceptions: auth callback, vault export)
 - Rejects empty / known-scanner User-Agents on mutating APIs (webhooks exempt)
 - Enforces `Content-Length` body caps
-- Issues `X-Request-Id`; gates `/vault` behind Supabase session
+- Issues `X-Request-Id`; gates `/research` behind Supabase session
 
 ### HTTP headers (`next.config.ts` + proxy)
 - HSTS (2y, includeSubDomains, preload)

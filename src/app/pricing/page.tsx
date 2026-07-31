@@ -76,8 +76,14 @@ export default function PricingPage() {
 
             <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold uppercase tracking-[0.12em]">
               <Link
-                href="/foundry-kit"
+                href="/foundry"
                 className="text-[var(--ink)] underline decoration-[var(--brass)] decoration-2 underline-offset-4"
+              >
+                Foundry story →
+              </Link>
+              <Link
+                href="/foundry-kit"
+                className="text-[var(--support)] hover:text-[var(--ink)]"
               >
                 Buy Foundry →
               </Link>

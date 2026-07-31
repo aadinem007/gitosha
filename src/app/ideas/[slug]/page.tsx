@@ -125,7 +125,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
               Unlock Operator — $15/mo
             </Link>
             <Link
-              href="/foundry-kit"
+              href="/foundry"
               className="rounded-md border border-[var(--line)] px-4 py-2.5 text-center text-sm font-semibold"
             >
               Foundry Solo — $99

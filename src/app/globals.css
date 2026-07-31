@@ -236,19 +236,8 @@ body {
   color: #ffffff;
 }
 
-.site-nav-cta {
-  color: #f3f3ee;
-  border-bottom: 2px solid var(--brass);
-  padding-bottom: 1px;
-  transition: color 0.2s ease, border-color 0.2s ease;
-}
-
-.site-nav-cta:hover {
-  color: var(--brass);
-  border-color: var(--brass);
-}
-
-.site-nav-home {
+.site-nav-home,
+.site-nav-link.is-active {
   color: #ffffff;
   font-weight: 700;
   border-bottom: 2px solid var(--brass);
@@ -422,6 +411,11 @@ body {
 .site-nav-drawer-link:hover,
 .site-nav-drawer-link:focus-visible {
   color: var(--brass);
+}
+
+.site-nav-drawer-link.is-active {
+  color: var(--brass);
+  border-bottom-color: var(--brass);
 }
 
 .site-nav-drawer-signin {

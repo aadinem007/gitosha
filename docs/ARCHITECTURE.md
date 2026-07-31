@@ -34,7 +34,7 @@ src/
     email.ts             All outbound email in one place
     license.ts           License-key generation
     supabase/            Server + browser Supabase clients
-  proxy.ts              Edge WAF-ish layer + /vault auth gate (Next proxy, not middleware.ts)
+  proxy.ts              Edge WAF-ish layer + /research auth gate (Next proxy, not middleware.ts)
 prisma/
   schema.prisma          Data model
   seed.ts                 Seeds the initial 18 scored ideas
@@ -66,7 +66,7 @@ zero manual steps in between.
 3. The browser redirects to Stripe-hosted Checkout (`data.url`).
 4. On success, Stripe hits `POST /api/stripe/webhook` (`checkout.session.completed`)
    which calls `fulfillPurchase`; the success page can also resolve `session_id`.
-5. `/vault` reads the signed-in user's email from Supabase, looks up their
+5. `/research` reads the signed-in user's email from Supabase, looks up their
    `Subscriber` row, and unlocks premium `Idea` rows accordingly.
 
 ## Data flow for a Foundry Kit purchase

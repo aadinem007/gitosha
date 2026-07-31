@@ -62,8 +62,9 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     reply: {
       text: "The Vault is our scored opportunity database. Scout (free) shows public research. Operator ($15/mo launch) unlocks full teardowns, kill criteria, anti-portfolio, financial sketches, competitor maps, 14-day launch checklists, CSV export, and 15% off Foundry. Studio ($49/mo) adds 5 seats + private niche scoring.",
       links: [
-        { label: "Open Vault", href: "/vault" },
+        { label: "Vault product page", href: "/vault" },
         { label: "Operator pricing", href: "/pricing" },
+        { label: "Sign in to research", href: "/login?next=/research" },
       ],
       suggestions: ["How do scores work?", "Foundry vs Vault", "Show pricing"],
     },
@@ -97,7 +98,8 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     reply: {
       text: "Foundry is a one-time SaaS starter kit (Next.js, auth, Prisma, checkout, webhooks, deploy docs — same patterns Gitosha runs). Download the zip instantly from License after pay. Solo $99 (one product + 90 days Operator). Agency $249 (unlimited clients + white-label + templates + 1yr Studio Vault). Launch Bundle $149 = Solo + 1 year Operator.",
       links: [
-        { label: "Inspect Foundry", href: "/foundry-kit" },
+        { label: "Foundry story", href: "/foundry" },
+        { label: "Buy Foundry", href: "/foundry-kit" },
         { label: "License / download", href: "/license" },
       ],
       suggestions: [
@@ -113,7 +115,8 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     reply: {
       text: "Solo ($99) = one product you own. Agency ($249) = unlimited client builds, white-label, handoff/invoice/proposal templates, priority support, and 1 year Studio Vault. If you ship for clients, Agency usually pays for itself by the second engagement — same zip, wider rights.",
       links: [
-        { label: "Compare table", href: "/foundry-kit#compare" },
+        { label: "Compare table", href: "/foundry#compare" },
+        { label: "Buy Foundry", href: "/foundry-kit" },
         { label: "Pricing", href: "/pricing" },
       ],
       suggestions: ["How do I get Foundry after paying?", "Show pricing", "What's free?"],

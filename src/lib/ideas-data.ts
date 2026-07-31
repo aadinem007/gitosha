@@ -62,7 +62,7 @@ export const SEED_IDEAS: SeedIdea[] = [
     oneLiner: "AI-native Next.js/Stripe/Supabase SaaS starter kit built for agent-assisted founders.",
     scores: scores(8, 5, 10, 9, 9, 6, 6, 10, 9, 9),
     isPremium: false,
-    teardownMd: "The companion starter-kit product — see /foundry-kit for the full breakdown.",
+    teardownMd: "The companion starter-kit product — see /foundry for the full story and /foundry-kit to buy.",
   },
   {
     slug: "recoverly",

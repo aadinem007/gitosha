@@ -10,7 +10,7 @@ const cookieOptions = {
 };
 
 // Server-side Supabase client. Used in Server Components, Route Handlers,
-// and Server Actions for magic-link auth on /login and gating /vault.
+// and Server Actions for magic-link auth on /login and gating /research.
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
 

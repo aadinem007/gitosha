@@ -6,6 +6,7 @@ export default function sitemap() {
   const staticRoutes = [
     "",
     "/pricing",
+    "/foundry",
     "/foundry-kit",
     "/vault",
     "/login",

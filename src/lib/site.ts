@@ -20,8 +20,8 @@ export function publicSiteOrigin(): string {
 }
 
 /** Magic-link / OAuth callback URL (must be allowlisted in Supabase Auth). */
-export function authCallbackUrl(next = "/vault"): string {
+export function authCallbackUrl(next = "/research"): string {
   const origin = publicSiteOrigin();
-  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/vault";
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/research";
   return `${origin}/api/auth/callback?next=${encodeURIComponent(safeNext)}`;
 }

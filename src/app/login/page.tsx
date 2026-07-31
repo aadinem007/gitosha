@@ -29,7 +29,7 @@ export default async function LoginPage({
             No password — we email you a one-time magic link.
           </p>
           <div className="login-panel mt-8">
-            <LoginForm next={safeRedirectPath(next, "/vault")} />
+            <LoginForm next={safeRedirectPath(next, "/research")} />
           </div>
         </section>
       </main>

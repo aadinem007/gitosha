@@ -22,7 +22,8 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
     a: "The Solo production zip (auth, database, checkout, webhooks, deploy docs — same stack Gitosha runs), plus unlimited client projects, white-label rights, handoff/invoice/proposal/white-label docs in the zip, priority support, 1 year of Studio Vault (5 seats), and commercial rights for agency resale of your builds. Not a custom build of your client’s product — the production foundation + rights pack you reuse every engagement.",
     links: [
       { label: "Full inventory", href: "/whats-inside" },
-      { label: "Inspect Foundry", href: "/foundry-kit" },
+      { label: "Inspect Foundry", href: "/foundry" },
+      { label: "Buy Foundry", href: "/foundry-kit" },
     ],
   },
   {
@@ -33,7 +34,7 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
   {
     q: "Solo vs Agency — which should I buy?",
     a: "Solo if you ship one product for yourself. Agency if you build for clients, need white-label, templates, priority support, or a year of Studio Vault.",
-    links: [{ label: "Compare on Foundry", href: "/foundry-kit#compare" }],
+    links: [{ label: "Compare on Foundry", href: "/foundry#compare" }],
   },
   {
     q: "What’s in the Launch Bundle ($149)?",

@@ -18,7 +18,7 @@ Kit source of truth: `kits/foundry/`
 1. Customer pays (or gets Vault via Foundry Solo/Agency/Bundle fulfill)
 2. `Subscriber` row set to PRO or TEAM
 3. They sign in at `/login` with the **same email**
-4. `/vault` unlocks premium teardowns
+4. `/research` unlocks premium teardowns
 5. Operator+ can export CSV at `/api/vault/export`
 
 ## What you must do once (ops)

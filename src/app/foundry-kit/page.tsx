@@ -71,19 +71,22 @@ export default function FoundryKitPage() {
             for studios shipping many client products from one license.
           </p>
           <div className="mt-6 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
+            <Link href="/foundry" className="font-semibold text-[var(--brass-dim)] hover:underline">
+              Full Foundry story →
+            </Link>
             <Link href="/license" className="font-semibold text-[var(--brass-dim)] hover:underline">
               Already paid? License portal →
             </Link>
             <Link href="/faq" className="text-[var(--support)] hover:text-[var(--ink)]">
               FAQ
             </Link>
-              <Link href="/whats-inside" className="text-[var(--support)] hover:text-[var(--ink)]">
-                What’s inside
-              </Link>
-              <a href="#compare" className="text-[var(--support)] hover:text-[var(--ink)]">
-                Solo vs Agency
-              </a>
-            </div>
+            <Link href="/whats-inside" className="text-[var(--support)] hover:text-[var(--ink)]">
+              What’s inside
+            </Link>
+            <a href="#compare" className="text-[var(--support)] hover:text-[var(--ink)]">
+              Solo vs Agency
+            </a>
+          </div>
         </section>
 
         <section className="mx-auto max-w-5xl px-6 pb-20">

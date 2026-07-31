@@ -99,7 +99,7 @@ export default function Home() {
               <Link href="/pricing" className="btn-primary">
                 View pricing
               </Link>
-              <Link href="/foundry-kit" className="btn-ghost">
+              <Link href="/foundry" className="btn-ghost">
                 Open Foundry
               </Link>
             </div>
@@ -123,8 +123,8 @@ export default function Home() {
               Ten scored dimensions. Explicit go/no-go frameworks. Public rejects. Research built for
               operators who decide in one sitting — not another scroll of vanity idea lists.
             </p>
-            <Link href="/#vault" className="mega-split-link">
-              Enter the Vault →
+            <Link href="/vault" className="mega-split-link">
+              Read the full Vault →
             </Link>
           </div>
         </section>
@@ -156,9 +156,14 @@ export default function Home() {
             <p className="chapter-eyebrow">{BRAND.products.vault}</p>
             <h2 className="chapter-title chapter-title-section">{BRAND.vaultHeadline}</h2>
             <p className="chapter-copy">{BRAND.vaultBody}</p>
-            <Link href="/pricing" className="chapter-link">
-              See {BRAND.products.vault} plans →
-            </Link>
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+              <Link href="/vault" className="chapter-link">
+                Read the full Vault →
+              </Link>
+              <Link href="/pricing" className="chapter-link">
+                See plans →
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -175,8 +180,8 @@ export default function Home() {
               Foundry is the production zip — auth, checkout, webhooks, and deploy docs included. Pay
               once in USD. Download the same minute. Start from a stack that already takes payments.
             </p>
-            <Link href="/foundry-kit" className="mega-split-link">
-              Inspect Foundry →
+            <Link href="/foundry" className="mega-split-link">
+              Read the full Foundry →
             </Link>
           </div>
         </section>
@@ -188,7 +193,7 @@ export default function Home() {
             <p className="chapter-eyebrow">{BRAND.products.foundry}</p>
             <h2 className="chapter-title chapter-title-section">{BRAND.foundryHeadline}</h2>
             <p className="chapter-copy">{BRAND.foundryBody}</p>
-            <Link href="/foundry-kit" className="chapter-link">
+            <Link href="/foundry" className="chapter-link">
               Open {BRAND.products.foundry} →
             </Link>
           </div>
@@ -251,7 +256,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <Link href="/foundry-kit" className="story-link">
+            <Link href="/foundry" className="story-link">
               Inspect Foundry →
             </Link>
           </div>
@@ -346,7 +351,7 @@ export default function Home() {
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
-                <Link href="/foundry-kit" className="btn-primary" style={{ marginTop: "1.5rem" }}>
+                <Link href="/foundry" className="btn-primary" style={{ marginTop: "1.5rem" }}>
                   Foundry Solo — $99 →
                 </Link>
               </div>
@@ -387,7 +392,7 @@ export default function Home() {
               <Link href="/pricing" className="btn-primary">
                 Get pricing · USD
               </Link>
-              <Link href="/foundry-kit" className="btn-ghost">
+              <Link href="/foundry" className="btn-ghost">
                 Buy Foundry
               </Link>
             </div>

@@ -1,18 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { BRAND } from "@/lib/brand";
 
 const NAV_LINKS = [
-  { href: "/", label: "Home", home: true },
-  { href: "/#vault", label: BRAND.products.vault },
-  { href: "/#foundry", label: BRAND.products.foundry },
-  { href: "/method", label: "Method" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/", label: "Home", match: (path: string) => path === "/" },
+  { href: "/vault", label: BRAND.products.vault, match: (path: string) => path === "/vault" || path.startsWith("/research") },
+  { href: "/foundry", label: BRAND.products.foundry, match: (path: string) => path === "/foundry" || path.startsWith("/foundry-kit") },
+  { href: "/method", label: "Method", match: (path: string) => path === "/method" },
+  { href: "/pricing", label: "Pricing", match: (path: string) => path === "/pricing" },
 ] as const;
 
 export function Nav() {
+  const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -52,15 +54,19 @@ export function Nav() {
         </Link>
 
         <div className="site-nav-links site-nav-links-desktop">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`site-nav-link${"home" in link && link.home ? " site-nav-home" : ""}`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = link.match(pathname);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`site-nav-link${active ? " is-active" : ""}`}
+                aria-current={active ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <Link href="/login" className="site-nav-signin">
             Sign in
           </Link>
@@ -104,17 +110,21 @@ export function Nav() {
         hidden={!open}
       >
         <div className="site-nav-drawer-inner">
-          {NAV_LINKS.map((link, i) => (
-            <Link
-              key={link.href}
-              ref={i === 0 ? firstLinkRef : undefined}
-              href={link.href}
-              className="site-nav-drawer-link"
-              onClick={close}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link, i) => {
+            const active = link.match(pathname);
+            return (
+              <Link
+                key={link.href}
+                ref={i === 0 ? firstLinkRef : undefined}
+                href={link.href}
+                className={`site-nav-drawer-link${active ? " is-active" : ""}`}
+                aria-current={active ? "page" : undefined}
+                onClick={close}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <Link href="/login" className="site-nav-signin site-nav-drawer-signin" onClick={close}>
             Sign in
           </Link>

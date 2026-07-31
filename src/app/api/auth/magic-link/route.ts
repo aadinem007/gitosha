@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, branded: true });
   }
 
-  const next = safeRedirectPath(parsed.data.next, "/vault");
+  const next = safeRedirectPath(parsed.data.next, "/research");
   const redirectTo = authCallbackUrl(next);
 
   if (!isSupabaseAdminConfigured() || !isResendConfigured()) {

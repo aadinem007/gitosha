@@ -220,13 +220,13 @@ export async function proxy(request: NextRequest) {
   });
   response = withSecurityHeaders(response, requestId);
 
-  // Marketing + legal are always public. Auth wall ONLY for /vault app routes.
+  // Marketing + legal are always public. Auth wall ONLY for /research (signed-in Vault app).
   // Login lives at /login — never treat `/` as the sign-in experience.
   if (isPublicMarketingPath(path)) {
     return response;
   }
 
-  if (path.startsWith("/vault")) {
+  if (path.startsWith("/research")) {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -261,7 +261,7 @@ export async function proxy(request: NextRequest) {
     if (!data.user) {
       const redirectUrl = new URL("/login", request.url);
       // Only pass a safe relative path into ?next=
-      const safeNext = path.startsWith("/") && !path.startsWith("//") ? path : "/vault";
+      const safeNext = path.startsWith("/") && !path.startsWith("//") ? path : "/research";
       redirectUrl.searchParams.set("next", safeNext);
       return withSecurityHeaders(NextResponse.redirect(redirectUrl), requestId);
     }
@@ -276,6 +276,8 @@ function isPublicMarketingPath(path: string): boolean {
   const exact = new Set([
     "/pricing",
     "/foundry-kit",
+    "/foundry",
+    "/vault",
     "/faq",
     "/whats-inside",
     "/method",
@@ -295,5 +297,5 @@ function isPublicMarketingPath(path: string): boolean {
 }
 
 export const config = {
-  matcher: ["/vault/:path*", "/api/:path*", "/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/research/:path*", "/api/:path*", "/((?!_next/static|_next/image|favicon.ico).*)"],
 };

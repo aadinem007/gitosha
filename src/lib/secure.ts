@@ -106,7 +106,7 @@ export function requireJsonContentType(req: Request): boolean {
  * Allow only same-origin relative paths for post-auth redirects.
  * Blocks open redirects (//evil, https://evil, /\evil, etc.).
  */
-export function safeRedirectPath(next: string | null | undefined, fallback = "/vault"): string {
+export function safeRedirectPath(next: string | null | undefined, fallback = "/research"): string {
   if (!next) return fallback;
   const trimmed = next.trim();
   if (!trimmed.startsWith("/")) return fallback;

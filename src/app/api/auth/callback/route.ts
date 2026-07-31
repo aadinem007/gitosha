@@ -7,7 +7,7 @@ import { safeRedirectPath, securityLog } from "@/lib/secure";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = safeRedirectPath(searchParams.get("next"), "/vault");
+  const next = safeRedirectPath(searchParams.get("next"), "/research");
 
   const limited = rateLimit({
     key: `auth-callback:${clientIp(request)}`,

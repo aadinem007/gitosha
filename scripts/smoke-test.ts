@@ -56,16 +56,16 @@ for (const [q, expectId] of samples) {
 
 // Auth redirect hardening
 const redirectCases: [string, string][] = [
-  ["/vault", "/vault"],
-  ["/vault/ideas", "/vault/ideas"],
-  ["//evil.com", "/vault"],
-  ["https://evil.com", "/vault"],
-  ["/\\evil", "/vault"],
-  ["vault", "/vault"],
-  ["/\tevil", "/vault"],
+  ["/research", "/research"],
+  ["/research/ideas", "/research/ideas"],
+  ["//evil.com", "/research"],
+  ["https://evil.com", "/research"],
+  ["/\\evil", "/research"],
+  ["research", "/research"],
+  ["/\tevil", "/research"],
 ];
 for (const [input, expect] of redirectCases) {
-  const got = safeRedirectPath(input, "/vault");
+  const got = safeRedirectPath(input, "/research");
   if (got === expect) ok(`safeRedirectPath: ${JSON.stringify(input)}`);
   else fail(`safeRedirectPath: ${JSON.stringify(input)}`, `got ${got}, want ${expect}`);
 }

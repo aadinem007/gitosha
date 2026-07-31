@@ -14,8 +14,9 @@ export function Footer() {
           <nav className="site-footer-links" aria-label="Footer">
             <Link href="/">Home</Link>
             <Link href="/pricing">Pricing</Link>
-            <Link href="/#vault">{BRAND.products.vault}</Link>
-            <Link href="/#foundry">{BRAND.products.foundry}</Link>
+            <Link href="/vault">{BRAND.products.vault}</Link>
+            <Link href="/foundry">{BRAND.products.foundry}</Link>
+            <Link href="/method">Method</Link>
             <Link href="/faq">FAQ</Link>
             <Link href="/legal">Legal</Link>
             <Link href="/legal/refunds">Refunds</Link>

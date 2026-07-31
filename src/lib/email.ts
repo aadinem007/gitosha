@@ -116,7 +116,7 @@ export async function sendWelcomeEmail(email: string, tier: string) {
     text: `You're in on the ${tier} tier.
 
 Sign in with this same email: ${SITE}/login
-Then open the Vault: ${SITE}/vault
+Then open the Vault: ${SITE}/research
 
 Export the scoreboard anytime (Operator+): ${SITE}/api/vault/export
 

@@ -91,7 +91,7 @@ async function emailDigest(title: string, ideas: InputIdea[]) {
     ...top3.map((i) => `${i.name} — ${totalScore(i.scores)}/100\n${i.oneLiner}\n`),
     "\nFull teardowns and the rest of this week's ideas are in the Vault: " +
       (process.env.NEXT_PUBLIC_SITE_URL ?? "https://gitosha.vercel.app") +
-      "/vault",
+      "/research",
   ].join("\n");
 
   for (const sub of subscribers) {

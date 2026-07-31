@@ -77,8 +77,11 @@ export default function WhatsInsidePage() {
             <Link href="/pricing" className="btn-primary px-5 py-2.5 text-sm">
               Open pricing
             </Link>
+            <Link href="/foundry" className="btn-ghost px-5 py-2.5 text-sm">
+              Foundry story
+            </Link>
             <Link href="/foundry-kit" className="btn-ghost px-5 py-2.5 text-sm">
-              Foundry page
+              Buy Foundry
             </Link>
             <Link href="/faq" className="btn-ghost px-5 py-2.5 text-sm">
               FAQ

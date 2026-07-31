@@ -11,43 +11,45 @@ function PlanCard({
   plan: (typeof VAULT_PLANS)[number] | (typeof FOUNDRY_PLANS)[number];
 }) {
   return (
-    <div className={`plan-shell isolate ${plan.highlight ? "is-hot" : ""}`}>
-      <div className="plan-shell-body">
-        <div className="flex min-w-0 items-start justify-between gap-2">
-          <p className="font-display text-xl font-semibold leading-tight tracking-tight text-[var(--ink)]">
-            {plan.name}
+    <div className="pricing-plan-cell">
+      <div className={`plan-shell isolate ${plan.highlight ? "is-hot" : ""}`}>
+        <div className="plan-shell-body">
+          <div className="flex min-w-0 items-start justify-between gap-2">
+            <p className="font-display text-xl font-semibold leading-tight tracking-tight text-[var(--ink)]">
+              {plan.name}
+            </p>
+            {plan.badge && (
+              <span className="shrink-0 bg-[var(--brass)] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--ink)] shadow-[0_4px_12px_rgba(200,255,0,0.28)]">
+                {plan.badge}
+              </span>
+            )}
+          </div>
+          <p className="mt-3">
+            <span className="font-display text-3xl font-semibold tracking-tight text-[var(--ink)]">
+              {plan.price}
+            </span>{" "}
+            <span className="text-sm font-medium text-[var(--muted)]">{plan.cadence}</span>
           </p>
-          {plan.badge && (
-            <span className="shrink-0 bg-[var(--brass)] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--ink)] shadow-[0_4px_12px_rgba(200,255,0,0.28)]">
-              {plan.badge}
-            </span>
-          )}
+          <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--support)]">{plan.description}</p>
+          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+            {plan.features.map((f) => (
+              <li key={f} className="leading-snug">
+                — {f}
+              </li>
+            ))}
+          </ul>
         </div>
-        <p className="mt-3">
-          <span className="font-display text-3xl font-semibold tracking-tight text-[var(--ink)]">
-            {plan.price}
-          </span>{" "}
-          <span className="text-sm font-medium text-[var(--muted)]">{plan.cadence}</span>
-        </p>
-        <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--support)]">{plan.description}</p>
-        <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
-          {plan.features.map((f) => (
-            <li key={f} className="leading-snug">
-              — {f}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="plan-shell-footer">
-        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">
-          {plan.features.length} inclusions
-        </p>
-        <div className="relative z-10 min-w-0 overflow-visible">
-          {plan.mode === "none" ? (
-            <WaitlistForm cta={plan.cta} layout="stack" />
-          ) : (
-            <CheckoutButton planId={plan.id} label={plan.cta} primary={!!plan.highlight} />
-          )}
+        <div className="plan-shell-footer">
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">
+            {plan.features.length} inclusions
+          </p>
+          <div className="plan-shell-actions z-10 min-w-0 overflow-visible">
+            {plan.mode === "none" ? (
+              <WaitlistForm cta={plan.cta} layout="stack" />
+            ) : (
+              <CheckoutButton planId={plan.id} label={plan.cta} primary={!!plan.highlight} />
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -102,7 +104,7 @@ export default function PricingPage() {
             <h2 className="font-display text-2xl font-semibold tracking-tight text-[var(--fog)] sm:text-3xl">
               Vault — scored research
             </h2>
-            <div className="mt-5 grid items-stretch gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <div className="pricing-plan-grid pricing-plan-grid--vault mt-5">
               {VAULT_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}
@@ -116,7 +118,7 @@ export default function PricingPage() {
               priority support, and a year of Studio Vault — so your next three client SaaS builds
               don’t restart from zero.
             </p>
-            <div className="mt-5 grid items-stretch gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="pricing-plan-grid pricing-plan-grid--foundry mt-5">
               {FOUNDRY_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}

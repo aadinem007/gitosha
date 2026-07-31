@@ -47,7 +47,9 @@ export function WaitlistForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={stacked ? "form-stack form-stack-tight" : "form-row"}
+      className={
+        stacked ? "plan-shell-waitlist form-stack form-stack-tight" : "form-row"
+      }
     >
       <label className="sr-only absolute -left-[9999px]" aria-hidden="true">
         Company
@@ -82,7 +84,7 @@ export function WaitlistForm({
         {status === "loading" ? "Joining…" : cta}
       </button>
       <p className="form-error" aria-live="polite">
-        {status === "error" ? "Something went wrong — try again." : "\u00a0"}
+        {status === "error" ? "Something went wrong — try again." : stacked ? null : "\u00a0"}
       </p>
     </form>
   );

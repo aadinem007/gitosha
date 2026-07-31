@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
+import { EqualHeightPlans } from "@/components/EqualHeightPlans";
 import Link from "next/link";
 import { FOUNDRY_PLANS } from "@/lib/pricing";
 
@@ -143,11 +144,11 @@ export default function FoundryKitPage() {
             </div>
           </div>
 
-          <div className="pricing-plan-grid pricing-plan-grid--foundry mt-16">
+          <EqualHeightPlans className="pricing-plan-grid pricing-plan-grid--foundry mt-16">
             {[solo, agency, bundle].map((plan) => (
-              <div
+              <article
                 key={plan.id}
-                className={`plan-shell isolate ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
+                className={`plan-shell ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
               >
                 <div className="plan-shell-body">
                   <p className="font-display text-xl tracking-wide">{plan.name}</p>
@@ -179,9 +180,9 @@ export default function FoundryKitPage() {
                     />
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
-          </div>
+          </EqualHeightPlans>
 
           <p className="mt-10 text-xs text-[var(--support)]">
             By purchasing you agree to{" "}

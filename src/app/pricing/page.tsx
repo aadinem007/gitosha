@@ -29,22 +29,24 @@ function PlanCard({
         <span className="text-sm font-medium text-[var(--muted)]">{plan.cadence}</span>
       </p>
       <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--support)]">{plan.description}</p>
-      <ul className="mt-4 flex-1 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+      <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
         {plan.features.map((f) => (
           <li key={f} className="leading-snug">
             — {f}
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">
-        {plan.features.length} inclusions
-      </p>
-      <div className="relative z-10 mt-6 min-w-0 overflow-visible">
-        {plan.mode === "none" ? (
-          <WaitlistForm cta={plan.cta} layout="stack" />
-        ) : (
-          <CheckoutButton planId={plan.id} label={plan.cta} primary={!!plan.highlight} />
-        )}
+      <div className="plan-shell-footer">
+        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">
+          {plan.features.length} inclusions
+        </p>
+        <div className="relative z-10 min-w-0 overflow-visible">
+          {plan.mode === "none" ? (
+            <WaitlistForm cta={plan.cta} layout="stack" />
+          ) : (
+            <CheckoutButton planId={plan.id} label={plan.cta} primary={!!plan.highlight} />
+          )}
+        </div>
       </div>
     </div>
   );

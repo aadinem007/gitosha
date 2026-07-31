@@ -145,39 +145,38 @@ export default function FoundryKitPage() {
 
           <div className="pricing-plan-grid pricing-plan-grid--foundry mt-16">
             {[solo, agency, bundle].map((plan) => (
-              <div key={plan.id} className="pricing-plan-cell">
-                <div
-                  className={`plan-shell isolate ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
-                >
-                  <div className="plan-shell-body">
-                    <p className="font-display text-xl tracking-wide">{plan.name}</p>
-                    <p className="mt-2 font-display text-3xl tracking-wide">{plan.price}</p>
-                    <p className="mt-1 text-xs text-[var(--support)]">{plan.cadence}</p>
-                    <p className="mt-3 text-sm leading-relaxed text-[var(--support)]">
-                      {plan.description}
-                    </p>
-                    <ul className="mt-4 space-y-2 text-[1.02rem] text-[var(--support)]">
-                      {plan.features.slice(0, 14).map((f) => (
-                        <li key={f}>— {f}</li>
-                      ))}
-                      {plan.features.length > 14 && (
-                        <li className="text-[var(--brass-dim)]">
-                          +{plan.features.length - 14} more — see Pricing / What’s inside
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                  <div className="plan-shell-footer">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">
-                      {plan.features.length} inclusions
-                    </p>
-                    <div className="plan-shell-actions z-10 min-w-0">
-                      <CheckoutButton
-                        planId={plan.id}
-                        label={plan.cta}
-                        primary={plan.id === "foundry-agency" || plan.highlight}
-                      />
-                    </div>
+              <div
+                key={plan.id}
+                className={`plan-shell isolate ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
+              >
+                <div className="plan-shell-body">
+                  <p className="font-display text-xl tracking-wide">{plan.name}</p>
+                  <p className="mt-2 font-display text-3xl tracking-wide">{plan.price}</p>
+                  <p className="mt-1 text-xs text-[var(--support)]">{plan.cadence}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-[var(--support)]">
+                    {plan.description}
+                  </p>
+                  <ul className="mt-4 space-y-2 text-[1.02rem] text-[var(--support)]">
+                    {plan.features.slice(0, 14).map((f) => (
+                      <li key={f}>— {f}</li>
+                    ))}
+                    {plan.features.length > 14 && (
+                      <li className="text-[var(--brass-dim)]">
+                        +{plan.features.length - 14} more — see Pricing / What’s inside
+                      </li>
+                    )}
+                  </ul>
+                </div>
+                <div className="plan-shell-footer">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">
+                    {plan.features.length} inclusions
+                  </p>
+                  <div className="plan-shell-actions z-10 min-w-0">
+                    <CheckoutButton
+                      planId={plan.id}
+                      label={plan.cta}
+                      primary={plan.id === "foundry-agency" || plan.highlight}
+                    />
                   </div>
                 </div>
               </div>

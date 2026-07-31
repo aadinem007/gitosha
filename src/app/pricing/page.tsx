@@ -3,7 +3,6 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { WaitlistForm } from "@/components/WaitlistForm";
-import { EqualHeightPlans } from "@/components/EqualHeightPlans";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 
 const FEATURE_PREVIEW = 5;
@@ -111,11 +110,11 @@ export default function PricingPage() {
             <h2 className="font-display text-2xl font-semibold tracking-tight text-[var(--fog)] sm:text-3xl">
               Vault — scored research
             </h2>
-            <EqualHeightPlans className="pricing-plan-grid pricing-plan-grid--vault mt-5">
+            <div className="pricing-plan-grid pricing-plan-grid--vault mt-5">
               {VAULT_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}
-            </EqualHeightPlans>
+            </div>
 
             <h2 className="mt-20 font-display text-2xl font-semibold tracking-tight text-[var(--fog)] sm:text-3xl">
               Foundry — ship kit &amp; studio license
@@ -125,11 +124,11 @@ export default function PricingPage() {
               priority support, and a year of Studio Vault — so your next three client SaaS builds
               don’t restart from zero.
             </p>
-            <EqualHeightPlans className="pricing-plan-grid pricing-plan-grid--foundry mt-5">
+            <div className="pricing-plan-grid pricing-plan-grid--foundry mt-5">
               {FOUNDRY_PLANS.map((plan) => (
                 <PlanCard key={plan.id} plan={plan} />
               ))}
-            </EqualHeightPlans>
+            </div>
 
             <div className="cta-band mt-16">
               <p className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">

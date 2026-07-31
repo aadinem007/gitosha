@@ -1995,11 +1995,11 @@ body {
   color: #b42318;
 }
 
-/* ── Pricing plan grids — flex/grid stretch + JS equalize (EqualHeightPlans) ── */
+/* ── Pricing plan grids — content-sized cards (no equal-height stretch) ── */
 .pricing-plan-grid {
   display: grid;
   gap: 1.5rem;
-  align-items: stretch;
+  align-items: start;
   grid-auto-rows: auto;
 }
 
@@ -2036,17 +2036,15 @@ body {
   }
 }
 
-/* ── Plan shells — thick ink frame via inset shadow (always paints) ── */
+/* ── Plan shells — thick ink frame via inset shadow; hug content ── */
 .plan-shell,
 .pricing-deck .plan-shell,
 .pricing-plan-grid .plan-shell {
   position: relative;
-  display: flex !important;
-  flex-direction: column !important;
-  align-self: stretch;
+  display: block;
   width: 100%;
-  height: 100%;
-  min-height: 100%;
+  height: auto;
+  min-height: 0;
   box-sizing: border-box;
   /* Kill thin/zero borders from preflight — paint a real 6px frame */
   border: 0 !important;
@@ -2081,44 +2079,30 @@ body {
 }
 
 .plan-shell-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
   min-width: 0;
 }
 
 .plan-shell-footer,
 .pricing-deck .plan-shell-footer,
 .pricing-plan-grid .plan-shell-footer {
-  margin-top: auto !important;
-  flex-shrink: 0;
-  flex: 0 0 auto;
-  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-/* Equal action well so Scout email form and buy CTAs share one baseline */
 .plan-shell-actions {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  flex: 0 0 auto;
   gap: 0.75rem;
-  min-height: 9.5rem;
 }
 
 .plan-shell-actions .form-stack,
 .plan-shell-actions .plan-shell-waitlist {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
-  height: 100%;
-  min-height: 100%;
-  justify-content: flex-end;
   gap: 0.75rem;
 }
 
@@ -2128,32 +2112,9 @@ body {
   width: 100%;
 }
 
-/* Error must not push Scout CTA off the shared baseline */
 .plan-shell-actions .form-error {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-  margin: 0 0 0.35rem;
+  margin: 0;
   min-height: 0;
-}
-
-/* No-subgrid browsers: flex column + pin footer */
-@supports not (grid-template-rows: subgrid) {
-  .pricing-plan-grid {
-    align-items: stretch;
-  }
-
-  .pricing-plan-grid > .plan-shell {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100%;
-    grid-row: auto;
-  }
-
-  .pricing-plan-grid > .plan-shell > .plan-shell-footer {
-    margin-top: auto !important;
-  }
 }
 
 .plan-shell.is-hot::before {

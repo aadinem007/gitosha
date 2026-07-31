@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useLayoutEffect, useRef, type ReactNode } from "react";
 
 /**
- * Forces every direct `.plan-shell` child to the tallest card's height.
- * CSS grid/subgrid kept failing across breakpoints — measure is unambiguous.
+ * Equalize heights per visual row so footers share one baseline.
+ * Re-measures on resize, fonts, and child size changes.
  */
 export function EqualHeightPlans({
   className,
@@ -15,7 +15,7 @@ export function EqualHeightPlans({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = ref.current;
     if (!root) return;
 
@@ -25,17 +25,28 @@ export function EqualHeightPlans({
     const sync = () => {
       const items = shells();
       if (!items.length) return;
+
       items.forEach((el) => {
         el.style.minHeight = "";
+        el.style.height = "";
       });
-      // Only equalize when 2+ cards share a row (side-by-side)
-      const top = items[0].offsetTop;
-      const row = items.filter((el) => Math.abs(el.offsetTop - top) < 2);
-      if (row.length < 2) return;
-      const max = Math.max(...row.map((el) => el.offsetHeight));
-      row.forEach((el) => {
-        el.style.minHeight = `${max}px`;
-      });
+
+      // Group into rows by offsetTop
+      const rows: HTMLElement[][] = [];
+      for (const el of items) {
+        const top = el.offsetTop;
+        const row = rows.find((r) => Math.abs(r[0].offsetTop - top) < 4);
+        if (row) row.push(el);
+        else rows.push([el]);
+      }
+
+      for (const row of rows) {
+        if (row.length < 2) continue;
+        const max = Math.max(...row.map((el) => el.getBoundingClientRect().height));
+        row.forEach((el) => {
+          el.style.minHeight = `${Math.ceil(max)}px`;
+        });
+      }
     };
 
     const ro = new ResizeObserver(() => {
@@ -43,13 +54,16 @@ export function EqualHeightPlans({
     });
     ro.observe(root);
     shells().forEach((el) => ro.observe(el));
+
     window.addEventListener("resize", sync);
+    document.fonts?.ready?.then(() => sync()).catch(() => undefined);
     sync();
-    // Fonts / late layout
-    const t = window.setTimeout(sync, 120);
+    const t1 = window.setTimeout(sync, 50);
+    const t2 = window.setTimeout(sync, 300);
 
     return () => {
-      window.clearTimeout(t);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
       window.removeEventListener("resize", sync);
       ro.disconnect();
     };

@@ -6,11 +6,16 @@ import { WaitlistForm } from "@/components/WaitlistForm";
 import { EqualHeightPlans } from "@/components/EqualHeightPlans";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 
+const FEATURE_PREVIEW = 5;
+
 function PlanCard({
   plan,
 }: {
   plan: (typeof VAULT_PLANS)[number] | (typeof FOUNDRY_PLANS)[number];
 }) {
+  const preview = plan.features.slice(0, FEATURE_PREVIEW);
+  const more = plan.features.length - preview.length;
+
   return (
     <article className={`plan-shell ${plan.highlight ? "is-hot" : ""}`}>
       <div className="plan-shell-body">
@@ -32,11 +37,14 @@ function PlanCard({
         </p>
         <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--support)]">{plan.description}</p>
         <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
-          {plan.features.map((f) => (
+          {preview.map((f) => (
             <li key={f} className="leading-snug">
               — {f}
             </li>
           ))}
+          {more > 0 && (
+            <li className="leading-snug font-semibold text-[var(--ink)]">— +{more} more included</li>
+          )}
         </ul>
       </div>
       <div className="plan-shell-footer">

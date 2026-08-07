@@ -42,7 +42,7 @@ export function XflowCheckoutClient({ intentId }: { intentId: string }) {
         the signed Xflow webhook when configured.
       </p>
       {error && (
-        <p className="text-xs text-[var(--signal)]" role="alert">
+        <p className="text-xs text-[var(--ink)]" role="alert">
           {error}
         </p>
       )}

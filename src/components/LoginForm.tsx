@@ -41,7 +41,7 @@ export function LoginForm({ next }: { next: string }) {
 
   if (status === "sent") {
     return (
-      <p className="text-sm font-medium leading-snug text-[var(--signal)]" role="status">
+      <p className="text-sm font-medium leading-snug text-[var(--ink)]" role="status">
         Check your inbox for a magic link to finish signing in.
       </p>
     );

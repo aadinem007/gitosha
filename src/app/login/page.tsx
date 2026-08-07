@@ -18,9 +18,7 @@ export default async function LoginPage({
           <Link href="/" className="login-back">
             ← Home
           </Link>
-          <p className="animate-rise text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
-            Access
-          </p>
+          <p className="kicker animate-rise">Access</p>
           <h1 className="animate-rise-delay mt-3 font-display text-5xl font-bold tracking-tight text-[var(--ink)]">
             Sign in
           </h1>

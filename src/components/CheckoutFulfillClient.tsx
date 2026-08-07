@@ -70,7 +70,7 @@ export function CheckoutFulfillClient({
       </div>
 
       {product === "bundle" ? (
-        <p className="mt-6 text-center text-sm text-[var(--signal)]">
+        <p className="mt-6 text-center text-sm text-[var(--ink)]">
           Bundle bonus: Vault is unlocked too —{" "}
           <a href="/login" className="underline">
             sign in

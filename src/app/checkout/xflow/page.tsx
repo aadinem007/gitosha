@@ -30,7 +30,7 @@ export default async function XflowCheckoutPage({
           {intent ? (
             <XflowCheckoutClient intentId={intent} />
           ) : (
-            <p className="mt-8 text-sm text-[var(--signal)]">Missing payment intent.</p>
+            <p className="mt-8 text-sm text-[var(--ink)]">Missing payment intent.</p>
           )}
           <p className="mt-10 text-sm">
             <Link href="/pricing" className="text-[var(--muted)] underline">

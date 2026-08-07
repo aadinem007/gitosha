@@ -40,9 +40,7 @@ export default async function InvoicePage({
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <div className="mx-auto max-w-lg px-6 pb-16 pt-28 sm:pt-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
-            Invoice
-          </p>
+          <p className="kicker">Invoice</p>
           <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">
             {invoice?.invoiceNumber ?? "Invoice"}
           </h1>

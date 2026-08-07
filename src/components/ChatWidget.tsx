@@ -19,9 +19,20 @@ function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function getFocusable(root: HTMLElement) {
+  return Array.from(
+    root.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea, input:not([disabled]), select, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+}
+
 export function ChatWidget() {
   const pathname = usePathname();
   const panelId = useId();
+  const titleId = useId();
+  const inputId = useId();
+  const statusId = useId();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -37,6 +48,9 @@ export function ChatWidget() {
   ]);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const prevOpenRef = useRef(false);
 
   // Keep ASK out of the home first viewport — reveal after the hero.
   useEffect(() => {
@@ -55,9 +69,49 @@ export function ChatWidget() {
   useEffect(() => {
     if (open) {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => inputRef.current?.focus(), 120);
+      const t = window.setTimeout(() => inputRef.current?.focus(), 120);
+      return () => window.clearTimeout(t);
     }
   }, [open, messages, typing]);
+
+  useEffect(() => {
+    if (prevOpenRef.current && !open) {
+      launcherRef.current?.focus();
+    }
+    prevOpenRef.current = open;
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusable = getFocusable(panel);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey) {
+        if (active === first || !panel.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !panel.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   function pushAssistant(reply: ChatReply) {
     setMessages((m) => [
@@ -119,14 +173,18 @@ export function ChatWidget() {
     <div className="chat-root pointer-events-none fixed z-[80] flex flex-col items-end gap-3 bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))] sm:bottom-7 sm:right-7">
       {open && (
         <section
+          ref={panelRef}
           id={panelId}
           role="dialog"
-          aria-label="Gita chat"
+          aria-modal="true"
+          aria-labelledby={titleId}
           className="chat-panel pointer-events-auto flex w-[min(100vw-1.5rem,380px)] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden border border-[var(--line)]"
         >
           <header className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--hull)] px-4 py-3">
             <div className="min-w-0">
-              <p className="font-display text-base tracking-wide text-[var(--ink)]">Gita</p>
+              <p id={titleId} className="font-display text-base tracking-wide text-[var(--ink)]">
+                Gita
+              </p>
               <p className="truncate text-xs text-[var(--muted)]">Gitosha guide · usually instant</p>
             </div>
             <button
@@ -139,17 +197,22 @@ export function ChatWidget() {
             </button>
           </header>
 
-          <div className="flex max-h-[min(58vh,440px)] flex-1 flex-col gap-3 overflow-y-auto bg-[var(--hull)]/95 px-3 py-4">
+          <div
+            className="flex max-h-[min(58vh,440px)] flex-1 flex-col gap-3 overflow-y-auto bg-[var(--hull)] px-3 py-4"
+            aria-live="polite"
+            aria-relevant="additions"
+            id={statusId}
+          >
             {messages.map((m) => (
               <div
                 key={m.id}
                 className={`flex flex-col gap-2 ${m.role === "user" ? "items-end" : "items-start"}`}
               >
                 <div
-                  className={`max-w-[92%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                  className={`max-w-[92%] px-3.5 py-2.5 text-sm leading-relaxed ${
                     m.role === "user"
-                      ? "rounded-br-md bg-[var(--brass)] text-[#0a0a0a]"
-                      : "rounded-bl-md border border-[var(--line)] bg-[var(--panel)] text-[var(--fog)]"
+                      ? "bg-[var(--brass)] text-[#0a0a0a]"
+                      : "border border-[var(--line)] bg-[var(--panel)] text-[var(--fog)]"
                   }`}
                 >
                   {m.text}
@@ -161,7 +224,7 @@ export function ChatWidget() {
                         <a
                           key={l.href + l.label}
                           href={l.href}
-                          className="rounded-full border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass-dim)] hover:bg-[var(--brass)]/20"
+                          className="border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass-dim)] hover:bg-[var(--brass)]/20"
                         >
                           {l.label}
                         </a>
@@ -169,7 +232,7 @@ export function ChatWidget() {
                         <Link
                           key={l.href + l.label}
                           href={l.href}
-                          className="rounded-full border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass-dim)] hover:bg-[var(--brass)]/20"
+                          className="border border-[var(--brass)]/40 bg-[var(--brass)]/10 px-3 py-1 text-xs font-semibold text-[var(--brass-dim)] hover:bg-[var(--brass)]/20"
                         >
                           {l.label}
                         </Link>
@@ -184,7 +247,7 @@ export function ChatWidget() {
                         key={s}
                         type="button"
                         onClick={() => send(s)}
-                        className="rounded-full border border-[var(--line)] bg-transparent px-2.5 py-1 text-[11px] text-[var(--muted)] transition hover:border-[var(--brass)]/50 hover:text-[var(--ink)]"
+                        className="border border-[var(--line)] bg-transparent px-2.5 py-1 text-[11px] text-[var(--muted)] transition hover:border-[var(--brass)]/50 hover:text-[var(--ink)]"
                       >
                         {s}
                       </button>
@@ -195,7 +258,10 @@ export function ChatWidget() {
             ))}
 
             {typing && (
-              <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-[var(--line)] bg-[var(--panel)] px-3 py-2.5">
+              <div
+                className="flex items-center gap-1 border border-[var(--line)] bg-[var(--panel)] px-3 py-2.5"
+                aria-label="Gita is typing"
+              >
                 <span className="chat-dot" />
                 <span className="chat-dot chat-dot-2" />
                 <span className="chat-dot chat-dot-3" />
@@ -211,19 +277,24 @@ export function ChatWidget() {
               void send(input);
             }}
           >
+            <label htmlFor={inputId} className="sr-only">
+              Ask Gita about Gitosha
+            </label>
             <div className="flex gap-2">
               <input
+                id={inputId}
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 maxLength={500}
                 placeholder="Ask about pricing, Foundry, Vault…"
-                className="form-input min-h-12 min-w-0 flex-1 rounded-xl border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
+                aria-describedby={statusId}
+                className="form-input min-h-12 min-w-0 flex-1 border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 text-sm"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || typing}
-                className="btn-primary form-submit shrink-0 rounded-xl px-3.5 py-2.5 text-sm disabled:opacity-50"
+                className="btn-primary form-submit shrink-0 px-3.5 py-2.5 text-sm disabled:opacity-50"
               >
                 Send
               </button>
@@ -233,9 +304,11 @@ export function ChatWidget() {
       )}
 
       <button
+        ref={launcherRef}
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
+        aria-haspopup="dialog"
         onClick={() => setOpen((v) => !v)}
         className="chat-launcher pointer-events-auto group relative flex h-12 w-12 items-center justify-center bg-[var(--brass)] text-[#0a0a0a] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brass)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hull)]"
       >

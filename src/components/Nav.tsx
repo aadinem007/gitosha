@@ -13,12 +13,21 @@ const NAV_LINKS = [
   { href: "/pricing", label: "Pricing", match: (path: string) => path === "/pricing" },
 ] as const;
 
+function getFocusable(root: HTMLElement) {
+  return Array.from(
+    root.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea, input:not([disabled]), select, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => !el.hasAttribute("disabled") && el.tabIndex !== -1);
+}
+
 export function Nav() {
   const pathname = usePathname() ?? "/";
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -27,13 +36,30 @@ export function Nav() {
       if (e.key === "Escape") {
         setOpen(false);
         toggleRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const drawer = drawerRef.current;
+      if (!drawer) return;
+      const focusable = getFocusable(drawer);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey) {
+        if (active === first || !drawer.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !drawer.contains(active)) {
+        e.preventDefault();
+        first.focus();
       }
     };
 
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKey);
-    // Focus first drawer link for keyboard users
     requestAnimationFrame(() => firstLinkRef.current?.focus());
 
     return () => {
@@ -102,6 +128,7 @@ export function Nav() {
       />
 
       <div
+        ref={drawerRef}
         id={panelId}
         className={`site-nav-drawer${open ? " is-open" : ""}`}
         role="dialog"

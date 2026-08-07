@@ -46,6 +46,15 @@ export function ConsentBanner({ policyVersion, categories }: Props) {
   }, []);
 
   useEffect(() => {
+    if (visible) {
+      document.documentElement.setAttribute("data-consent-open", "");
+    } else {
+      document.documentElement.removeAttribute("data-consent-open");
+    }
+    return () => document.documentElement.removeAttribute("data-consent-open");
+  }, [visible]);
+
+  useEffect(() => {
     function onChange() {
       const c = readLocalConsent();
       if (c) setPrefs(c);
@@ -80,7 +89,8 @@ export function ConsentBanner({ policyVersion, categories }: Props) {
       role="dialog"
       aria-labelledby="consent-title"
       aria-describedby="consent-desc"
-      className="fixed inset-x-0 bottom-0 z-[80] border-t-2 border-[var(--ink)] bg-[var(--panel)] p-4 shadow-[0_-8px_32px_rgba(0,0,0,0.12)] sm:p-5"
+      data-consent-banner=""
+      className="fixed inset-x-0 bottom-0 z-[90] border-t-2 border-[var(--ink)] bg-[var(--panel)] p-4 shadow-[0_-8px_32px_rgba(0,0,0,0.12)] sm:p-5"
     >
       <div className="mx-auto flex max-w-3xl flex-col gap-3">
         <h2 id="consent-title" className="font-display text-xl tracking-wide text-[var(--ink)]">

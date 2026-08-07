@@ -48,18 +48,22 @@ export function WaitlistForm({
     <form
       onSubmit={handleSubmit}
       className={
-        stacked ? "plan-shell-waitlist form-stack form-stack-tight" : "form-row"
+        stacked
+          ? "plan-shell-waitlist form-stack form-stack-tight relative"
+          : "form-row relative"
       }
     >
-      <label className="sr-only absolute -left-[9999px]" aria-hidden="true">
-        Company
-        <input
-          tabIndex={-1}
-          autoComplete="off"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-        />
-      </label>
+      {/* Honeypot — display:none so it is not focusable (avoids aria-hidden focus trap) */}
+      <input
+        type="text"
+        name="company"
+        tabIndex={-1}
+        autoComplete="off"
+        value={company}
+        onChange={(e) => setCompany(e.target.value)}
+        className="hidden"
+        aria-hidden="true"
+      />
       <label htmlFor={emailId} className={stacked ? "form-label" : "sr-only"}>
         Email
       </label>

@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { LicensePortal } from "@/components/LicensePortal";
+import { BRAND } from "@/lib/brand";
+
+export const metadata: Metadata = {
+  title: `License download — ${BRAND.name}`,
+  description: `Download your ${BRAND.name} Foundry license package with email and license key.`,
+};
 
 export default async function LicensePage({
   searchParams,

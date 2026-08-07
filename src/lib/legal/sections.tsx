@@ -51,7 +51,7 @@ export function OperatorContactBlock({ config }: { config: LegalConfig }) {
 
 export function LegalMetaBlock({ config }: { config: LegalConfig }) {
   return (
-    <div className="rounded-sm border border-[var(--line)] bg-[var(--panel)] p-4 text-sm text-[var(--muted)]">
+    <div className="surface p-4 text-sm text-[var(--muted)]">
       <p>
         <strong className="text-[var(--ink)]">Version</strong> {config.version}
       </p>

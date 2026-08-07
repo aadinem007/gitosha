@@ -19,9 +19,7 @@ export function LegalShell({
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <article className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
-            Legal
-          </p>
+          <p className="kicker">Legal</p>
           <h1 className="mt-3 font-display text-4xl font-bold tracking-tight">{title}</h1>
           <div className="mt-6">
             <LegalMetaBlock config={config} />
@@ -30,18 +28,18 @@ export function LegalShell({
           <div className="legal-prose mt-10 space-y-6 text-[15px] leading-relaxed text-[var(--fog)]">
             {children}
           </div>
-          <aside className="mt-12 rounded-sm border border-[var(--line)] bg-[var(--panel)] p-4 text-sm text-[var(--muted)]">
+          <aside className="surface mt-12 p-4 text-sm text-[var(--muted)]">
             <p>{legalFooterDisclaimer()}</p>
             <p className="mt-2">
-              <Link href="/legal" className="text-[var(--brass-dim)] hover:underline">
+              <Link href="/legal" className="underline">
                 All legal documents
               </Link>
               {" · "}
-              <Link href="/legal/rights" className="text-[var(--brass-dim)] hover:underline">
+              <Link href="/legal/rights" className="underline">
                 Data rights
               </Link>
               {" · "}
-              <Link href="/legal/preferences" className="text-[var(--brass-dim)] hover:underline">
+              <Link href="/legal/preferences" className="underline">
                 Preferences
               </Link>
             </p>

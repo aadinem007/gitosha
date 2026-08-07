@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { LoginForm } from "@/components/LoginForm";
+import { BRAND } from "@/lib/brand";
 import { safeRedirectPath } from "@/lib/secure";
+
+export const metadata: Metadata = {
+  title: `Sign in — ${BRAND.name}`,
+  description: `Sign in to ${BRAND.name} with a one-time magic link. No password required.`,
+};
 
 export default async function LoginPage({
   searchParams,

@@ -12,8 +12,7 @@
    - line          hairline dividers (--line is the canonical border color)
    - brass         lime fill CTAs only
    Deprecated aliases (prefer the names above):
-   - --signal → use --ink
-   - --glow   → use --shadow-lime / brass alpha
+   - --glow → use --shadow-lime / brass alpha
 */
 :root {
   --hull: #f3f3ee;
@@ -27,8 +26,6 @@
   --brass-dim: #6b8600;
   --fog: #121210;
   --support: #1f1f1c;
-  /* @deprecated — alias of --ink; migrate call sites to --ink */
-  --signal: var(--ink);
   /* @deprecated — prefer --shadow-lime */
   --glow: rgba(200, 255, 0, 0.18);
   --scrim: rgba(255, 255, 255, 0.94);

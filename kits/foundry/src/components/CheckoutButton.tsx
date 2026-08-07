@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import Link from "next/link";
 
 declare global {
   interface Window {
@@ -31,20 +32,41 @@ export function CheckoutButton({
   label: string;
   primary?: boolean;
 }) {
+  const formId = useId();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const emailFieldId = `checkout-email-${planId}-${formId}`;
+  const termsId = `checkout-terms-${planId}-${formId}`;
+
+  const base = "w-full rounded-md px-4 py-2.5 text-sm font-semibold disabled:opacity-60";
+  const style = primary
+    ? "bg-[var(--accent)] text-[#04120c]"
+    : "border border-[var(--line)]";
+
+  function openPanel() {
+    setOpen(true);
+    setError(null);
+  }
 
   async function startCheckout() {
     if (!email) {
-      setOpen(true);
+      openPanel();
+      return;
+    }
+    if (!accepted) {
+      setError("Please accept the Terms and Privacy Policy to continue.");
       return;
     }
     setLoading(true);
+    setError(null);
     try {
       const ready = await loadRazorpayScript();
       if (!ready || !window.Razorpay) {
-        alert("Could not load checkout.");
+        setError("Could not load checkout. Check your connection and try again.");
         setLoading(false);
         return;
       }
@@ -56,7 +78,7 @@ export function CheckoutButton({
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error ?? "Checkout unavailable");
+        setError(data.error ?? "Checkout unavailable.");
         setLoading(false);
         return;
       }
@@ -86,45 +108,86 @@ export function CheckoutButton({
           if (verifyRes.ok) {
             window.location.href = `/dashboard?paid=1`;
           } else {
-            alert("Payment received but verification failed.");
+            setError(
+              "Payment received but verification failed. Check your email before retrying."
+            );
             setLoading(false);
           }
         },
-        modal: { ondismiss: () => setLoading(false) },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+            setError("Checkout canceled. No charge was made.");
+          },
+        },
       });
       rzp.open();
     } catch {
-      alert("Checkout failed to start.");
+      setError("Network error starting checkout. Please try again.");
       setLoading(false);
     }
   }
 
-  const base = "w-full rounded-md px-4 py-2.5 text-sm font-semibold disabled:opacity-60";
-  const style = primary
-    ? "bg-[var(--accent)] text-[#04120c]"
-    : "border border-[var(--line)]";
-
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className={`${base} ${style}`}>
+      <button type="button" onClick={openPanel} className={`${base} ${style}`} disabled={loading}>
         {label}
       </button>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void startCheckout();
+      }}
+    >
+      <label htmlFor={emailFieldId} className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
+        Email for receipt
+      </label>
       <input
+        id={emailFieldId}
         type="email"
+        name="email"
         required
+        autoComplete="email"
+        inputMode="email"
         placeholder="you@company.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="rounded-md border border-[var(--line)] bg-[var(--bg)] px-3 py-2 text-sm"
       />
-      <button disabled={loading} onClick={startCheckout} className={`${base} ${style}`}>
+      <label htmlFor={termsId} className="flex items-start gap-2 text-xs leading-snug text-[var(--muted)]">
+        <input
+          id={termsId}
+          type="checkbox"
+          className="mt-0.5"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+          required
+        />
+        <span>
+          I agree to the{" "}
+          <Link href="/terms" className="underline" target="_blank">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="underline" target="_blank">
+            Privacy Policy
+          </Link>
+          .
+        </span>
+      </label>
+      {error ? (
+        <p className="text-xs font-semibold text-red-400" role="alert">
+          {error}
+        </p>
+      ) : null}
+      <button type="submit" disabled={loading || !accepted} className={`${base} ${style}`}>
         {loading ? "Opening…" : label}
       </button>
-    </div>
+    </form>
   );
 }

@@ -305,10 +305,10 @@ export default function Home() {
               <p className="sample-line">{SAMPLE.oneLiner}</p>
               <p className="sample-excerpt">{SAMPLE.teardownMd.slice(0, 220)}…</p>
               <div className="sample-actions">
-                <Link href={`/ideas/${SAMPLE.slug}`} className="btn-ghost" style={{ marginTop: "1.25rem" }}>
+                <Link href={`/ideas/${SAMPLE.slug}`} className="btn-ghost">
                   Open public page →
                 </Link>
-                <Link href="/pricing" className="btn-primary" style={{ marginTop: "1.25rem" }}>
+                <Link href="/pricing" className="btn-primary">
                   Unlock Operator →
                 </Link>
               </div>
@@ -336,7 +336,7 @@ export default function Home() {
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
-                <Link href="/pricing" className="btn-primary" style={{ marginTop: "1.5rem" }}>
+                <Link href="/pricing" className="btn-primary">
                   Unlock Operator →
                 </Link>
               </div>
@@ -351,7 +351,7 @@ export default function Home() {
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
-                <Link href="/foundry" className="btn-primary" style={{ marginTop: "1.5rem" }}>
+                <Link href="/foundry" className="btn-primary">
                   Foundry Solo — $99 →
                 </Link>
               </div>

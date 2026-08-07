@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { SEED_IDEAS, totalScore, type IdeaScores } from "@/lib/ideas-data";
+import { renderTeardownMarkdown } from "@/lib/markdown";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -68,14 +69,12 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <article className="mx-auto max-w-3xl px-6 py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brass-dim)]">
-            {idea.category}
-          </p>
+          <p className="kicker">{idea.category}</p>
           <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">{idea.name}</h1>
           <p className="mt-3 text-lg text-[var(--muted)]">{idea.oneLiner}</p>
           <p className="mt-4 font-mono text-2xl text-[var(--ink)]">{score}/100</p>
 
-          <div className="mt-10 overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--panel)]/50">
+          <div className="surface mt-10 overflow-hidden">
             <table className="w-full text-sm">
               <thead className="border-b border-[var(--line)] text-left text-[var(--muted)]">
                 <tr>
@@ -97,34 +96,35 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
           <div className="mt-8 border-t border-[var(--line)] pt-6">
             <h2 className="font-display font-semibold">Teardown</h2>
             {canReadTeardown ? (
-              <p className="mt-2 text-sm text-[var(--fog)]">{idea.teardownMd}</p>
+              <div className="md-teardown mt-3">{renderTeardownMarkdown(idea.teardownMd)}</div>
             ) : (
-              <>
+              <div className="vault-locked mt-4">
+                <p className="text-sm font-semibold text-[var(--ink)]">Operator teardown locked</p>
                 <p className="mt-2 text-sm text-[var(--fog)]">
                   Full competitor map, go/no-go gates, and launch notes unlock on Operator.
                 </p>
-                <p className="mt-4 text-sm text-[var(--muted)]">
-                  <Link href="/pricing" className="text-[var(--brass-dim)] underline">
-                    Unlock Operator — $15/mo launch
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link href="/pricing" className="btn-primary text-sm">
+                    Unlock Operator — $15/mo
                   </Link>
-                  {" · "}
-                  <Link href="/login" className="underline">
+                  <Link href="/login" className="btn-ghost text-sm">
                     Sign in
-                  </Link>{" "}
-                  if you already subscribe.
-                </p>
-              </>
+                  </Link>
+                </div>
+              </div>
             )}
           </div>
 
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Link href="/pricing" className="btn-primary text-center text-sm">
-              Unlock Operator — $15/mo
-            </Link>
-            <Link href="/foundry" className="btn-ghost text-center text-sm">
-              Foundry Solo — $99
-            </Link>
-          </div>
+          {canReadTeardown && (
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link href="/pricing" className="btn-primary text-center text-sm">
+                Unlock Operator — $15/mo
+              </Link>
+              <Link href="/foundry" className="btn-ghost text-center text-sm">
+                Foundry Solo — $99
+              </Link>
+            </div>
+          )}
         </article>
       </main>
       <Footer />

@@ -59,22 +59,18 @@ export default function FaqPage() {
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">FAQ</p>
+          <p className="kicker">FAQ</p>
           <h1 className="mt-3 font-display text-5xl font-bold tracking-tight">Straight answers</h1>
           <div className="rule mt-6 max-w-[6rem]" />
-          <div className="mt-12 space-y-8">
+          <div className="mt-10 space-y-7">
             {FAQS.map((item) => (
-              <div key={item.q} className="border-t border-[var(--line)] pt-6">
+              <div key={item.q} className="border-t border-[var(--line)] pt-5">
                 <h2 className="font-display text-lg font-semibold text-[var(--ink)]">{item.q}</h2>
-                <p className="mt-3 text-base leading-relaxed text-[var(--support)]">{item.a}</p>
+                <p className="mt-2.5 text-base leading-relaxed text-[var(--support)]">{item.a}</p>
                 {item.links && (
-                  <div className="mt-3 flex flex-wrap gap-3">
+                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
                     {item.links.map((l) => (
-                      <Link
-                        key={l.href}
-                        href={l.href}
-                        className="text-sm font-semibold text-[var(--brass-dim)] hover:underline"
-                      >
+                      <Link key={l.href} href={l.href} className="text-link">
                         {l.label} →
                       </Link>
                     ))}
@@ -83,9 +79,12 @@ export default function FaqPage() {
               </div>
             ))}
           </div>
-          <p className="mt-14 text-sm text-[var(--support)]">
-            Still stuck? Tap <span className="text-[var(--brass-dim)]">ASK</span> or email{" "}
-            <a href="mailto:aaditya.shah8005@gmail.com" className="text-[var(--brass-dim)] hover:underline">
+          <p className="mt-12 text-sm text-[var(--support)]">
+            Still stuck? Tap <span className="font-semibold text-[var(--ink)]">ASK</span> or email{" "}
+            <a
+              href="mailto:aaditya.shah8005@gmail.com"
+              className="underline underline-offset-2 hover:text-[var(--ink)]"
+            >
               aaditya.shah8005@gmail.com
             </a>
             .

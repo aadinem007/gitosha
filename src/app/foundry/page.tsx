@@ -283,7 +283,7 @@ export default function FoundryProductPage() {
                       <li key={f}>{f}</li>
                     ))}
                   </ul>
-                  <Link href="/foundry-kit" className="btn-primary" style={{ marginTop: "1.5rem" }}>
+                  <Link href="/foundry-kit" className="btn-primary">
                     {plan.cta} →
                   </Link>
                 </div>

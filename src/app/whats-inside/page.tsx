@@ -21,9 +21,7 @@ export default function WhatsInsidePage() {
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="mx-auto max-w-3xl px-6 pb-16 pt-28 sm:pb-20 sm:pt-32">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--brass-dim)]">
-            Inventory
-          </p>
+          <p className="kicker">Inventory</p>
           <h1 className="mt-3 font-display text-5xl font-bold tracking-tight">
             What’s included — no mystery box
           </h1>
@@ -32,33 +30,31 @@ export default function WhatsInsidePage() {
             scored research, kill criteria, export, Foundry kit contents, agency templates, license,
             and support scope.
           </p>
-          <div className="rule mt-8 max-w-[6rem]" />
+          <div className="rule mt-7 max-w-[6rem]" />
 
-          <h2 className="mt-12 font-display text-xl font-semibold">Operator (Vault)</h2>
-          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+          <h2 className="mt-10 font-display text-xl font-semibold">Operator (Vault)</h2>
+          <ul className="mt-3 space-y-2 text-[1.05rem] leading-snug text-[var(--support)]">
             {operator.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
           </ul>
 
-          <h2 className="mt-12 font-display text-xl font-semibold">Studio (Vault)</h2>
-          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+          <h2 className="mt-10 font-display text-xl font-semibold">Studio (Vault)</h2>
+          <ul className="mt-3 space-y-2 text-[1.05rem] leading-snug text-[var(--support)]">
             {studio.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
           </ul>
 
-          <h2 className="mt-12 font-display text-xl font-semibold">Foundry Solo zip</h2>
-          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+          <h2 className="mt-10 font-display text-xl font-semibold">Foundry Solo zip</h2>
+          <ul className="mt-3 space-y-2 text-[1.05rem] leading-snug text-[var(--support)]">
             {solo.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
           </ul>
 
-          <h2 className="mt-12 font-display text-xl font-semibold text-[var(--brass-dim)]">
-            Agency adds on top of Solo
-          </h2>
-          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+          <h2 className="mt-10 font-display text-xl font-semibold">Agency adds on top of Solo</h2>
+          <ul className="mt-3 space-y-2 text-[1.05rem] leading-snug text-[var(--support)]">
             {agency.features
               .filter((f) => !f.startsWith("Everything in Solo"))
               .map((f) => (
@@ -66,24 +62,24 @@ export default function WhatsInsidePage() {
               ))}
           </ul>
 
-          <h2 className="mt-12 font-display text-xl font-semibold">Launch Bundle</h2>
-          <ul className="mt-4 space-y-2.5 text-[1.05rem] leading-snug text-[var(--support)]">
+          <h2 className="mt-10 font-display text-xl font-semibold">Launch Bundle</h2>
+          <ul className="mt-3 space-y-2 text-[1.05rem] leading-snug text-[var(--support)]">
             {bundle.features.map((f) => (
               <li key={f}>— {f}</li>
             ))}
           </ul>
 
-          <div className="mt-12 flex flex-wrap gap-3">
-            <Link href="/pricing" className="btn-primary px-5 py-2.5 text-sm">
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link href="/pricing" className="btn-primary">
               Open pricing
             </Link>
-            <Link href="/foundry" className="btn-ghost px-5 py-2.5 text-sm">
+            <Link href="/foundry" className="btn-ghost">
               Foundry story
             </Link>
-            <Link href="/foundry-kit" className="btn-ghost px-5 py-2.5 text-sm">
+            <Link href="/foundry-kit" className="btn-ghost">
               Buy Foundry
             </Link>
-            <Link href="/faq" className="btn-ghost px-5 py-2.5 text-sm">
+            <Link href="/faq" className="btn-ghost">
               FAQ
             </Link>
           </div>

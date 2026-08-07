@@ -296,10 +296,10 @@ export default function VaultProductPage() {
               <p className="sample-line">{SAMPLE.oneLiner}</p>
               <p className="sample-excerpt">{SAMPLE.teardownMd.slice(0, 280)}…</p>
               <div className="sample-actions">
-                <Link href={`/ideas/${SAMPLE.slug}`} className="btn-ghost" style={{ marginTop: "1.25rem" }}>
+                <Link href={`/ideas/${SAMPLE.slug}`} className="btn-ghost">
                   Open public page →
                 </Link>
-                <Link href="/pricing" className="btn-primary" style={{ marginTop: "1.25rem" }}>
+                <Link href="/pricing" className="btn-primary">
                   Unlock Operator →
                 </Link>
               </div>
@@ -333,7 +333,7 @@ export default function VaultProductPage() {
                       <li key={f}>{f}</li>
                     ))}
                   </ul>
-                  <Link href="/pricing" className="btn-primary" style={{ marginTop: "1.5rem" }}>
+                  <Link href="/pricing" className="btn-primary">
                     {plan.mode === "none" ? "Start free on pricing →" : `${plan.cta} →`}
                   </Link>
                 </div>
@@ -360,7 +360,7 @@ export default function VaultProductPage() {
               {SITTING.map((item) => (
                 <div key={item.step} className="walk-cell">
                   <p className="method-n">{item.step}</p>
-                  <p className="walk-title" style={{ marginTop: "0.75rem" }}>
+                  <p className="walk-title">
                     {item.title}
                   </p>
                   <p className="walk-body">{item.body}</p>

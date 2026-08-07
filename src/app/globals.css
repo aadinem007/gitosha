@@ -1625,8 +1625,8 @@ body {
 .proof-col {
   padding: 1.75rem 1.5rem 2rem;
   background: var(--panel);
-  border: 1.5px solid rgba(10, 10, 10, 0.16);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+  border: var(--border-ink);
+  box-shadow: var(--shadow-lift);
 }
 
 @media (min-width: 900px) {
@@ -1691,6 +1691,15 @@ body {
   position: absolute;
   left: 0;
   color: var(--brass-dim);
+}
+
+.proof-col .btn-primary,
+.proof-col .btn-ghost {
+  margin-top: 1.5rem;
+}
+
+.walk-cell .method-n + .walk-title {
+  margin-top: 0.75rem;
 }
 
 /* Proof CTA = .btn-primary with section spacing */
@@ -2157,6 +2166,82 @@ body {
   width: 100%;
 }
 
+.plan-badge {
+  flex-shrink: 0;
+  background: var(--brass);
+  padding: 0.2rem 0.5rem;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  box-shadow: var(--shadow-lime);
+}
+
+.currency-pref {
+  min-height: 5.5rem;
+}
+
+.checkout-panel {
+  animation: checkout-panel-in 0.18s ease-out;
+}
+
+@keyframes checkout-panel-in {
+  from {
+    opacity: 0.6;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.md-teardown {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--fog);
+}
+
+.md-teardown p + p {
+  margin-top: 0.75rem;
+}
+
+.md-teardown a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.md-teardown strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.score-row-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.score-row-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.vault-locked {
+  border: var(--border-ink);
+  background: linear-gradient(180deg, rgba(200, 255, 0, 0.1) 0%, transparent 55%), var(--panel);
+  padding: 1rem 1.15rem;
+}
+
+.vault-empty {
+  border: var(--border-ink);
+  background: var(--panel);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
 .plan-shell-actions .form-error {
   margin: 0;
   min-height: 0;
@@ -2210,20 +2295,20 @@ body {
 .board-shell {
   position: relative;
   overflow: hidden;
-  border-radius: 0;
-  border: none;
+  border-radius: var(--radius-none);
+  border: var(--border-ink);
   background: var(--panel);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-soft);
 }
 
 .cta-band {
   position: relative;
   overflow: hidden;
-  border-radius: 0;
-  border: none;
+  border-radius: var(--radius-none);
+  border: var(--border-ink);
   background: var(--panel);
   padding: 2.5rem 1.75rem;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-soft);
 }
 
 @media (min-width: 640px) {
@@ -2979,9 +3064,10 @@ html[data-reveal-js] [data-reveal].is-inview .closing-inner > *:nth-child(n + 6)
 
 .login-panel {
   padding: 1.5rem 1.35rem;
-  border: none;
+  border: var(--border-ink);
   background: var(--panel);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-lift);
+  border-radius: var(--radius-none);
 }
 
 /* Soft floating accents — 3D feel without extra assets */

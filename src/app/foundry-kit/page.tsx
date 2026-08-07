@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
+import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { CheckoutButton } from "@/components/CheckoutButton";
-import { PlanFeatures } from "@/components/PlanFeatures";
-import Link from "next/link";
+import { PlanCard } from "@/components/PlanCard";
 import { FOUNDRY_PLANS } from "@/lib/pricing";
+
+export const metadata: Metadata = {
+  title: "Buy Foundry — Solo, Agency & Bundle | Gitosha",
+  description:
+    "Pay once for the production foundation zip. Solo for one product, Agency for client studios, Launch Bundle with Operator vault.",
+};
 
 const STACK = [
   "Next.js App Router + TypeScript + Tailwind",
@@ -62,52 +68,52 @@ export default function FoundryKitPage() {
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="page-hero">
-          <p className="page-kicker animate-rise">Production foundation · USD</p>
+          <p className="kicker animate-rise">Production foundation · USD</p>
           <h1 className="animate-rise-delay mt-3">Foundry</h1>
           <div className="rule mt-6 max-w-xs" />
-          <p className="animate-rise-delay-2 mt-6 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
+          <p className="animate-rise-delay-2 mt-5 max-w-2xl text-lg leading-relaxed text-[var(--support)]">
             Auth, database, checkout, webhooks, security headers, deploy docs — packaged so you build
             the product, not the plumbing. Pay once. Download the zip the same minute. Agency is built
             for studios shipping many client products from one license.
           </p>
-          <div className="mt-6 flex flex-wrap gap-4 text-sm uppercase tracking-[0.12em]">
-            <Link href="/foundry" className="font-semibold text-[var(--brass-dim)] hover:underline">
+          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
+            <Link href="/foundry" className="text-link">
               Full Foundry story →
             </Link>
-            <Link href="/license" className="font-semibold text-[var(--brass-dim)] hover:underline">
+            <Link href="/license" className="text-link">
               Already paid? License portal →
             </Link>
-            <Link href="/faq" className="text-[var(--support)] hover:text-[var(--ink)]">
+            <Link href="/faq" className="text-link">
               FAQ
             </Link>
-            <Link href="/whats-inside" className="text-[var(--support)] hover:text-[var(--ink)]">
+            <Link href="/whats-inside" className="text-link">
               What’s inside
             </Link>
-            <a href="#compare" className="text-[var(--support)] hover:text-[var(--ink)]">
+            <a href="#compare" className="text-link">
               Solo vs Agency
             </a>
           </div>
         </section>
 
         <section className="mx-auto max-w-5xl px-6 pb-20">
-          <div className="mt-6 grid gap-12 border-t border-[var(--line)] pt-12 sm:grid-cols-2">
+          <div className="mt-4 grid gap-10 border-t border-[var(--line)] pt-10 sm:grid-cols-2">
             <div>
-              <div className="rule mb-5 max-w-[6rem]" />
+              <div className="rule mb-4 max-w-[6rem]" />
               <h2 className="font-display text-lg tracking-wide text-[var(--fog)]">
                 What ships in every zip
               </h2>
-              <ul className="mt-4 space-y-2.5 text-[1.02rem] text-[var(--support)]">
+              <ul className="mt-4 space-y-2 text-[1.02rem] text-[var(--support)]">
                 {STACK.map((item) => (
                   <li key={item}>— {item}</li>
                 ))}
               </ul>
             </div>
             <div>
-              <div className="rule mb-5 max-w-[6rem]" />
+              <div className="rule mb-4 max-w-[6rem]" />
               <h2 className="font-display text-lg tracking-wide text-[var(--fog)]">
                 Agency extras ($249)
               </h2>
-              <ul className="mt-4 space-y-2.5 text-[1.02rem] text-[var(--support)]">
+              <ul className="mt-4 space-y-2 text-[1.02rem] text-[var(--support)]">
                 {AGENCY_EXTRAS.map((item) => (
                   <li key={item}>— {item}</li>
                 ))}
@@ -115,7 +121,7 @@ export default function FoundryKitPage() {
             </div>
           </div>
 
-          <div id="compare" className="mt-20 scroll-mt-28">
+          <div id="compare" className="mt-16 scroll-mt-28">
             <h2 className="font-display text-3xl tracking-wide">Solo vs Agency</h2>
             <p className="mt-2 max-w-2xl text-sm text-[var(--support)]">
               Same codebase. Different rights and studio tooling — so Agency feels worth $249 when
@@ -127,7 +133,7 @@ export default function FoundryKitPage() {
                   <tr>
                     <th className="px-5 py-3 font-medium">Capability</th>
                     <th className="px-5 py-3 font-medium">Solo</th>
-                    <th className="px-5 py-3 font-medium text-[var(--brass-dim)]">Agency</th>
+                    <th className="px-5 py-3 font-medium text-[var(--ink)]">Agency</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,44 +153,24 @@ export default function FoundryKitPage() {
             </div>
           </div>
 
-          <div className="pricing-plan-grid pricing-plan-grid--foundry mt-16">
+          <div className="pricing-plan-grid pricing-plan-grid--foundry mt-14">
             {[solo, agency, bundle].map((plan) => (
-              <article
+              <PlanCard
                 key={plan.id}
-                className={`plan-shell ${plan.id === "foundry-agency" ? "is-hot" : ""}`}
-              >
-                <div className="plan-shell-body">
-                  <p className="font-display text-xl tracking-wide">{plan.name}</p>
-                  <p className="mt-2 font-display text-3xl tracking-wide">{plan.price}</p>
-                  <p className="mt-1 text-xs text-[var(--support)]">{plan.cadence}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-[var(--support)]">
-                    {plan.description}
-                  </p>
-                  <PlanFeatures features={plan.features} previewCount={14} />
-                </div>
-                <div className="plan-shell-footer">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--signal)]">
-                    {plan.features.length} inclusions
-                  </p>
-                  <div className="plan-shell-actions z-10 min-w-0">
-                    <CheckoutButton
-                      planId={plan.id}
-                      label={plan.cta}
-                      primary={plan.id === "foundry-agency" || plan.highlight}
-                    />
-                  </div>
-                </div>
-              </article>
+                plan={plan}
+                previewCount={14}
+                forceHot={plan.id === "foundry-agency"}
+              />
             ))}
           </div>
 
-          <p className="mt-10 text-xs text-[var(--support)]">
+          <p className="mt-8 text-xs text-[var(--support)]">
             By purchasing you agree to{" "}
-            <Link href="/terms" className="text-[var(--brass-dim)] hover:underline">
+            <Link href="/terms" className="underline underline-offset-2 hover:text-[var(--ink)]">
               Terms
             </Link>{" "}
             and{" "}
-            <Link href="/refund" className="text-[var(--brass-dim)] hover:underline">
+            <Link href="/refund" className="underline underline-offset-2 hover:text-[var(--ink)]">
               Refunds
             </Link>
             .

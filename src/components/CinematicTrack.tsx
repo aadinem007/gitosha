@@ -20,27 +20,29 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     const narrow = window.matchMedia("(max-width: 767px)").matches;
     const hero = intensity === "full";
     const quiet = intensity === "quiet";
+    const lite = !hero; // stage + quiet: lower mesh / GPU budget
     let w = mount.clientWidth || window.innerWidth;
     let h = mount.clientHeight || window.innerHeight;
     let visible = true;
     let raf = 0;
     let running = true;
+    let framesSinceHidden = 0;
 
     const bg = 0x0c0c0c;
-    const maxDpr = narrow ? 1.25 : 2;
+    const maxDpr = lite || narrow ? 1.15 : 2;
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: !narrow,
+      antialias: !narrow && !lite,
       alpha: false,
-      powerPreference: narrow ? "low-power" : "high-performance",
+      powerPreference: lite || narrow ? "low-power" : "high-performance",
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
     renderer.setSize(w, h, false);
     renderer.setClearColor(bg, 1);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.9;
-    renderer.shadowMap.enabled = !narrow;
+    renderer.toneMappingExposure = lite ? 0.85 : 0.9;
+    renderer.shadowMap.enabled = hero && !narrow;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     // Hero CTAs sit above; canvas only captures orbit on wider viewports
     const allowOrbit = hero && !narrow && !reduced;
@@ -55,7 +57,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     const scene = new THREE.Scene();
     scene.environment = envTex;
     scene.background = new THREE.Color(bg);
-    scene.fog = new THREE.FogExp2(bg, quiet ? 0.048 : 0.02);
+    scene.fog = new THREE.FogExp2(bg, quiet ? 0.048 : lite ? 0.032 : 0.02);
 
     const camera = new THREE.PerspectiveCamera(hero ? 38 : 34, w / h, 0.1, 60);
     const camBase = hero
@@ -71,11 +73,11 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     root.add(stage);
 
     // Soft studio — metal reads chrome, no white clay flood
-    scene.add(new THREE.AmbientLight(0x9aa29a, 0.18));
-    const key = new THREE.DirectionalLight(0xffefe2, 1.15);
+    scene.add(new THREE.AmbientLight(0x9aa29a, lite ? 0.22 : 0.18));
+    const key = new THREE.DirectionalLight(0xffefe2, lite ? 1.0 : 1.15);
     key.position.set(5, 7, 4);
-    key.castShadow = !narrow;
-    if (!narrow) {
+    key.castShadow = hero && !narrow;
+    if (hero && !narrow) {
       key.shadow.mapSize.set(1024, 1024);
       key.shadow.camera.near = 0.5;
       key.shadow.camera.far = 30;
@@ -86,10 +88,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       key.shadow.bias = -0.0003;
     }
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0x6a8098, 0.38);
+    const fill = new THREE.DirectionalLight(0x6a8098, lite ? 0.28 : 0.38);
     fill.position.set(-6, 1.2, 3);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xc8ff00, 0.32);
+    const rim = new THREE.DirectionalLight(0xc8ff00, lite ? 0.22 : 0.32);
     rim.position.set(-2, 3, -6);
     scene.add(rim);
 
@@ -122,8 +124,9 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
 
     // ── Chrome twisted ribbon (Tube along helix) — unmistakably abstract ──
     const helixPts: THREE.Vector3[] = [];
-    for (let i = 0; i <= 160; i++) {
-      const t = i / 160;
+    const helixSteps = lite ? 72 : 160;
+    for (let i = 0; i <= helixSteps; i++) {
+      const t = i / helixSteps;
       const a = t * Math.PI * 2 * 3.25;
       const r = 0.95 + Math.sin(t * Math.PI * 2) * 0.18;
       helixPts.push(
@@ -131,42 +134,48 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       );
     }
     const helixCurve = new THREE.CatmullRomCurve3(helixPts);
-    const ribbonGeo = new THREE.TubeGeometry(helixCurve, 220, 0.11, 10, false);
+    const ribbonGeo = new THREE.TubeGeometry(
+      helixCurve,
+      lite ? 80 : 220,
+      lite ? 0.1 : 0.11,
+      lite ? 6 : 10,
+      false
+    );
     const chromeMat = new THREE.MeshPhysicalMaterial({
       color: 0xc8ccd2,
       metalness: 1,
       roughness: 0.14,
-      clearcoat: 0.7,
+      clearcoat: lite ? 0.35 : 0.7,
       clearcoatRoughness: 0.18,
-      envMapIntensity: 1.25,
+      envMapIntensity: lite ? 1.0 : 1.25,
     });
     track(ribbonGeo, chromeMat);
     const ribbon = new THREE.Mesh(ribbonGeo, chromeMat);
-    ribbon.castShadow = true;
-    ribbon.receiveShadow = true;
+    ribbon.castShadow = hero;
+    ribbon.receiveShadow = hero;
     ribbon.position.set(-0.15, 0.2, 0);
     ribbon.rotation.set(0.15, 0.35, -0.08);
     cluster.add(ribbon);
     floaters.push(ribbon);
 
     // ── Vertical crystal / prism ──
-    const prismGeo = new THREE.CylinderGeometry(0.18, 0.28, 2.35, 6, 1, false);
+    const prismGeo = new THREE.CylinderGeometry(0.18, 0.28, 2.35, lite ? 5 : 6, 1, false);
     const prismMat = new THREE.MeshPhysicalMaterial({
       color: 0xdde4ea,
       metalness: 0.15,
       roughness: 0.06,
-      transmission: 0.55,
-      thickness: 1.4,
+      transmission: lite ? 0.35 : 0.55,
+      thickness: lite ? 0.9 : 1.4,
       ior: 1.55,
       transparent: true,
       opacity: 1,
-      clearcoat: 1,
+      clearcoat: lite ? 0.4 : 1,
       clearcoatRoughness: 0.08,
-      envMapIntensity: 1.35,
+      envMapIntensity: lite ? 1.0 : 1.35,
     });
     track(prismGeo, prismMat);
     const prism = new THREE.Mesh(prismGeo, prismMat);
-    prism.castShadow = true;
+    prism.castShadow = hero;
     prism.position.set(0.55, 0.25, -0.35);
     prism.rotation.y = Math.PI / 12;
     cluster.add(prism);
@@ -183,7 +192,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     track(tipGeo, tipMat);
     const tipTop = new THREE.Mesh(tipGeo, tipMat);
     tipTop.position.set(0.55, 1.55, -0.35);
-    tipTop.castShadow = true;
+    tipTop.castShadow = hero;
     cluster.add(tipTop);
     floaters.push(tipTop);
     const tipBot = tipTop.clone();
@@ -196,26 +205,31 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       color: 0xeaf0ec,
       metalness: 0.02,
       roughness: 0.05,
-      transmission: 0.78,
-      thickness: 1.1,
+      transmission: lite ? 0.45 : 0.78,
+      thickness: lite ? 0.7 : 1.1,
       ior: 1.45,
       transparent: true,
       opacity: 1,
-      envMapIntensity: 1.3,
+      envMapIntensity: lite ? 1.0 : 1.3,
     });
     materials.push(glassMat);
 
-    const orbSpecs = [
-      { r: 0.58, x: hero ? -1.55 : -1.25, y: 0.95, z: 0.7, seg: 48 },
-      { r: 0.32, x: 1.35, y: -0.35, z: 0.95, seg: 40 },
-      { r: 0.22, x: -0.85, y: -0.75, z: -0.9, seg: 32 },
-    ];
+    const orbSpecs = lite
+      ? [
+          { r: 0.52, x: -1.2, y: 0.9, z: 0.65, seg: 20 },
+          { r: 0.28, x: 1.25, y: -0.3, z: 0.85, seg: 16 },
+        ]
+      : [
+          { r: 0.58, x: hero ? -1.55 : -1.25, y: 0.95, z: 0.7, seg: 48 },
+          { r: 0.32, x: 1.35, y: -0.35, z: 0.95, seg: 40 },
+          { r: 0.22, x: -0.85, y: -0.75, z: -0.9, seg: 32 },
+        ];
     const orbs: THREE.Mesh[] = [];
     orbSpecs.forEach((spec) => {
       const geo = new THREE.SphereGeometry(spec.r, spec.seg, spec.seg);
       geometries.push(geo);
       const mesh = new THREE.Mesh(geo, glassMat);
-      mesh.castShadow = true;
+      mesh.castShadow = hero;
       mesh.position.set(spec.x, spec.y, spec.z);
       mesh.userData.baseY = spec.y;
       mesh.userData.float = true;
@@ -225,24 +239,26 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       floaters.push(mesh);
     });
 
-    // Small chrome bead
-    const beadGeo = new THREE.SphereGeometry(0.16, 32, 32);
-    const beadMat = new THREE.MeshPhysicalMaterial({
-      color: 0xa8a49c,
-      metalness: 1,
-      roughness: 0.1,
-      clearcoat: 0.5,
-      envMapIntensity: 1.2,
-    });
-    track(beadGeo, beadMat);
-    const bead = new THREE.Mesh(beadGeo, beadMat);
-    bead.castShadow = true;
-    bead.position.set(1.05, 1.15, 0.35);
-    bead.userData.baseY = 1.15;
-    bead.userData.float = true;
-    bead.userData.spin = 0.55;
-    cluster.add(bead);
-    floaters.push(bead);
+    // Small chrome bead — hero only (budget)
+    if (hero) {
+      const beadGeo = new THREE.SphereGeometry(0.16, 32, 32);
+      const beadMat = new THREE.MeshPhysicalMaterial({
+        color: 0xa8a49c,
+        metalness: 1,
+        roughness: 0.1,
+        clearcoat: 0.5,
+        envMapIntensity: 1.2,
+      });
+      track(beadGeo, beadMat);
+      const bead = new THREE.Mesh(beadGeo, beadMat);
+      bead.castShadow = true;
+      bead.position.set(1.05, 1.15, 0.35);
+      bead.userData.baseY = 1.15;
+      bead.userData.float = true;
+      bead.userData.spin = 0.55;
+      cluster.add(bead);
+      floaters.push(bead);
+    }
 
     // ── Thin lime orbit rings ──
     const limeMat = new THREE.MeshStandardMaterial({
@@ -255,14 +271,19 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
     });
     materials.push(limeMat);
 
-    const orbitRingSpecs = [
-      { r: 1.55, tube: 0.012, rx: Math.PI / 2.35, ry: 0.25, rz: 0, y: 0.15 },
-      { r: 1.15, tube: 0.01, rx: 0.55, ry: 1.1, rz: 0.4, y: 0.4 },
-      { r: 1.85, tube: 0.008, rx: 1.35, ry: -0.4, rz: 0.2, y: -0.1 },
-    ];
+    const orbitRingSpecs = lite
+      ? [
+          { r: 1.45, tube: 0.012, rx: Math.PI / 2.35, ry: 0.25, rz: 0, y: 0.15 },
+          { r: 1.1, tube: 0.01, rx: 0.55, ry: 1.1, rz: 0.4, y: 0.4 },
+        ]
+      : [
+          { r: 1.55, tube: 0.012, rx: Math.PI / 2.35, ry: 0.25, rz: 0, y: 0.15 },
+          { r: 1.15, tube: 0.01, rx: 0.55, ry: 1.1, rz: 0.4, y: 0.4 },
+          { r: 1.85, tube: 0.008, rx: 1.35, ry: -0.4, rz: 0.2, y: -0.1 },
+        ];
     const limeRings: THREE.Mesh[] = [];
     orbitRingSpecs.forEach((spec) => {
-      const geo = new THREE.TorusGeometry(spec.r, spec.tube, 12, 96);
+      const geo = new THREE.TorusGeometry(spec.r, spec.tube, lite ? 8 : 12, lite ? 48 : 96);
       geometries.push(geo);
       const mesh = new THREE.Mesh(geo, limeMat);
       mesh.rotation.set(spec.rx, spec.ry, spec.rz);
@@ -272,25 +293,28 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       floaters.push(mesh);
     });
 
-    // Chrome torus knot accent — secondary, clearly knot-shaped
-    const knotGeo = new THREE.TorusKnotGeometry(0.42, 0.1, 140, 16, 2, 3);
-    const knotMat = new THREE.MeshPhysicalMaterial({
-      color: 0xb4b8be,
-      metalness: 1,
-      roughness: 0.16,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.2,
-      envMapIntensity: 1.2,
-    });
-    track(knotGeo, knotMat);
-    const knot = new THREE.Mesh(knotGeo, knotMat);
-    knot.castShadow = true;
-    knot.position.set(-1.05, -0.15, 0.15);
-    knot.rotation.set(0.8, 0.3, 0.5);
-    cluster.add(knot);
-    floaters.push(knot);
+    // Chrome torus knot — hero only (expensive)
+    let knot: THREE.Mesh | null = null;
+    if (hero) {
+      const knotGeo = new THREE.TorusKnotGeometry(0.42, 0.1, 140, 16, 2, 3);
+      const knotMat = new THREE.MeshPhysicalMaterial({
+        color: 0xb4b8be,
+        metalness: 1,
+        roughness: 0.16,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.2,
+        envMapIntensity: 1.2,
+      });
+      track(knotGeo, knotMat);
+      knot = new THREE.Mesh(knotGeo, knotMat);
+      knot.castShadow = true;
+      knot.position.set(-1.05, -0.15, 0.15);
+      knot.rotation.set(0.8, 0.3, 0.5);
+      cluster.add(knot);
+      floaters.push(knot);
+    }
 
-    if (hero || intensity === "stage") {
+    if (hero) {
       const specs = [
         { geo: new THREE.OctahedronGeometry(0.12, 0), x: -1.75, y: 0.45, z: -0.55, spin: 0.7, lime: true },
         { geo: new THREE.BoxGeometry(0.14, 0.14, 0.14), x: 1.55, y: 0.75, z: -0.65, spin: -0.55, lime: false },
@@ -380,19 +404,11 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       w = mount.clientWidth || window.innerWidth;
       h = mount.clientHeight || window.innerHeight;
       const isNarrow = w < 768;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isNarrow ? 1.25 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lite || isNarrow ? 1.15 : 2));
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
     };
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        visible = entry.isIntersecting && entry.intersectionRatio > 0.04;
-      },
-      { threshold: [0, 0.04, 0.2] }
-    );
-    io.observe(mount);
 
     canvas.addEventListener("pointermove", onDrag, { passive: true });
     canvas.addEventListener("pointerdown", onDown, { passive: true });
@@ -417,8 +433,10 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       prism.rotation.y = Math.PI / 12 + (animate ? t * 0.18 : 0);
       tipTop.rotation.y = animate ? t * 0.4 : 0;
       tipBot.rotation.y = animate ? -t * 0.35 : 0;
-      knot.rotation.x = 0.8 + (animate ? t * 0.28 : 0);
-      knot.rotation.y = 0.3 + (animate ? t * 0.35 : 0);
+      if (knot) {
+        knot.rotation.x = 0.8 + (animate ? t * 0.28 : 0);
+        knot.rotation.y = 0.3 + (animate ? t * 0.35 : 0);
+      }
 
       limeRings.forEach((ring, i) => {
         ring.rotation.z = (animate ? t : 0) * (0.12 + i * 0.08) * (i % 2 === 0 ? 1 : -1);
@@ -450,6 +468,43 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       renderer.render(scene, camera);
     };
 
+    function tick() {
+      if (!running) return;
+      if (visible) {
+        framesSinceHidden = 0;
+        paint(clock.getElapsedTime(), true);
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      framesSinceHidden += 1;
+      if (framesSinceHidden < 3) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      raf = 0;
+    }
+
+    const resume = () => {
+      if (!running || raf) return;
+      framesSinceHidden = 0;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        const next = entry.isIntersecting && entry.intersectionRatio > 0.04;
+        if (next) {
+          const wasHidden = !visible;
+          visible = true;
+          if (wasHidden) resume();
+        } else {
+          visible = false;
+        }
+      },
+      { threshold: [0, 0.04, 0.2] }
+    );
+    io.observe(mount);
+
     if (reduced) {
       const freeze = window.setTimeout(() => paint(1, false), 400);
       return () => {
@@ -459,12 +514,7 @@ export function CinematicTrack({ intensity = "full" }: { intensity?: "full" | "q
       };
     }
 
-    const tick = () => {
-      if (!running) return;
-      if (visible) paint(clock.getElapsedTime(), true);
-      raf = requestAnimationFrame(tick);
-    };
-    tick();
+    raf = requestAnimationFrame(tick);
 
     function cleanup() {
       running = false;

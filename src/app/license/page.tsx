@@ -25,7 +25,7 @@ export default async function LicensePage({
             Enter the email and license key from checkout. Download Foundry as a zip — no manual email
             from us required. You can re-download anytime.
           </p>
-          <div className="mt-10 rounded-xl border border-[var(--line)] bg-[var(--panel)]/50 p-6 sm:p-8">
+          <div className="surface mt-10 p-6 sm:p-8">
             <LicensePortal initialEmail={email} initialKey={key} />
           </div>
           <ol className="mt-12 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-[var(--muted)]">

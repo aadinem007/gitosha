@@ -73,7 +73,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
           </p>
           <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">{idea.name}</h1>
           <p className="mt-3 text-lg text-[var(--muted)]">{idea.oneLiner}</p>
-          <p className="mt-4 font-mono text-2xl text-[var(--signal)]">{score}/100</p>
+          <p className="mt-4 font-mono text-2xl text-[var(--ink)]">{score}/100</p>
 
           <div className="mt-10 overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--panel)]/50">
             <table className="w-full text-sm">
@@ -118,16 +118,10 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
           </div>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/pricing"
-              className="btn-primary px-4 py-2.5 text-center text-sm"
-            >
+            <Link href="/pricing" className="btn-primary text-center text-sm">
               Unlock Operator — $15/mo
             </Link>
-            <Link
-              href="/foundry"
-              className="rounded-md border border-[var(--line)] px-4 py-2.5 text-center text-sm font-semibold"
-            >
+            <Link href="/foundry" className="btn-ghost text-center text-sm">
               Foundry Solo — $99
             </Link>
           </div>

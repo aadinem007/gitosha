@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 export function LicensePortal({
   initialEmail = "",
@@ -9,6 +9,8 @@ export function LicensePortal({
   initialEmail?: string;
   initialKey?: string;
 }) {
+  const emailId = useId();
+  const keyId = useId();
   const [email, setEmail] = useState(initialEmail);
   const [key, setKey] = useState(initialKey);
   const [status, setStatus] = useState<"idle" | "checking" | "ready" | "downloading" | "error">(
@@ -85,30 +87,34 @@ export function LicensePortal({
   }
 
   return (
-    <div className="relative isolate mx-auto w-full max-w-md space-y-4 overflow-hidden">
+    <div className="form-stack isolate mx-auto w-full max-w-md overflow-hidden">
       <div>
-        <label className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+        <label htmlFor={emailId} className="form-label">
           Purchase email
         </label>
         <input
+          id={emailId}
           type="email"
           required
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 text-sm text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
+          className="form-input mt-1"
           placeholder="you@company.com"
         />
       </div>
       <div>
-        <label className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+        <label htmlFor={keyId} className="form-label">
           License key
         </label>
         <input
+          id={keyId}
           type="text"
           required
+          autoComplete="off"
           value={key}
           onChange={(e) => setKey(e.target.value.toUpperCase())}
-          className="mt-1 w-full rounded-md border border-[var(--line)] bg-[var(--hull)] px-3 py-2.5 font-mono text-sm tracking-wide text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--brass)] focus:outline-none"
+          className="form-input mt-1 font-mono tracking-wide"
           placeholder="GITO-XXXX-XXXX-XXXX"
         />
       </div>
@@ -118,7 +124,7 @@ export function LicensePortal({
           type="button"
           onClick={lookup}
           disabled={status === "checking" || !email || !key}
-          className="btn-ghost flex-1 px-4 py-2.5 text-sm font-semibold disabled:opacity-60"
+          className="btn-ghost form-submit flex-1 disabled:opacity-60"
         >
           {status === "checking" ? "Checking…" : "Verify license"}
         </button>
@@ -126,20 +132,20 @@ export function LicensePortal({
           type="button"
           onClick={download}
           disabled={status === "downloading" || status === "checking" || !email || !key}
-          className="btn-primary flex-1 px-4 py-2.5 text-sm disabled:opacity-60"
+          className="btn-primary form-submit flex-1 disabled:opacity-60"
         >
           {status === "downloading" ? "Preparing zip…" : "Download Foundry zip"}
         </button>
       </div>
 
       {meta && (
-        <div className="rounded-lg border border-[var(--brass)]/30 bg-[var(--hull)]/60 px-4 py-3 text-sm">
+        <div className="surface px-4 py-3 text-sm">
           <p>
             Tier: <span className="font-semibold text-[var(--brass-dim)]">{meta.tier}</span>
           </p>
           <p className="mt-1 text-[var(--muted)]">Downloads so far: {meta.downloadCount}</p>
           {meta.vaultAccess ? (
-            <p className="mt-2 text-[var(--signal)]">
+            <p className="mt-2 text-[var(--ink)]">
               Vault included —{" "}
               <a href="/login" className="underline underline-offset-4">
                 sign in
@@ -157,7 +163,7 @@ export function LicensePortal({
         </div>
       )}
 
-      <p className="min-h-[1.25rem] text-sm leading-snug text-red-400" aria-live="polite">
+      <p className="form-error" aria-live="polite">
         {error || "\u00a0"}
       </p>
     </div>

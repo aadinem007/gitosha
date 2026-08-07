@@ -73,11 +73,11 @@ export default async function ResearchVaultPage() {
               return (
                 <div
                   key={idea.id}
-                  className="score-row rounded-lg border border-[var(--line)] bg-[var(--panel)]/40 p-5"
+                  className="score-row surface p-5"
                 >
                   <div className="flex items-baseline justify-between gap-3">
                     <p className="font-display font-semibold">{idea.name}</p>
-                    <span className="font-mono text-sm text-[var(--signal)]">
+                    <span className="font-mono text-sm text-[var(--ink)]">
                       {idea.totalScore}
                       <span className="text-[var(--muted)]">/100</span>
                     </span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import Link from "next/link";
 import { CurrencyPreference } from "@/components/CurrencyPreference";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
@@ -10,6 +10,8 @@ declare global {
     Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
   }
 }
+
+const CHECKOUT_OPEN_EVENT = "gitosha:checkout-open";
 
 function loadRazorpayScript(): Promise<boolean> {
   return new Promise((resolve) => {
@@ -44,6 +46,7 @@ export function CheckoutButton({
   primary?: boolean;
 }) {
   void _primary;
+  const formId = useId();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [accepted, setAccepted] = useState(false);
@@ -52,10 +55,41 @@ export function CheckoutButton({
   const [chargeHint, setChargeHint] = useState<string | null>(null);
 
   const plan = [...VAULT_PLANS, ...FOUNDRY_PLANS].find((p) => p.id === planId);
+  const emailFieldId = `checkout-email-${planId}-${formId}`;
+  const termsId = `checkout-terms-${planId}-${formId}`;
+
+  useEffect(() => {
+    function onPeerOpen(e: Event) {
+      const detail = (e as CustomEvent<{ planId: string }>).detail;
+      if (detail?.planId && detail.planId !== planId) {
+        setOpen(false);
+        setError(null);
+        setChargeHint(null);
+        setLoading(false);
+      }
+    }
+    window.addEventListener(CHECKOUT_OPEN_EVENT, onPeerOpen);
+    return () => window.removeEventListener(CHECKOUT_OPEN_EVENT, onPeerOpen);
+  }, [planId]);
+
+  function openPanel() {
+    setOpen(true);
+    setError(null);
+    window.dispatchEvent(
+      new CustomEvent(CHECKOUT_OPEN_EVENT, { detail: { planId } })
+    );
+  }
+
+  function closePanel() {
+    if (loading) return;
+    setOpen(false);
+    setError(null);
+    setChargeHint(null);
+  }
 
   async function startCheckout() {
     if (!email) {
-      setOpen(true);
+      openPanel();
       return;
     }
     if (!accepted) {
@@ -147,7 +181,10 @@ export function CheckoutButton({
               window.location.href = `/checkout/success?${params.toString()}`;
             } else {
               const err = await verifyRes.json();
-              setError(err.error ?? "Payment received but verification failed. Check your email before retrying.");
+              setError(
+                err.error ??
+                  "Payment received but verification failed. Check your email before retrying."
+              );
               setLoading(false);
             }
           },
@@ -179,21 +216,35 @@ export function CheckoutButton({
     }
   }
 
-  const style = "btn-primary w-full";
-
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className={style} disabled={loading}>
+      <button type="button" onClick={openPanel} className="btn-primary w-full" disabled={loading}>
         {label}
       </button>
     );
   }
 
   return (
-    <div className="form-stack form-stack-tight relative isolate w-full min-w-0 overflow-visible">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
-        Order summary
-      </p>
+    <form
+      className="checkout-panel form-stack form-stack-tight relative isolate w-full min-w-0 overflow-visible"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void startCheckout();
+      }}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+          Order summary
+        </p>
+        <button
+          type="button"
+          className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--support)] underline-offset-4 hover:text-[var(--ink)] hover:underline"
+          onClick={closePanel}
+          disabled={loading}
+        >
+          Cancel
+        </button>
+      </div>
       <p className="text-sm text-[var(--ink)]">
         {plan?.name ?? planId}
         {plan?.price ? (
@@ -207,11 +258,11 @@ export function CheckoutButton({
           className="mt-1"
         />
       )}
-      <label htmlFor={`checkout-email-${planId}`} className="form-label">
+      <label htmlFor={emailFieldId} className="form-label">
         Email for receipt
       </label>
       <input
-        id={`checkout-email-${planId}`}
+        id={emailFieldId}
         type="email"
         name="email"
         required
@@ -223,8 +274,9 @@ export function CheckoutButton({
         onChange={(e) => setEmail(e.target.value)}
         className="form-input"
       />
-      <label className="flex items-start gap-2 text-xs leading-snug text-[var(--fog)]">
+      <label htmlFor={termsId} className="flex items-start gap-2 text-xs leading-snug text-[var(--fog)]">
         <input
+          id={termsId}
           type="checkbox"
           className="mt-0.5"
           checked={accepted}
@@ -253,18 +305,13 @@ export function CheckoutButton({
         </p>
       )}
       {error && (
-        <p className="text-xs text-[var(--signal)]" role="alert">
+        <p className="text-xs text-[var(--ink)]" role="alert">
           {error}
         </p>
       )}
-      <button
-        type="button"
-        disabled={loading || !accepted}
-        onClick={startCheckout}
-        className={`${style} form-submit`}
-      >
+      <button type="submit" disabled={loading || !accepted} className="btn-primary form-submit w-full">
         {loading ? "Opening checkout…" : label}
       </button>
-    </div>
+    </form>
   );
 }

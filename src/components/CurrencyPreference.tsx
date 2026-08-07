@@ -41,12 +41,11 @@ export function CurrencyPreference({
   planId?: string;
   className?: string;
 }) {
+  // Default USD on first paint so the panel keeps height (avoids CLS from null mount).
   const [currency, setCurrency] = useState<PricingCurrency>("USD");
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setCurrency(readPreference());
-    setReady(true);
   }, []);
 
   function onChange(next: PricingCurrency) {
@@ -54,31 +53,37 @@ export function CurrencyPreference({
     writePreference(next);
   }
 
-  if (!ready) return null;
-
   const priced =
     typeof amountCents === "number"
       ? formatPlanPrice(amountCents, currency, planId)
       : null;
 
   return (
-    <div className={className}>
-      <div className="flex flex-wrap items-center gap-2 text-xs">
+    <div className={`currency-pref ${className}`.trim()}>
+      <div
+        className="flex flex-wrap items-center gap-2 text-xs"
+        role="group"
+        aria-label="Display currency"
+      >
         <span className="text-[var(--muted)]">Display</span>
-        {(["USD", "INR", "EUR"] as const).map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => onChange(c)}
-            className={`border px-2 py-1 font-semibold ${
-              currency === c
-                ? "border-[var(--ink)] bg-[var(--brass)]"
-                : "border-[var(--line)] text-[var(--muted)]"
-            }`}
-          >
-            {c}
-          </button>
-        ))}
+        {(["USD", "INR", "EUR"] as const).map((c) => {
+          const selected = currency === c;
+          return (
+            <button
+              key={c}
+              type="button"
+              onClick={() => onChange(c)}
+              aria-pressed={selected}
+              className={`border px-2 py-1 font-semibold ${
+                selected
+                  ? "border-[var(--ink)] bg-[var(--brass)] text-[var(--ink)]"
+                  : "border-[var(--line)] text-[var(--muted)]"
+              }`}
+            >
+              {c}
+            </button>
+          );
+        })}
       </div>
       {priced && (
         <p className="mt-2 text-sm text-[var(--support)]">

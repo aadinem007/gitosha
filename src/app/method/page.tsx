@@ -4,6 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { RevealObserver } from "@/components/RevealObserver";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { TrackField } from "@/components/TrackField";
 import { BRAND } from "@/lib/brand";
 import { SEED_IDEAS, totalScore } from "@/lib/ideas-data";
 
@@ -187,6 +188,21 @@ export default function MethodPage() {
             <Link href="/pricing" className="btn-ghost">
               Unlock Operator →
             </Link>
+          </div>
+        </section>
+
+        <section className="mega-split" data-reveal>
+          <div className="mega-split-visual" aria-hidden="true">
+            <TrackField intensity="stage" motif="vault" />
+          </div>
+          <div className="mega-split-inner">
+            <h2 className="mega-split-title" aria-label="Score honestly">
+              <span className="mega-split-word">Score</span>
+              <span className="mega-split-word mega-split-word-accent">honestly</span>
+            </h2>
+            <p className="mega-split-copy">
+              Same ten dimensions every week. Ship, pass, or defer — not another inspiration dump.
+            </p>
           </div>
         </section>
 

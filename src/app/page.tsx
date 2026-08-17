@@ -88,7 +88,7 @@ export default function Home() {
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <section className="hero-cinematic hero-cinematic-3d">
-          <TrackField />
+          <TrackField motif="orbit" />
           <div className="hero-stage">
             <h1 className="brand-mark animate-draft">{BRAND.nameUpper}</h1>
             <p className="hero-line animate-rise">{BRAND.tagline}</p>
@@ -103,16 +103,13 @@ export default function Home() {
                 Open Foundry
               </Link>
             </div>
-            <p className="hero-orbit-hint animate-rise-delay-2" aria-hidden="true">
-              Drag to orbit
-            </p>
           </div>
         </section>
 
         {/* Editorial split chapters */}
         <section className="mega-split" id="know" data-reveal>
           <div className="mega-split-visual" aria-hidden="true">
-            <TrackField intensity="stage" />
+            <TrackField intensity="stage" motif="vault" />
           </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Know what">
@@ -132,7 +129,7 @@ export default function Home() {
         {/* 01 Vault */}
         <section className="chapter chapter-vault" id="vault" data-reveal>
           <div className="chapter-visual">
-            <TrackField intensity="stage" />
+            <TrackField intensity="stage" motif="vault" />
             <div className="chapter-visual-frame" aria-label="Live scoreboard sample">
               <p className="chapter-visual-label">01 · Research plane</p>
               <ul className="hud-scoreboard">
@@ -169,7 +166,7 @@ export default function Home() {
 
         <section className="mega-split mega-split-alt" id="ship" data-reveal>
           <div className="mega-split-visual" aria-hidden="true">
-            <TrackField intensity="stage" />
+            <TrackField intensity="stage" motif="foundry" />
           </div>
           <div className="mega-split-inner">
             <h2 className="mega-split-title" aria-label="Then ship">

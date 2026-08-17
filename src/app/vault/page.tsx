@@ -173,6 +173,22 @@ export default function VaultProductPage() {
           </div>
         </section>
 
+        <section className="mega-split" data-reveal>
+          <div className="mega-split-visual" aria-hidden="true">
+            <TrackField intensity="stage" motif="vault" />
+          </div>
+          <div className="mega-split-inner">
+            <h2 className="mega-split-title" aria-label="Know what">
+              <span className="mega-split-word">Know</span>
+              <span className="mega-split-word mega-split-word-accent">what</span>
+            </h2>
+            <p className="mega-split-copy">
+              Ten scored dimensions. Explicit go/no-go. Public rejects. Research for operators who decide
+              in one sitting.
+            </p>
+          </div>
+        </section>
+
         <section className="story-plane" data-reveal>
           <div className="story-inner">
             <p className="story-kicker">What it is</p>
@@ -196,7 +212,7 @@ export default function VaultProductPage() {
 
         <section className="chapter chapter-vault" data-reveal>
           <div className="chapter-visual">
-            <TrackField intensity="stage" />
+            <TrackField intensity="stage" motif="vault" />
             <div className="chapter-visual-frame" aria-label="Live scoreboard sample">
               <p className="chapter-visual-label">Research plane · sample</p>
               <ul className="hud-scoreboard">

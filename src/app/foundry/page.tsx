@@ -145,6 +145,21 @@ export default function FoundryProductPage() {
           </div>
         </section>
 
+        <section className="mega-split mega-split-alt" data-reveal>
+          <div className="mega-split-visual" aria-hidden="true">
+            <TrackField intensity="stage" motif="foundry" />
+          </div>
+          <div className="mega-split-inner">
+            <h2 className="mega-split-title" aria-label="Then ship">
+              <span className="mega-split-word">Then</span>
+              <span className="mega-split-word mega-split-word-accent">ship</span>
+            </h2>
+            <p className="mega-split-copy">
+              Auth, checkout, webhooks, deploy docs. Pay once in USD. Download the same minute.
+            </p>
+          </div>
+        </section>
+
         <section className="story-plane" data-reveal>
           <div className="story-inner">
             <p className="story-kicker">What it is</p>
@@ -180,7 +195,7 @@ export default function FoundryProductPage() {
             </Link>
           </div>
           <div className="chapter-visual chapter-visual-end">
-            <TrackField intensity="stage" />
+            <TrackField intensity="stage" motif="foundry" />
             <div className="chapter-visual-frame" aria-label="Foundry delivery checklist">
               <p className="chapter-visual-label">02 · In the zip</p>
               <ul className="chapter-kit-list">

@@ -209,12 +209,40 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 03 Method */}
+        {/* 03 Brand story */}
+        <section className="story-plane" id="about" data-reveal>
+          <div className="story-inner">
+            <p className="story-kicker">03 · Brand story</p>
+            <h2 className="story-title">{BRAND.story.headline}</h2>
+            <p className="story-lede">{BRAND.story.origin}</p>
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-[var(--support)]">
+              The name is the brief. <strong className="text-[var(--ink)]">{BRAND.name}</strong> is
+              three beats: insight, the crossing, the craft. {BRAND.chatName} is the guide on-site —
+              blunt on product, pricing, and method. Vault decides. Foundry delivers.
+            </p>
+            <div className="who-grid mt-10">
+              {BRAND.story.nameParts.map((part) => (
+                <div key={part.mark} className="who-cell">
+                  <p className="font-display text-4xl font-semibold tracking-tight text-[var(--ink)]">
+                    <span className="bg-[var(--brass)] px-2">{part.mark}</span>
+                  </p>
+                  <p className="who-title mt-4">{part.title}</p>
+                  <p className="who-body">{part.body}</p>
+                </div>
+              ))}
+            </div>
+            <Link href="/about" className="story-link">
+              Full About page →
+            </Link>
+          </div>
+        </section>
+
+        {/* 04 Method */}
         <section className="story-plane" id="method" data-reveal>
           <span className="float-accent float-accent-a" aria-hidden="true" />
           <span className="float-accent float-accent-c" aria-hidden="true" />
           <div className="story-inner">
-            <p className="story-kicker">03 · Method</p>
+            <p className="story-kicker">04 · Method</p>
             <h2 className="story-title">How scoring actually works.</h2>
             <p className="story-lede">
               Same rubric every week. Ten dimensions, one hundred points. We publish the rejects —
@@ -239,7 +267,7 @@ export default function Home() {
         <section className="story-plane story-plane-alt" id="inside" data-reveal>
           <span className="float-accent float-accent-b" aria-hidden="true" />
           <div className="story-inner">
-            <p className="story-kicker">04 · Inside Foundry</p>
+            <p className="story-kicker">05 · Inside Foundry</p>
             <h2 className="story-title">What’s in the zip.</h2>
             <p className="story-lede">
               Not a Notion template. A production-ready foundation that already takes payments — the
@@ -262,7 +290,7 @@ export default function Home() {
         {/* 05 Who */}
         <section className="story-plane" id="for" data-reveal>
           <div className="story-inner">
-            <p className="story-kicker">05 · Who it’s for</p>
+            <p className="story-kicker">06 · Who it’s for</p>
             <h2 className="story-title">Outcomes, not vibes.</h2>
             <p className="story-lede">
               Built for international operators who ship products — and hate spending a quarter on
@@ -279,21 +307,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="story-plane story-plane-alt" id="about" data-reveal>
-          <div className="story-inner">
-            <p className="story-kicker">Brand story</p>
-            <h2 className="story-title">{BRAND.story.headline}</h2>
-            <p className="story-lede">{BRAND.story.origin}</p>
-            <Link href="/about" className="story-link">
-              Read the full story →
-            </Link>
-          </div>
-        </section>
-
-        {/* 06 Sample */}
+        {/* 07 Sample */}
         <section className="story-plane story-plane-alt" id="sample" data-reveal>
           <div className="story-inner">
-            <p className="story-kicker">06 · Sample score</p>
+            <p className="story-kicker">07 · Sample score</p>
             <h2 className="story-title">A real scored idea.</h2>
             <p className="story-lede">
               Public preview. Operator unlocks the full teardown, go/no-go criteria, and launch

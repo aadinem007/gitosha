@@ -13,24 +13,6 @@ export const metadata: Metadata = {
     "The Gitosha brand story: why the name, why Vault and Foundry exist as one path, and why we publish the scores that fail.",
 };
 
-const NAME_PARTS = [
-  {
-    mark: "G",
-    title: "Guide · Insight",
-    body: "Vault. Ten dimensions, one hundred points, explicit ship / pass / defer. Research that tells you what to kill — not another inspiration dump.",
-  },
-  {
-    mark: "To",
-    title: "The path",
-    body: "Idea → decision → build. The dash in the middle is the product. Most tools stop at “here’s a list.” We stay until you choose.",
-  },
-  {
-    mark: "Sha",
-    title: "Ship · shastra · craft",
-    body: "Foundry. Auth, checkout, webhooks, deploy docs — the production zip so you ship the right product, not the plumbing week.",
-  },
-];
-
 const BELIEFS = [
   {
     title: "Honesty over highlight reels",
@@ -120,7 +102,7 @@ export default function AboutPage() {
               is already live.
             </p>
             <div className="who-grid mt-10">
-              {NAME_PARTS.map((part) => (
+              {BRAND.story.nameParts.map((part) => (
                 <div key={part.mark} className="who-cell">
                   <p className="font-display text-4xl font-semibold tracking-tight text-[var(--ink)]">
                     <span className="bg-[var(--brass)] px-2">{part.mark}</span>

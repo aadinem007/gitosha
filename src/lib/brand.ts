@@ -39,6 +39,23 @@ export const BRAND = {
     lede: "Gitosha is the name for a single motion: know what to build, then ship it. Vault is the judgment. Foundry is the craft. Gita is the guide in between.",
     origin:
       "Operators were drowning in idea lists and starving for decisions. Twitter threads. Notion dumps. “100 SaaS ideas” PDFs that never tell you what to kill. Quarters vanished on the loudest concept instead of the one that cleared the gates. Gitosha exists so knowing and shipping stay one motion — scored research, then a production zip that already takes payments.",
+    nameParts: [
+      {
+        mark: "G",
+        title: "Guide · Insight",
+        body: "Vault. Ten dimensions, one hundred points, explicit ship / pass / defer. Research that tells you what to kill — not another inspiration dump.",
+      },
+      {
+        mark: "To",
+        title: "The path",
+        body: "Idea → decision → build. The dash in the middle is the product. Most tools stop at “here’s a list.” We stay until you choose.",
+      },
+      {
+        mark: "Sha",
+        title: "Ship · shastra · craft",
+        body: "Foundry. Auth, checkout, webhooks, deploy docs — the production zip so you ship the right product, not the plumbing week.",
+      },
+    ],
   },
   /** Live deploy until custom domain (gitosha.com) is wired — updated after Vercel rename */
   defaultSiteUrl: "https://gitosha.vercel.app",

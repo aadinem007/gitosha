@@ -31,14 +31,20 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       // Internal alias: old product name — not shown in user-facing copy
       "shipyard",
       "about",
+      "about us",
+      "brand story",
       "who are you",
+      "name mean",
+      "why gitosha",
+      "gita",
       "what do you",
       "explain",
       "overview",
     ],
     reply: {
-      text: "Gitosha helps builders know what to build — then ship it. Two products: The Vault (scored opportunity research) and Foundry (a production SaaS starter kit with auth + checkout). Honest scores. Instant kit download after payment.",
+      text: "Gitosha helps builders know what to build — then ship it. The name is the path: G (guide / Vault), To (idea → build), Sha (ship / Foundry). Gita is the on-site guide. Honest scores. Instant kit download after payment.",
       links: [
+        { label: "About / brand story", href: "/about" },
         { label: "See the method", href: "/method" },
         { label: "Pricing", href: "/pricing" },
       ],

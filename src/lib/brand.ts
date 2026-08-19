@@ -33,6 +33,13 @@ export const BRAND = {
   /** Foundry chapter body */
   foundryBody:
     "Auth, checkout, webhooks, and deploy docs in one zip — the same production stack Gitosha runs. Solo $99 for your product. Agency $249 for every client after. Pay once in USD; download the same minute.",
+  /** Public brand story — no fake founders, addresses, or awards */
+  story: {
+    headline: "Named for the path — not the pitch.",
+    lede: "Gitosha is the name for a single motion: know what to build, then ship it. Vault is the judgment. Foundry is the craft. Gita is the guide in between.",
+    origin:
+      "Operators were drowning in idea lists and starving for decisions. Twitter threads. Notion dumps. “100 SaaS ideas” PDFs that never tell you what to kill. Quarters vanished on the loudest concept instead of the one that cleared the gates. Gitosha exists so knowing and shipping stay one motion — scored research, then a production zip that already takes payments.",
+  },
   /** Live deploy until custom domain (gitosha.com) is wired — updated after Vercel rename */
   defaultSiteUrl: "https://gitosha.vercel.app",
   /** Fallback Resend from-address; set EMAIL_FROM in Vercel for production */

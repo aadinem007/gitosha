@@ -17,6 +17,7 @@ export function Footer() {
             <Link href="/vault">{BRAND.products.vault}</Link>
             <Link href="/foundry">{BRAND.products.foundry}</Link>
             <Link href="/method">Method</Link>
+            <Link href="/about">About</Link>
             <Link href="/faq">FAQ</Link>
             <Link href="/legal">Legal</Link>
             <Link href="/legal/refunds">Refunds</Link>

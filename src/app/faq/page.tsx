@@ -51,6 +51,11 @@ const FAQS: { q: string; a: string; links?: { label: string; href: string }[] }[
     a: "Digital downloads have limited refunds after the zip is obtained. Unused Vault access has a short review window. See the Refund Policy.",
     links: [{ label: "Refund Policy", href: "/refund" }],
   },
+  {
+    q: "What does Gitosha mean?",
+    a: "G is guide / insight (Vault). To is the path from idea to build. Sha is ship, shastra, craft (Foundry). Gita is the on-site guide. The brand story is the full version.",
+    links: [{ label: "About / brand story", href: "/about" }],
+  },
 ];
 
 export default function FaqPage() {

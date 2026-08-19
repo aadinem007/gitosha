@@ -281,6 +281,7 @@ function isPublicMarketingPath(path: string): boolean {
     "/faq",
     "/whats-inside",
     "/method",
+    "/about",
     "/terms",
     "/privacy",
     "/refund",

@@ -11,6 +11,7 @@ export default function sitemap() {
     "/vault",
     "/login",
     "/method",
+    "/about",
     "/license",
     "/faq",
     "/whats-inside",

@@ -279,6 +279,17 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="story-plane story-plane-alt" id="about" data-reveal>
+          <div className="story-inner">
+            <p className="story-kicker">Brand story</p>
+            <h2 className="story-title">{BRAND.story.headline}</h2>
+            <p className="story-lede">{BRAND.story.origin}</p>
+            <Link href="/about" className="story-link">
+              Read the full story →
+            </Link>
+          </div>
+        </section>
+
         {/* 06 Sample */}
         <section className="story-plane story-plane-alt" id="sample" data-reveal>
           <div className="story-inner">

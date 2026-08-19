@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: "/vault", label: BRAND.products.vault, match: (path: string) => path === "/vault" || path.startsWith("/research") },
   { href: "/foundry", label: BRAND.products.foundry, match: (path: string) => path === "/foundry" || path.startsWith("/foundry-kit") },
   { href: "/method", label: "Method", match: (path: string) => path === "/method" },
+  { href: "/about", label: "About", match: (path: string) => path === "/about" },
   { href: "/pricing", label: "Pricing", match: (path: string) => path === "/pricing" },
 ] as const;
 

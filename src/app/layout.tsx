@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bebas_Neue, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ChatWidget } from "@/components/ChatWidget";
 import { ConsentBannerHost } from "@/components/ConsentBannerHost";
+import { JsonLd } from "@/components/JsonLd";
 import { BRAND, siteUrl } from "@/lib/brand";
 import "./globals.css";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
+        <JsonLd />
         {children}
         <ChatWidget />
         <ConsentBannerHost />

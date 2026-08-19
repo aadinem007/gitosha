@@ -9,6 +9,7 @@ import { safeRedirectPath } from "@/lib/secure";
 export const metadata: Metadata = {
   title: `Sign in — ${BRAND.name}`,
   description: `Sign in to ${BRAND.name} with a one-time magic link. No password required.`,
+  robots: { index: false, follow: false },
 };
 
 export default async function LoginPage({

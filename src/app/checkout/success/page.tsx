@@ -1,10 +1,17 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckoutFulfillClient } from "@/components/CheckoutFulfillClient";
 import { fulfillPurchase, isFulfillablePlanId } from "@/lib/fulfill";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 import { verifyPayment } from "@/lib/payments";
+
+export const metadata: Metadata = {
+  title: "Checkout — Gitosha",
+  description: "Payment confirmation.",
+  robots: { index: false, follow: false },
+};
 
 async function resolveStripeSession(sessionId: string): Promise<{
   product?: string;

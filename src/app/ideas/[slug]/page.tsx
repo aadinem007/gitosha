@@ -69,7 +69,17 @@ export default async function IdeaPage({ params }: { params: Promise<{ slug: str
       <Nav />
       <main id="main-content" className="flex-1" tabIndex={-1}>
         <article className="mx-auto max-w-3xl px-6 py-16">
-          <p className="kicker">{idea.category}</p>
+          <p className="kicker">
+            <Link href="/" className="page-crumb">
+              Home
+            </Link>
+            <span aria-hidden="true"> / </span>
+            <Link href="/vault" className="page-crumb">
+              Vault
+            </Link>
+            <span aria-hidden="true"> / </span>
+            {idea.category}
+          </p>
           <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">{idea.name}</h1>
           <p className="mt-3 text-lg text-[var(--muted)]">{idea.oneLiner}</p>
           <p className="mt-4 font-mono text-2xl text-[var(--ink)]">{score}/100</p>

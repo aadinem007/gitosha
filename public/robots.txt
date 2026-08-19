@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /vault
-Disallow: /license
-Disallow: /login
-Disallow: /checkout/
-
-Sitemap: https://gitosha.vercel.app/sitemap.xml

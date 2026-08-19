@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
@@ -5,6 +6,12 @@ import { Footer } from "@/components/Footer";
 import { SignOutButton } from "@/components/SignOutButton";
 import { prisma } from "@/lib/prisma";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  title: "Research vault | Gitosha",
+  description: "Signed-in scored opportunity vault.",
+  robots: { index: false, follow: false },
+};
 
 export default async function ResearchVaultPage() {
   const supabase = await createSupabaseServerClient();

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
@@ -81,6 +82,12 @@ const PROOF_COMPARE = [
   },
 ];
 
+export const metadata: Metadata = {
+  title: `${BRAND.name} — ${BRAND.tagline}`,
+  description: BRAND.description,
+  alternates: { canonical: "/" },
+};
+
 export default function Home() {
   return (
     <>
@@ -96,13 +103,16 @@ export default function Home() {
               {BRAND.heroSupport}
             </p>
             <div className="hero-cta animate-rise-delay">
-              <Link href="#about" className="btn-primary">
-                About us
-              </Link>
-              <Link href="/pricing" className="btn-ghost">
+              <Link href="/pricing" className="btn-primary">
                 View pricing
               </Link>
+              <Link href="/foundry" className="btn-ghost">
+                Open Foundry
+              </Link>
             </div>
+            <p className="hero-about-link animate-rise-delay-2">
+              <Link href="#about">About us</Link>
+            </p>
           </div>
         </section>
 
@@ -119,37 +129,6 @@ export default function Home() {
             <Link href="/about" className="mega-split-link">
               Full brand story →
             </Link>
-          </div>
-        </section>
-
-        <section className="chapter chapter-vault" data-reveal>
-          <div className="chapter-visual">
-            <TrackField intensity="stage" motif="orbit" />
-            <div className="chapter-visual-frame" aria-label="Gitosha name">
-              <p className="chapter-visual-label">00 · Brand</p>
-              <ul className="hud-scoreboard">
-                {BRAND.story.nameParts.map((part) => (
-                  <li key={part.mark} className="hud-score-row">
-                    <span className="hud-score-name">{part.mark}</span>
-                    <span className="hud-score-meta">{part.title}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="chapter-inner chapter-inner-vault copy-scrim-soft">
-            <p className="chapter-index">00</p>
-            <p className="chapter-eyebrow">About</p>
-            <h2 className="chapter-title chapter-title-section">{BRAND.story.headline}</h2>
-            <p className="chapter-copy">{BRAND.story.origin}</p>
-            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
-              <Link href="/about" className="chapter-link">
-                Read the brand story →
-              </Link>
-              <Link href="/method" className="chapter-link">
-                Method →
-              </Link>
-            </div>
           </div>
         </section>
 
@@ -258,8 +237,6 @@ export default function Home() {
 
         {/* 03 Method */}
         <section className="story-plane" id="method" data-reveal>
-          <span className="float-accent float-accent-a" aria-hidden="true" />
-          <span className="float-accent float-accent-c" aria-hidden="true" />
           <div className="story-inner">
             <p className="story-kicker">03 · Method</p>
             <h2 className="story-title">How scoring actually works.</h2>
@@ -284,7 +261,6 @@ export default function Home() {
 
         {/* 04 Foundry walkthrough */}
         <section className="story-plane story-plane-alt" id="inside" data-reveal>
-          <span className="float-accent float-accent-b" aria-hidden="true" />
           <div className="story-inner">
             <p className="story-kicker">04 · Inside Foundry</p>
             <h2 className="story-title">What’s in the zip.</h2>

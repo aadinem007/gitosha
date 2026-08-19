@@ -88,7 +88,7 @@ export function WaitlistForm({
         {status === "loading" ? "Joining…" : cta}
       </button>
       <p className="form-error" aria-live="polite">
-        {status === "error" ? "Something went wrong — try again." : stacked ? null : "\u00a0"}
+        {status === "error" ? "Couldn’t join the list. Check the email and try again." : stacked ? null : "\u00a0"}
       </p>
     </form>
   );

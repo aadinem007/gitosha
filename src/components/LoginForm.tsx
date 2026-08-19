@@ -64,6 +64,7 @@ export function LoginForm({ next }: { next: string }) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="form-input"
+        disabled={status === "loading"}
       />
       <p className="text-xs leading-snug text-[var(--muted)]">
         By continuing you agree to our{" "}
@@ -80,7 +81,7 @@ export function LoginForm({ next }: { next: string }) {
         {status === "loading" ? "Sending…" : "Email me a magic link"}
       </button>
       <p className="form-error" aria-live="polite">
-        {status === "error" ? "Something went wrong — try again." : "\u00a0"}
+        {status === "error" ? "Couldn’t send the link. Check the email and try again." : "\u00a0"}
       </p>
     </form>
   );

@@ -12,6 +12,8 @@ const required = [
   "src/app/pricing/page.tsx",
   "src/app/login/page.tsx",
   "src/app/dashboard/page.tsx",
+  "src/app/terms/page.tsx",
+  "src/app/privacy/page.tsx",
   "src/app/api/checkout/route.ts",
   "src/app/api/checkout/verify/route.ts",
   "src/app/api/razorpay/webhook/route.ts",

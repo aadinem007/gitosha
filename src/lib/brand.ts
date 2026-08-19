@@ -57,6 +57,8 @@ export const BRAND = {
       },
     ],
   },
+  /** Public support inbox (already used on FAQ / Gita) */
+  supportEmail: "aaditya.shah8005@gmail.com",
   /** Live deploy until custom domain (gitosha.com) is wired — updated after Vercel rename */
   defaultSiteUrl: "https://gitosha.vercel.app",
   /** Fallback Resend from-address; set EMAIL_FROM in Vercel for production */

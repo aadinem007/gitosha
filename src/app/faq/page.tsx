@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "FAQ — Gitosha",
@@ -87,10 +88,10 @@ export default function FaqPage() {
           <p className="mt-12 text-sm text-[var(--support)]">
             Still stuck? Tap <span className="font-semibold text-[var(--ink)]">ASK</span> or email{" "}
             <a
-              href="mailto:aaditya.shah8005@gmail.com"
+              href={`mailto:${BRAND.supportEmail}`}
               className="underline underline-offset-2 hover:text-[var(--ink)]"
             >
-              aaditya.shah8005@gmail.com
+              {BRAND.supportEmail}
             </a>
             .
           </p>

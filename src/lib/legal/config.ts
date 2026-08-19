@@ -1,7 +1,7 @@
 import { BRAND } from "@/lib/brand";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
 import { getPaymentsProvider } from "@/lib/payments";
-import { isLegalEmailConfigured, LEGAL_EMAIL_UNSET } from "@/lib/legal/email";
+import { isLegalEmailConfigured } from "@/lib/legal/email";
 import type {
   ConsentPreferences,
   CookieCategory,
@@ -34,11 +34,11 @@ function isOpenAiConfigured(): boolean {
 }
 
 function contactEmail(): string {
-  return envTrim("LEGAL_CONTACT_EMAIL") ?? envTrim("LEGAL_PRIVACY_EMAIL") ?? LEGAL_EMAIL_UNSET;
+  return envTrim("LEGAL_CONTACT_EMAIL") ?? envTrim("LEGAL_PRIVACY_EMAIL") ?? BRAND.supportEmail;
 }
 
 function privacyEmail(): string {
-  return envTrim("LEGAL_PRIVACY_EMAIL") ?? envTrim("LEGAL_CONTACT_EMAIL") ?? LEGAL_EMAIL_UNSET;
+  return envTrim("LEGAL_PRIVACY_EMAIL") ?? envTrim("LEGAL_CONTACT_EMAIL") ?? BRAND.supportEmail;
 }
 
 function buildProcessors(): ThirdPartyProcessor[] {

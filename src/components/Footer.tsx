@@ -26,6 +26,7 @@ export function Footer() {
             <Link href="/legal/cookies">Cookies</Link>
             <Link href="/legal/preferences">Preferences</Link>
             <Link href="/legal/rights">Your rights</Link>
+            <a href={`mailto:${BRAND.supportEmail}`}>Support</a>
           </nav>
         </div>
         <div className="site-footer-bottom">

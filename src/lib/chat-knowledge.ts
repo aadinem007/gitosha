@@ -1,3 +1,5 @@
+import { BRAND } from "@/lib/brand";
+
 export type ChatLink = { label: string; href: string };
 
 export type ChatReply = {
@@ -167,7 +169,7 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
       text: "Checkout runs through the site payment provider. List prices are USD; amounts are set server-side. After a successful payment, Foundry buyers get a license key on-screen; Vault buyers sign in with the same email. For billing issues, use Contact in the footer.",
       links: [
         { label: "Pricing", href: "/pricing" },
-        { label: "Contact", href: "mailto:aaditya.shah8005@gmail.com" },
+        { label: "Contact", href: `mailto:${BRAND.supportEmail}` },
       ],
       suggestions: ["How do I download after payment?", "Show pricing"],
     },
@@ -185,8 +187,8 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     id: "support",
     keywords: ["support", "help", "contact", "human", "email", "stuck", "problem", "issue"],
     reply: {
-      text: "I can answer product questions here. For account or payment issues, email aaditya.shah8005@gmail.com with your purchase email and license key (if any). Agency buyers get priority replies.",
-      links: [{ label: "Email support", href: "mailto:aaditya.shah8005@gmail.com" }],
+      text: `I can answer product questions here. For account or payment issues, email ${BRAND.supportEmail} with your purchase email and license key (if any). Agency buyers get priority replies.`,
+      links: [{ label: "Email support", href: `mailto:${BRAND.supportEmail}` }],
       suggestions: ["How do I download after payment?", "Show pricing"],
     },
   },
@@ -241,7 +243,7 @@ export const CHAT_FALLBACK: ChatReply = {
   links: [
     { label: "Pricing", href: "/pricing" },
     { label: "License", href: "/license" },
-    { label: "Contact", href: "mailto:aaditya.shah8005@gmail.com" },
+    { label: "Contact", href: `mailto:${BRAND.supportEmail}` },
   ],
   suggestions: [
     "What is Gitosha?",

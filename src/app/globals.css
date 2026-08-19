@@ -72,6 +72,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(4.75rem + env(safe-area-inset-top, 0px));
   /* Avoid 100vw horizontal scrollbar bugs */
   overflow-x: clip;
 }

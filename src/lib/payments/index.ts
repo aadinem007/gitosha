@@ -45,13 +45,7 @@ export { createInvoiceForTransaction, invoiceHtmlDocument } from "./invoice";
 
 export { paymentsLog } from "./errors";
 
-import { getPaymentsProvider } from "./service";
-
-/** Backward-compatible helper previously at src/lib/payments.ts */
+/** Checkout unavailable copy — Xflow credentials missing. */
 export function paymentsUnavailableMessage(): string {
-  const provider = getPaymentsProvider();
-  if (provider === "stripe") {
-    return "Checkout is not configured yet. Set STRIPE_SECRET_KEY to enable Stripe.";
-  }
-  return "Payments are temporarily unavailable. Check Razorpay keys on the server.";
+  return "Checkout is not configured yet. Set XFLOW_API_KEY, XFLOW_ACCOUNT_ID, and XFLOW_WEBHOOK_SECRET.";
 }

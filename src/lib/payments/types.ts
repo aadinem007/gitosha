@@ -1,12 +1,9 @@
 /** Provider-agnostic payment types. Secrets never appear in these shapes. */
 
-export type ProviderId =
-  | "razorpay"
-  | "stripe"
-  | "paypal"
-  | "xflow"
-  | "wise"
-  | "payoneer";
+/** Sole live checkout provider. Historical ledger rows may still say stripe/razorpay/paypal. */
+export type ProviderId = "xflow";
+
+export type LedgerProviderId = ProviderId | "stripe" | "razorpay" | "paypal";
 
 /** ISO-ish currency codes we actually charge or display. */
 export type Currency = "USD" | "INR" | "EUR";
@@ -14,8 +11,10 @@ export type Currency = "USD" | "INR" | "EUR";
 export type CheckoutMode = "payment" | "subscription";
 
 export type PaymentTransactionStatus =
+  | "created"
   | "pending"
   | "requires_action"
+  | "processing"
   | "succeeded"
   | "failed"
   | "canceled"
@@ -31,10 +30,8 @@ export type CreateCheckoutInput = {
   email: string;
   /** Optional client-supplied key; server also derives a stable fallback. */
   idempotencyKey?: string;
-  /** Preferred display currency — does not override provider charge currency. */
+  /** Preferred display currency — charge currency is always INR for Xflow. */
   displayCurrency?: Currency;
-  /** Force a provider (admin/tests). Production uses registry primary + failover. */
-  providerId?: ProviderId;
 };
 
 export type CheckoutSession = {
@@ -51,33 +48,23 @@ export type CheckoutSession = {
   chargeLabel: string;
   transactionId: string;
   idempotencyKey: string;
-  /** Stripe hosted Checkout URL */
+  /** Hosted Gitosha/Xflow checkout bridge URL */
   url?: string;
   sessionId?: string;
-  /** Razorpay Checkout.js fields (public key only) */
-  keyId?: string;
   orderId?: string;
   subscriptionId?: string;
+  /** UPI intent URL from Xflow (not a secret). */
+  upiIntentUrl?: string;
   name?: string;
   description?: string;
 };
 
 export type VerifyPaymentInput = {
   provider: ProviderId;
-  /** Stripe Checkout session / PayPal order / Xflow intent */
   sessionId?: string;
-  /** PayPal Orders v2 */
-  paypalOrderId?: string;
-  /** Xflow TransactionIntent */
   xflowIntentId?: string;
-  /** Razorpay */
-  mode?: CheckoutMode;
   planId?: string;
   email?: string;
-  razorpay_payment_id?: string;
-  razorpay_order_id?: string;
-  razorpay_subscription_id?: string;
-  razorpay_signature?: string;
 };
 
 export type VerifyPaymentResult = {
@@ -141,7 +128,7 @@ export type RefundResult = {
 
 export type GetTransactionResult = {
   id: string;
-  provider: ProviderId;
+  provider: string;
   providerRef: string | null;
   userEmail: string;
   planId: string;

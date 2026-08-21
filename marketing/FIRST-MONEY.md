@@ -15,9 +15,9 @@ Do not open Reddit until Live money can hit your bank.
 
 | Priority | Product | Price | Why first |
 |---|---|---|---|
-| **1 (today)** | **Foundry Solo** | **$99** one-time | Checkout works once Stripe Live keys + webhook are live. Highest $ per close for a one-time kit. |
+| **1 (today)** | **Foundry Solo** | **$99** one-time | Checkout works once Xflow live keys + webhook are live. Highest $ per close for a one-time kit. |
 | **1b** | **Launch Bundle** | **$149** one-time | Same path. Solo + 12 months Operator. Pitch if they want research + kit. |
-| Later | Vault Operator | $15/mo launch | Recurring via Stripe Price IDs (`npm run setup-stripe`). |
+| Later | Vault Operator | $15/mo launch | Recurring via Xflow Subscription (INR UPI). |
 
 **Recommendation:** message for **Foundry Solo $99**. Offer Bundle only if they ask for research + scaffold together.
 
@@ -27,12 +27,12 @@ Do not open Reddit until Live money can hit your bank.
 
 Real money cannot land on test keys.
 
-1. Open `marketing/STRIPE-LIVE-SETUP.md`
-2. Finish Stripe activation → Live API keys → Vercel env → webhook → Redeploy
+1. Open `docs/PAYMENTS.md`
+2. Finish Xflow activation → Live API keys → Vercel env → webhook → Redeploy
 3. Confirm webhook URL exactly:
 
 ```
-https://gitosha.vercel.app/api/stripe/webhook
+https://gitosha.vercel.app/api/xflow/webhook
 ```
 
 Events: `checkout.session.completed`, `customer.subscription.deleted`, `customer.subscription.paused`
@@ -61,7 +61,7 @@ Send 10 today. Stop after 10. Follow up once tomorrow if silent.
 ```
 Quick ask, no spam.
 
-I shipped Gitosha. Production Next.js + Stripe SaaS starter (Foundry Solo) is live — $99 one-time, zip after payment.
+I shipped Gitosha. Production Next.js + Xflow SaaS starter (Foundry Solo) is live — $99 one-time, zip after payment.
 
 Checkout: https://gitosha.vercel.app/pricing
 
@@ -83,7 +83,7 @@ No pressure — only if you're actually building this month.
 ### Message C — X / Instagram / Indie Hackers DM
 
 ```
-Hey — built Gitosha (idea scoring + Next.js/Stripe kit). Foundry Solo $99 one-time:
+Hey — built Gitosha (idea scoring + Next.js/Xflow kit). Foundry Solo $99 one-time:
 
 https://gitosha.vercel.app/pricing
 
@@ -136,14 +136,14 @@ Stuck? Reply with a screenshot — same-day unblock.
 | License download | https://gitosha.vercel.app/license |
 | Login | https://gitosha.vercel.app/login |
 | Vault | https://gitosha.vercel.app/vault |
-| Webhook (Stripe dashboard) | https://gitosha.vercel.app/api/stripe/webhook |
-| Live keys guide | `marketing/STRIPE-LIVE-SETUP.md` |
+| Webhook (Xflow dashboard) | https://gitosha.vercel.app/api/xflow/webhook |
+| Live keys guide | `docs/PAYMENTS.md` |
 
 ---
 
 ## Order for today (do not rearrange)
 
-1. Finish Live Stripe (`STRIPE-LIVE-SETUP.md`)  
+1. Finish live Xflow (`docs/PAYMENTS.md`)  
 2. Redeploy Vercel  
 3. Send 10 warm messages (Message A)  
 4. Sit on replies — help every buyer through `/license`  

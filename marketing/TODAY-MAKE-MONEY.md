@@ -5,30 +5,30 @@ Your live site: https://gitosha.vercel.app
 (Use this URL until gitosha.com is connected.)
 
 **→ Today’s single playbook: [`marketing/FIRST-MONEY.md`](./FIRST-MONEY.md)**  
-**→ Live payments gate: [`marketing/STRIPE-LIVE-SETUP.md`](./STRIPE-LIVE-SETUP.md)**
+**→ Live payments gate: [`docs/PAYMENTS.md`](../docs/PAYMENTS.md)**
 
 Sell **Foundry Solo $99** (or Bundle $149) first — one-time.
-Vault $15/mo launch after Stripe Prices exist (`npm run setup-stripe`).
+Vault $15/mo launch after Xflow credentials exist (see `docs/PAYMENTS.md`).
 
 I already:
-- Wired Stripe Checkout (USD) as the default payment path
+- Wired Xflow Checkout (USD) as the default payment path
 - Show license key on screen after payment (no email needed)
 - Added SEO pages for every scored idea (Google can find them)
 - Added buy links on the homepage
 
-Your only job that makes money right now: **Live Stripe keys + put the product in front of buyers**.
+Your only job that makes money right now: **Live Xflow keys + put the product in front of buyers**.
 I cannot log into your Reddit / Indie Hackers / X account. You paste. That's it.
 
 Do these **in order**. Each takes ~5 minutes.
 
 ---
 
-## ACTION 0 — Live Stripe (before any public post)
+## ACTION 0 — Live Xflow (before any public post)
 
-Follow `STRIPE-LIVE-SETUP.md` click-by-click. Webhook URL:
+Follow `docs/PAYMENTS.md`. Webhook URL:
 
 ```
-https://gitosha.vercel.app/api/stripe/webhook
+https://gitosha.vercel.app/api/xflow/webhook
 ```
 
 Then send the 10 warm DMs in `FIRST-MONEY.md`. Public posts below are secondary today.
@@ -53,7 +53,7 @@ Most "100 SaaS ideas" lists are recycled with made-up revenue numbers.
 I built Gitosha — know what to build, then ship it. Public 10-dimension scoring, 18 real ideas (bad scores published too), and two products:
 
 1) Vault — weekly scored opportunity database ($15/mo launch, then $19)
-2) Foundry — production Next.js + Stripe SaaS scaffold ($99)
+2) Foundry — production Next.js + Xflow SaaS scaffold ($99)
 
 Live: https://gitosha.vercel.app
 
@@ -105,7 +105,7 @@ I scored 18 micro-SaaS ideas across 10 dimensions and refused to inflate the res
 
 None cleared 90/100 honestly.
 
-The top two became real products with Stripe checkout live:
+The top two became real products with Xflow checkout live:
 
 Gitosha: Vault (research) + Foundry (starter kit)
 https://gitosha.vercel.app
@@ -119,7 +119,7 @@ Message 10 friends / college mates / Discord people who want to build startups.
 Prefer the scripts in `FIRST-MONEY.md`. Short version:
 
 ```
-Hey — Foundry Solo (Next.js + Stripe kit) is live, $99 one-time.
+Hey — Foundry Solo (Next.js + Xflow kit) is live, $99 one-time.
 https://gitosha.vercel.app/pricing
 If you're shipping something, this saves weeks. Else ignore / forward.
 ```
@@ -132,6 +132,6 @@ Reply here with the post links. I will:
 - improve the pages based on comments
 - write the next week's free teardown content
 - push more SEO pages
-- help you turn on Live Stripe so real money hits your bank
+- help you turn on Live Xflow so real money hits your bank
 
 Do Action 1 first. Don't wait for perfect. Post.

@@ -13,7 +13,6 @@ jobs:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
       NEXT_PUBLIC_SUPABASE_URL: "https://placeholder.supabase.co"
       NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder"
-      STRIPE_SECRET_KEY: "sk_test_placeholder"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,5 +21,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx prisma generate
+      - run: npm run test:payments
+      - run: npm run kit:verify
       - run: npm run lint
       - run: npm run build

@@ -12,7 +12,7 @@ Magic links were redirecting to `http://localhost:3000` because Supabase **Site 
 - `/api/auth/callback` requires a `code`; `next` is restricted to same-site relative paths (`safeRedirectPath`). Failed exchanges log `[security] auth_callback_exchange_failed`.
 - Session cookies: `HttpOnly`, `SameSite=Lax`, `Secure` in production (forced in `src/lib/supabase/server.ts` + `src/proxy.ts`).
 - **Sign out / session revocation:** Vault UI → `POST /api/auth/sign-out` → `supabase.auth.signOut()` clears HttpOnly cookies (browser JS cannot delete them).
-- **MFA:** not productized. Scaffolding = Supabase Auth MFA when you enable it in the dashboard; no app TOTP UI yet. Operators should use 2FA on Supabase/Stripe/Vercel.
+- **MFA:** not productized. Scaffolding = Supabase Auth MFA when you enable it in the dashboard; no app TOTP UI yet. Operators should use 2FA on Supabase/Xflow/Vercel.
 - `/research` is gated in `src/proxy.ts` **and** redirects unauthenticated users in the page itself (defense-in-depth against proxy bypass CVEs).
 - `/vault` is the public Vault product marketing page.
 

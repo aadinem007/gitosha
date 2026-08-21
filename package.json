@@ -12,11 +12,10 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "generate-issue": "tsx scripts/generate-issue.ts",
-    "setup-razorpay": "tsx scripts/setup-razorpay.ts",
-    "setup-stripe": "tsx scripts/setup-stripe.ts",
     "kit:verify": "tsx scripts/verify-foundry-kit.ts",
+    "xflow:webhook": "tsx scripts/register-xflow-webhook.ts",
     "smoke": "tsx scripts/smoke-test.ts",
-    "test:payments": "tsx --test src/lib/payments/__tests__/payments.test.ts src/lib/payments/__tests__/providers.mock.test.ts",
+    "test:payments": "tsx --test src/lib/payments/__tests__/payments.test.ts src/lib/payments/__tests__/xflow-webhook.test.ts",
     "test": "npm run smoke && npm run test:payments && npm run kit:verify && npm run lint && npm run build"
   },
   "prisma": {
@@ -33,11 +32,9 @@
     "@supabase/supabase-js": "^2.110.7",
     "archiver": "^8.0.0",
     "next": "16.2.12",
-    "razorpay": "^2.9.8",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.17.2",
-    "stripe": "^18.5.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

@@ -12,7 +12,7 @@ Read this file first — human or coding agent. It exists so a new contributor
 | Styling | Tailwind CSS v4 | No CSS files to hunt for, utility classes colocated with markup |
 | DB | PostgreSQL via Prisma | Supabase's free tier gives you the Postgres instance |
 | Auth | Supabase Auth (magic link) | No password storage/reset flow to build or secure |
-| Payments | Stripe Checkout + webhooks (default); Razorpay optional | Global USD cards via Stripe; Razorpay kept for `PAYMENTS_PROVIDER=razorpay` |
+| Payments | Xflow (INR UPI TransactionIntent / Subscription) | Sole checkout provider. Catalog USD uses a fixed INR price book. |
 | Email | Resend | Free tier covers early volume; swap provider by editing `src/lib/email.ts` only |
 
 ## Directory map
@@ -20,15 +20,13 @@ Read this file first — human or coding agent. It exists so a new contributor
 ```
 src/
   app/                 Routes (App Router). One folder per URL segment.
-    api/                Route handlers (checkout, stripe/razorpay webhooks, waitlist, auth)
-    pricing/, vault/, foundry-kit/, login/, checkout/success/
+    api/                Route handlers (checkout, xflow webhook, waitlist, auth)
+    pricing/, vault/, foundry-kit/, login/, checkout/success/, checkout/xflow/
   components/          Client-interactive UI (forms, buttons). Server components stay in app/.
   lib/
     prisma.ts           Singleton Prisma client
-    stripe.ts           Stripe client + price-ID env lookup + payments provider
-    razorpay.ts         Optional Razorpay client + plan-ID env lookup
-    payments.ts         Provider-aware unavailable messages
-    pricing.ts           Single source of truth for plans (USD, used by pricing page AND checkout API)
+    payments/           PaymentService → XflowAdapter only
+    pricing.ts           Single source of truth for plans (USD catalog; INR charge book)
     fulfill.ts           Shared unlock logic after a successful payment
     ideas-data.ts        Seed data for the scored-idea database
     email.ts             All outbound email in one place
@@ -39,8 +37,6 @@ prisma/
   schema.prisma          Data model
   seed.ts                 Seeds the initial 18 scored ideas
 scripts/
-  setup-stripe.ts         Creates Stripe products/prices (USD)
-  setup-razorpay.ts       Optional Razorpay subscription plans
   generate-issue.ts       The weekly research-automation pipeline (see below)
 ```
 
@@ -48,8 +44,7 @@ scripts/
 
 **New plan/price?** Edit `src/lib/pricing.ts` only — the pricing page, the
 Foundry Kit page, and the checkout API all read from that one array. Never
-hardcode a price or Stripe price ID anywhere else (optional `STRIPE_PRICE_*`
-env vars are created by `npm run setup-stripe`).
+hardcode a price anywhere else. Charge amounts come from `PLAN_PRICE_BOOK`.
 
 **New scored idea?** Either add it to `src/lib/ideas-data.ts` and re-run
 `npm run db:seed`, or (for a real weekly issue) create a JSON file under
@@ -59,22 +54,21 @@ zero manual steps in between.
 
 **New gated page?** Add the path to the `matcher` array in `src/proxy.ts`.
 
-## Data flow for a Vault subscription (Stripe default)
+## Data flow for a Vault subscription (Xflow)
 
 1. `CheckoutButton` posts `{ planId, email }` to `POST /api/checkout`.
-2. The API creates a Stripe Checkout Session (`mode: subscription` or `payment`).
-3. The browser redirects to Stripe-hosted Checkout (`data.url`).
-4. On success, Stripe hits `POST /api/stripe/webhook` (`checkout.session.completed`)
-   which calls `fulfillPurchase`; the success page can also resolve `session_id`.
+2. The API creates an Xflow Subscription (monthly) or TransactionIntent (annual).
+3. The browser opens `/checkout/xflow` and the UPI intent.
+4. On success, Xflow hits `POST /api/xflow/webhook` (`transaction_intent.status.successful`)
+   which re-fetches the intent and calls `fulfillPurchase`. Confirm on the bridge page only re-queries Xflow.
 5. `/research` reads the signed-in user's email from Supabase, looks up their
    `Subscriber` row, and unlocks premium `Idea` rows accordingly.
 
 ## Data flow for a Foundry Kit purchase
 
-1. Same Stripe Checkout Session → webhook / success-page resolve → `LicenseKey` row.
+1. Same Xflow TransactionIntent → webhook / server verify → `LicenseKey` row.
 2. Success page + `/license` portal call `POST /api/license/download`.
 3. Server zips `kits/foundry/` (personalized LICENSE) and streams it.
 4. Re-downloads allowed (tracked on `LicenseKey.downloadCount`).
 
-See `docs/DELIVERY.md`. Optional Razorpay path mirrors the old popup + verify flow when
-`PAYMENTS_PROVIDER=razorpay`.
+See `docs/DELIVERY.md`.

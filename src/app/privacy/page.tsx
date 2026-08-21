@@ -39,7 +39,7 @@ export default async function PrivacyPage() {
         <li>
           <strong>Billing:</strong> payment references from{" "}
           {config.processors
-            .filter((p) => p.active && (p.id === "razorpay" || p.id === "stripe"))
+            .filter((p) => p.active && p.id === "xflow")
             .map((p) => p.name)
             .join(" / ") || "the configured payment provider"}{" "}
           (customer, session, payment, or subscription IDs). We do not store full card numbers.

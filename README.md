@@ -5,7 +5,7 @@
 Two products, one audience:
 
 1. **Vault** — weekly scored software opportunity research (Operator from $15/mo launch).
-2. **Foundry** — production SaaS scaffold with auth, Stripe billing, and deploy pipeline (Solo $99).
+2. **Foundry** — production SaaS scaffold with auth, Xflow billing, and deploy pipeline (Solo $99).
 
 Live site: https://gitosha.vercel.app  
 (Custom domain `gitosha.com` can be wired later — see Vercel project settings.)
@@ -14,8 +14,9 @@ Live site: https://gitosha.vercel.app
 
 ## Stack
 
-Next.js · TypeScript · Tailwind · Prisma · Supabase · Stripe · Resend · Docker · GitHub Actions.  
-(Razorpay remains an optional alternate via `PAYMENTS_PROVIDER=razorpay`.)
+Next.js · TypeScript · Tailwind · Prisma · Supabase · Xflow · Resend · GitHub Actions.
+
+Checkout is **Xflow only** (INR UPI). See [`docs/PAYMENTS.md`](docs/PAYMENTS.md).
 
 ## Setup status
 
@@ -23,12 +24,13 @@ Already done:
 - Code on GitHub (`aadinem007/gitosha` — repo folder name kept)
 - Live on Vercel
 - Supabase database + seeded ideas
-- USD pricing + Stripe checkout path in code
+- USD catalog pricing + Xflow INR checkout path in code
 
 Still needed for real money:
-1. Stripe Live keys + webhook (see `marketing/STRIPE-LIVE-SETUP.md`)
+1. Xflow live credentials + webhook (`XFLOW_API_KEY`, `XFLOW_ACCOUNT_ID`, `XFLOW_WEBHOOK_SECRET`)
 2. Optional: Resend for license emails (success page already shows keys)
 3. Optional: set `EMAIL_FROM` to a verified Gitosha sender (e.g. `Gitosha <hello@yourdomain.com>`)
+4. Revoke old Razorpay/Stripe keys — [`docs/XFLOW-CREDENTIAL-REVOCATION.md`](docs/XFLOW-CREDENTIAL-REVOCATION.md)
 
 ## Local commands
 
@@ -37,7 +39,6 @@ npm install
 cp .env.example .env
 npm run db:push
 npm run db:seed
-npm run setup-stripe
 npm run generate-issue -- --input scripts/issues/your-file.json
 npm run dev
 ```

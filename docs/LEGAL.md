@@ -66,7 +66,7 @@ Processors, cookies, and AI activity always recompute from live env at render ti
 
 - Export/Access with license keys only for **authenticated owner**
 - Delete: auto-removes FREE waitlist Subscriber (no billing IDs) + consents; queues paid/auth/processor erasure for operators
-- Does **not** claim full erasure across Supabase Auth, Razorpay/Stripe, Resend, OpenAI, Vercel logs
+- Does **not** claim full erasure across Supabase Auth, Xflow, Resend, OpenAI, Vercel logs
 
 ## Database
 

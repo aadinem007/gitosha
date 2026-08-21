@@ -63,8 +63,7 @@ export function mapProviderError(err: unknown): PaymentServiceError {
     return new PaymentServiceError("canceled", 400);
   }
   if (
-    message.includes("STRIPE_SECRET_KEY") ||
-    message.includes("RAZORPAY") ||
+    message.includes("XFLOW_API_KEY") ||
     lower.includes("not configured")
   ) {
     return new PaymentServiceError("unavailable", 500);

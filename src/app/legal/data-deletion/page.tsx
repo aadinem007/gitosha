@@ -17,7 +17,7 @@ export default async function DataDeletionPage() {
     <LegalShell title="Data Deletion" config={config}>
       <p>
         We do <strong>not</strong> falsely claim full erasure across every processor (Supabase Auth,
-        Razorpay/Stripe, Resend, OpenAI, Vercel logs) from a single button. Deletion is a workflow
+        Xflow, Resend, OpenAI, Vercel logs) from a single button. Deletion is a workflow
         with automated steps where safe and operator steps for external systems.
       </p>
 
@@ -43,7 +43,7 @@ export default async function DataDeletionPage() {
       <ul>
         <li>Supabase Auth user deletion</li>
         <li>Paid Subscriber / LicenseKey rows needed for accounting, fraud, or license disputes</li>
-        <li>Razorpay / Stripe customer &amp; payment history (processor dashboards)</li>
+        <li>Xflow payment history (and any legacy processor records still in those dashboards)</li>
         <li>Email provider logs; AI provider logs if messages were sent</li>
         <li>Hosting/CDN access logs</li>
       </ul>

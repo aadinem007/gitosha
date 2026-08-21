@@ -5,27 +5,7 @@ import Link from "next/link";
 import { CurrencyPreference } from "@/components/CurrencyPreference";
 import { VAULT_PLANS, FOUNDRY_PLANS } from "@/lib/pricing";
 
-declare global {
-  interface Window {
-    Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
-  }
-}
-
 const CHECKOUT_OPEN_EVENT = "gitosha:checkout-open";
-
-function loadRazorpayScript(): Promise<boolean> {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-}
 
 function idempotencyKeyFor(planId: string, email: string): string {
   try {
@@ -75,9 +55,7 @@ export function CheckoutButton({
   function openPanel() {
     setOpen(true);
     setError(null);
-    window.dispatchEvent(
-      new CustomEvent(CHECKOUT_OPEN_EVENT, { detail: { planId } })
-    );
+    window.dispatchEvent(new CustomEvent(CHECKOUT_OPEN_EVENT, { detail: { planId } }));
   }
 
   function closePanel() {
@@ -118,93 +96,19 @@ export function CheckoutButton({
       }
 
       if (data.chargeLabel && data.currency) {
-        setChargeHint(`You will be charged ${data.chargeLabel} (${data.currency}).`);
+        setChargeHint(`You will be charged ${data.chargeLabel} (${data.currency}) via Xflow UPI.`);
+      }
+
+      if (typeof data.upiIntentUrl === "string" && data.upiIntentUrl) {
+        try {
+          sessionStorage.setItem(`gitosha_xflow_upi_${data.sessionId ?? data.orderId ?? ""}`, data.upiIntentUrl);
+        } catch {
+          /* private mode */
+        }
       }
 
       if (data.url) {
         window.location.href = data.url as string;
-        return;
-      }
-
-      if (data.provider === "razorpay" || data.keyId) {
-        const ready = await loadRazorpayScript();
-        if (!ready || !window.Razorpay) {
-          setError("Could not load checkout. Check your connection and try again.");
-          setLoading(false);
-          return;
-        }
-
-        const options: Record<string, unknown> = {
-          key: data.keyId,
-          name: data.name,
-          description: data.description,
-          prefill: { email: data.email },
-          theme: { color: "#c8ff00" },
-          handler: async (response: {
-            razorpay_payment_id: string;
-            razorpay_order_id?: string;
-            razorpay_subscription_id?: string;
-            razorpay_signature: string;
-          }) => {
-            const verifyRes = await fetch("/api/checkout/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                provider: "razorpay",
-                mode: data.mode,
-                planId: data.planId,
-                email: data.email,
-                ...response,
-              }),
-            });
-            if (verifyRes.ok) {
-              const result = await verifyRes.json();
-              try {
-                sessionStorage.setItem(
-                  "gitosha_checkout",
-                  JSON.stringify({
-                    product: result.product ?? "foundry",
-                    email: result.email ?? data.email,
-                    licenseKey: result.licenseKey ?? "",
-                    transactionId: result.transactionId ?? data.transactionId ?? "",
-                    chargeLabel: data.chargeLabel ?? "",
-                    currency: data.currency ?? "",
-                  })
-                );
-              } catch {
-                /* private mode */
-              }
-              const params = new URLSearchParams({
-                product: result.product ?? "foundry",
-              });
-              if (result.transactionId) params.set("receipt", result.transactionId);
-              window.location.href = `/checkout/success?${params.toString()}`;
-            } else {
-              const err = await verifyRes.json();
-              setError(
-                err.error ??
-                  "Payment received but verification failed. Check your email before retrying."
-              );
-              setLoading(false);
-            }
-          },
-          modal: {
-            ondismiss: () => {
-              setLoading(false);
-              setError("Checkout canceled. No charge was made.");
-            },
-          },
-        };
-
-        if (data.mode === "payment") {
-          options.order_id = data.orderId;
-          options.amount = data.amount;
-          options.currency = data.currency;
-        } else {
-          options.subscription_id = data.subscriptionId;
-        }
-
-        new window.Razorpay(options).open();
         return;
       }
 
@@ -250,6 +154,10 @@ export function CheckoutButton({
         {plan?.price ? (
           <span className="text-[var(--muted)]"> · catalog {plan.price}</span>
         ) : null}
+      </p>
+      <p className="text-xs leading-snug text-[var(--fog)]">
+        Pay with UPI in INR through Xflow. Catalog USD is converted with our fixed price book — not
+        live FX. International cards are not available on this rail.
       </p>
       {plan?.amountCents != null && (
         <CurrencyPreference
@@ -310,7 +218,7 @@ export function CheckoutButton({
         </p>
       )}
       <button type="submit" disabled={loading || !accepted} className="btn-primary form-submit w-full">
-        {loading ? "Opening checkout…" : label}
+        {loading ? "Opening Xflow checkout…" : label}
       </button>
     </form>
   );

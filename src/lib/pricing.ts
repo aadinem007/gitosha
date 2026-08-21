@@ -20,7 +20,7 @@ export type PricingPlan = {
   cadence: string;
   description: string;
   features: string[];
-  /** Stripe minor units (cents). amount * 100. */
+  /** Price in minor units (cents/paise). */
   amountCents?: number;
   planEnvVar?: "vaultPro" | "vaultTeam";
   mode: "subscription" | "payment" | "none";
@@ -40,7 +40,7 @@ export type PricingCurrency = (typeof PRICING_CURRENCIES)[number];
 export const OPERATOR_LIST_PRICE_CENTS = 1900;
 
 /**
- * Fixed configured INR conversion for Razorpay India settlement.
+ * Fixed configured INR conversion for the price book fallback.
  * NOT a live FX rate — do not present as market FX.
  * Re-exported from payments layer for a single source of truth.
  */

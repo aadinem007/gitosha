@@ -1,13 +1,12 @@
 /**
  * Payment service layer unit tests (node:test + tsx).
- * Mocks providers — no live charges.
+ * No live charges.
  *
  * Run: npx tsx --test src/lib/payments/__tests__/payments.test.ts
  */
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { createHmac } from "crypto";
 
 import {
   chargeCurrencyForProvider,
@@ -22,20 +21,18 @@ import {
 } from "../currencies";
 import { PaymentServiceError, userPaymentMessage, mapProviderError } from "../errors";
 import { buildCheckoutIdempotencyKey } from "../idempotency";
-import { isScaffoldProvider } from "../providers/stubs";
-import { wiseProvider } from "../providers/wise";
-import { payoneerProvider } from "../providers/payoneer";
-import { paypalProvider } from "../providers/paypal";
 import { invoiceHtmlDocument } from "../invoice";
 import { isFulfillablePlanId } from "@/lib/fulfill";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
+import { getPaymentsProvider } from "../registry";
+import { mapXflowIntentStatus, xflowIntentIsPaid } from "../xflow-status";
+import { paiseToMajor, xflowProvider } from "../providers/xflow";
 
 describe("currency / price book", () => {
-  it("uses price book for INR/EUR when present (not live FX)", () => {
+  it("uses price book for INR when present (not live FX)", () => {
     assert.equal(USD_CENTS_TO_INR_PAISE_FACTOR, 83);
     assert.equal(PLAN_PRICE_BOOK["foundry-solo"]?.USD, 9900);
     assert.equal(resolveChargeAmount(9900, "INR", "foundry-solo"), PLAN_PRICE_BOOK["foundry-solo"]!.INR);
-    assert.equal(resolveChargeAmount(9900, "EUR", "foundry-solo"), PLAN_PRICE_BOOK["foundry-solo"]!.EUR);
     assert.equal(resolveChargeAmount(9900, "USD", "foundry-solo"), 9900);
   });
 
@@ -43,11 +40,9 @@ describe("currency / price book", () => {
     assert.equal(resolveChargeAmount(100, "INR", "unknown-plan"), usdCentsToInrPaise(100));
   });
 
-  it("maps charge currency by provider", () => {
-    assert.equal(chargeCurrencyForProvider("razorpay"), "INR");
+  it("charges INR for Xflow only", () => {
     assert.equal(chargeCurrencyForProvider("xflow"), "INR");
-    assert.equal(chargeCurrencyForProvider("stripe"), "USD");
-    assert.equal(chargeCurrencyForProvider("paypal"), "USD");
+    assert.equal(getPaymentsProvider(), "xflow");
   });
 
   it("labels display approx when not in price book", () => {
@@ -59,7 +54,6 @@ describe("currency / price book", () => {
   it("formats money without inventing tax by default", () => {
     assert.equal(formatMoney(1500, "USD"), "$15");
     assert.match(formatMoney(124500, "INR"), /₹/);
-    assert.match(formatMoney(1400, "EUR"), /€/);
     assert.equal(taxConfig().enabled, false);
   });
 
@@ -77,45 +71,30 @@ describe("plan allowlist", () => {
     assert.equal(isFulfillablePlanId("foundry-solo"), true);
   });
 
-  it("every paid catalog plan has amountCents and price-book USD", () => {
+  it("every paid catalog plan has amountCents and price-book USD + INR", () => {
     for (const p of [...VAULT_PLANS, ...FOUNDRY_PLANS]) {
       if (p.mode === "none") continue;
       assert.ok(p.amountCents && p.amountCents > 0, p.id);
       assert.ok(PLAN_PRICE_BOOK[p.id]?.USD, `price book USD for ${p.id}`);
+      assert.ok(PLAN_PRICE_BOOK[p.id]?.INR, `price book INR for ${p.id}`);
     }
   });
 });
 
-describe("registry / capability gates", () => {
-  it("no longer treats PayPal/Xflow/Wise/Payoneer as scaffolds", () => {
-    assert.equal(isScaffoldProvider("paypal"), false);
-    assert.equal(isScaffoldProvider("xflow"), false);
-    assert.equal(isScaffoldProvider("wise"), false);
-    assert.equal(isScaffoldProvider("payoneer"), false);
+describe("Xflow status mapping", () => {
+  it("maps documented intent statuses only", () => {
+    assert.equal(mapXflowIntentStatus("successful"), "succeeded");
+    assert.equal(mapXflowIntentStatus("completed"), "succeeded");
+    assert.equal(mapXflowIntentStatus("processing"), "processing");
+    assert.equal(mapXflowIntentStatus("expired"), "canceled");
+    assert.equal(mapXflowIntentStatus("failed"), "failed");
+    assert.equal(mapXflowIntentStatus("mystery"), "pending");
+    assert.equal(xflowIntentIsPaid("successful"), true);
+    assert.equal(xflowIntentIsPaid("processing"), false);
   });
 
-  it("Wise / Payoneer refuse customer checkout", async () => {
-    assert.equal(wiseProvider.getPublicConfig().supportsCheckout, false);
-    assert.equal(payoneerProvider.getPublicConfig().supportsCheckout, false);
-    assert.equal(wiseProvider.isLiveReady(), false);
-    assert.equal(payoneerProvider.isLiveReady(), false);
-    await assert.rejects(() =>
-      wiseProvider.createCheckout({
-        planId: "foundry-solo",
-        email: "a@b.com",
-        amount: 9900,
-        currency: "USD",
-        planName: "Solo",
-        planDescription: "x",
-        product: "foundry",
-        mode: "payment",
-      })
-    );
-  });
-
-  it("PayPal is not live without credentials + webhook id", () => {
-    assert.equal(paypalProvider.isLiveReady(), false);
-    assert.equal(paypalProvider.getPublicConfig().supportsCheckout, true);
+  it("formats paise as Xflow major INR", () => {
+    assert.equal(paiseToMajor(821700), "8217.00");
   });
 });
 
@@ -125,14 +104,14 @@ describe("invoice HTML", () => {
       invoiceNumber: "GIT-2026-000001",
       userEmail: "buyer@example.com",
       planName: "Foundry Solo",
-      currency: "USD",
-      subtotalAmount: 9900,
+      currency: "INR",
+      subtotalAmount: 821700,
       taxAmount: 0,
       taxLabel: null,
       taxRateBps: 0,
-      totalAmount: 9900,
+      totalAmount: 821700,
       lineItems: [
-        { description: "Foundry Solo", quantity: 1, unitAmount: 9900, amount: 9900 },
+        { description: "Foundry Solo", quantity: 1, unitAmount: 821700, amount: 821700 },
       ],
       issuedAt: new Date("2026-07-31T00:00:00.000Z"),
       status: "paid",
@@ -140,7 +119,6 @@ describe("invoice HTML", () => {
     assert.match(html, /GIT-2026-000001/);
     assert.match(html, /buyer@example\.com/);
     assert.match(html, /Foundry Solo/);
-    assert.match(html, /\$99/);
   });
 });
 
@@ -149,7 +127,7 @@ describe("idempotency keys", () => {
     const k = buildCheckoutIdempotencyKey({
       email: "a@b.com",
       planId: "foundry-solo",
-      provider: "razorpay",
+      provider: "xflow",
       clientKey: "client-stable-key-01",
     });
     assert.equal(k, "client:client-stable-key-01");
@@ -159,12 +137,12 @@ describe("idempotency keys", () => {
     const a = buildCheckoutIdempotencyKey({
       email: "a@b.com",
       planId: "foundry-solo",
-      provider: "stripe",
+      provider: "xflow",
     });
     const b = buildCheckoutIdempotencyKey({
       email: "a@b.com",
       planId: "foundry-solo",
-      provider: "stripe",
+      provider: "xflow",
     });
     assert.equal(a, b);
     assert.match(a, /^auto:/);
@@ -175,7 +153,7 @@ describe("error mapping", () => {
   it("maps declines / timeouts / config errors safely", () => {
     assert.equal(mapProviderError(new Error("card_declined")).code, "declined");
     assert.equal(mapProviderError(new Error("ETIMEDOUT")).code, "timeout");
-    assert.equal(mapProviderError(new Error("STRIPE_SECRET_KEY must be set")).code, "unavailable");
+    assert.equal(mapProviderError(new Error("XFLOW_API_KEY must be set")).code, "unavailable");
     assert.equal(userPaymentMessage("invalid_signature"), "Payment verification failed.");
   });
 
@@ -186,47 +164,31 @@ describe("error mapping", () => {
   });
 });
 
-describe("razorpay signature verify (unit)", () => {
-  it("accepts valid HMAC and rejects tampered", () => {
-    const secret = "test_webhook_secret";
-    const body = '{"event":"payment.captured"}';
-    const good = createHmac("sha256", secret).update(body).digest("hex");
-    const bad = createHmac("sha256", secret).update(body + "x").digest("hex");
-    assert.notEqual(good, bad);
-    assert.equal(good.length, 64);
-  });
-});
-
-describe("mocked fulfill path semantics", () => {
-  it("successful payment path requires fulfillable plan + email", () => {
-    const event = {
-      email: "buyer@example.com",
-      planId: "foundry-solo",
-      paymentId: "pay_test_1",
-    };
-    assert.ok(isFulfillablePlanId(event.planId));
-    assert.ok(event.email.includes("@"));
+describe("Xflow-only adapter gates", () => {
+  it("is not live without server credentials", () => {
+    assert.equal(xflowProvider.isLiveReady(), false);
+    assert.equal(xflowProvider.id, "xflow");
+    assert.deepEqual(xflowProvider.getPublicConfig().supportedCurrencies, ["INR"]);
   });
 
-  it("failed payment does not fulfill unknown plan", () => {
-    assert.equal(isFulfillablePlanId("evil-plan"), false);
+  it("does not fake refunds", async () => {
+    await assert.rejects(
+      () =>
+        xflowProvider.refund({
+          providerRef: "transaction_intent_test",
+          amount: 100,
+          currency: "INR",
+        }),
+      (err: unknown) =>
+        err instanceof PaymentServiceError && err.code === "refund_failed" && err.httpStatus === 501
+    );
   });
-});
 
-describe("duplicate webhook identity", () => {
-  it("same provider+eventId is the idempotency identity", () => {
-    const a = { provider: "stripe", eventId: "evt_123" };
-    const b = { provider: "stripe", eventId: "evt_123" };
-    assert.deepEqual(a, b);
-  });
-});
-
-describe("refund request shape", () => {
-  it("requires positive amount not exceeding charge", () => {
-    const charged = 9900;
-    const refundAmount = 9900;
-    assert.ok(refundAmount > 0 && refundAmount <= charged);
-    assert.ok(!(0 > 0));
-    assert.ok(!(10000 <= charged));
+  it("every paid plan is fulfillable and has an INR book price for Xflow", () => {
+    for (const p of [...VAULT_PLANS, ...FOUNDRY_PLANS]) {
+      if (p.mode === "none") continue;
+      assert.equal(isFulfillablePlanId(p.id), true, p.id);
+      assert.ok((PLAN_PRICE_BOOK[p.id]?.INR ?? 0) > 0, p.id);
+    }
   });
 });

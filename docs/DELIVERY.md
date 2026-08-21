@@ -4,7 +4,7 @@ You do **not** manually email zips or code. The site delivers.
 
 ## Foundry ($99 Solo / $249 Agency / $149 Bundle)
 
-1. Customer pays via Stripe Checkout (default)
+1. Customer pays via Xflow UPI
 2. `fulfillPurchase` creates a `LicenseKey` row
 3. Success page shows the key + **Download Foundry zip**
 4. `POST /api/license/download` checks email+key, streams `kits/foundry` as a zip

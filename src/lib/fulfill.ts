@@ -4,9 +4,9 @@ import { sendLicenseKeyEmail, sendWelcomeEmail } from "@/lib/email";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
 import { securityLog } from "@/lib/secure";
 
-export type PaymentProvider = "stripe" | "razorpay" | "paypal" | "xflow";
+/** Historical provider tags still exist on old license/subscriber rows. New fulfill is Xflow. */
+export type PaymentProvider = "xflow" | "stripe" | "razorpay" | "paypal";
 
-/** Paid plan ids only — never trust arbitrary client/webhook plan strings. */
 export const FULFILLABLE_PLAN_IDS = new Set(
   [...VAULT_PLANS, ...FOUNDRY_PLANS]
     .filter((p) => p.mode !== "none")
@@ -25,31 +25,19 @@ export async function fulfillVaultSubscription(opts: {
   provider?: PaymentProvider;
 }) {
   const tier = opts.planId.includes("team") || opts.planId.includes("studio") ? "TEAM" : "PRO";
-  const provider = opts.provider ?? "stripe";
+  const provider = opts.provider ?? "xflow";
 
   const existing = await prisma.subscriber.findUnique({ where: { email: opts.email } });
   const alreadyActiveSameTier =
     existing?.status === "ACTIVE" &&
     existing.tier === tier &&
-    (provider === "stripe"
-      ? Boolean(opts.subscriptionId) && existing.stripeSubscriptionId === opts.subscriptionId
-      : provider === "razorpay"
-        ? Boolean(opts.subscriptionId) && existing.razorpaySubscriptionId === opts.subscriptionId
-        : existing.status === "ACTIVE" && existing.tier === tier);
+    (provider === "xflow"
+      ? !opts.subscriptionId || existing.xflowSubscriptionId === opts.subscriptionId
+      : existing.status === "ACTIVE" && existing.tier === tier);
 
-  const stripeFields =
-    provider === "stripe"
-      ? {
-          stripeCustomerId: opts.customerId,
-          stripeSubscriptionId: opts.subscriptionId,
-        }
-      : {};
-  const razorpayFields =
-    provider === "razorpay"
-      ? {
-          razorpayCustomerId: opts.customerId,
-          razorpaySubscriptionId: opts.subscriptionId,
-        }
+  const xflowFields =
+    provider === "xflow" && opts.subscriptionId
+      ? { xflowSubscriptionId: opts.subscriptionId }
       : {};
 
   await prisma.subscriber.upsert({
@@ -58,18 +46,15 @@ export async function fulfillVaultSubscription(opts: {
       email: opts.email,
       tier,
       status: "ACTIVE",
-      ...stripeFields,
-      ...razorpayFields,
+      ...xflowFields,
     },
     update: {
       tier,
       status: "ACTIVE",
-      ...stripeFields,
-      ...razorpayFields,
+      ...xflowFields,
     },
   });
 
-  // Idempotent webhooks / verify retries must not spam welcome mail
   if (!alreadyActiveSameTier && !(existing?.status === "ACTIVE" && existing.tier === tier)) {
     await sendWelcomeEmail(opts.email, tier);
   }
@@ -83,74 +68,42 @@ export async function fulfillFoundryPurchase(opts: {
   provider?: PaymentProvider;
 }) {
   const tier = opts.planId.includes("agency") ? "AGENCY" : "SOLO";
-  const provider = opts.provider ?? "stripe";
+  const provider = opts.provider ?? "xflow";
 
   if (opts.paymentId) {
-    let existing = null;
-    if (provider === "stripe") {
-      existing = await prisma.licenseKey.findFirst({
-        where: {
-          OR: [
-            { stripePaymentId: opts.paymentId },
-            ...(opts.orderId ? [{ stripeCheckoutSessionId: opts.orderId }] : []),
-          ],
-        },
-      });
-    } else if (provider === "razorpay") {
-      existing = await prisma.licenseKey.findUnique({
-        where: { razorpayPaymentId: opts.paymentId },
-      });
-    } else if (provider === "paypal") {
-      existing = await prisma.licenseKey.findFirst({
-        where: {
-          OR: [
-            { paypalCaptureId: opts.paymentId },
-            ...(opts.orderId ? [{ paypalOrderId: opts.orderId }] : []),
-          ],
-        },
-      });
-    } else if (provider === "xflow") {
-      existing = await prisma.licenseKey.findUnique({
-        where: { xflowIntentId: opts.paymentId },
-      });
-    }
+    const existing = await prisma.licenseKey.findFirst({
+      where: {
+        OR: [
+          { xflowIntentId: opts.paymentId },
+          { stripePaymentId: opts.paymentId },
+          { razorpayPaymentId: opts.paymentId },
+          { paypalCaptureId: opts.paymentId },
+          ...(opts.orderId
+            ? [
+                { stripeCheckoutSessionId: opts.orderId },
+                { razorpayOrderId: opts.orderId },
+                { paypalOrderId: opts.orderId },
+              ]
+            : []),
+        ],
+      },
+    });
     if (existing) return existing.key;
   }
 
   const key = generateLicenseKey();
-  const providerFields =
-    provider === "stripe"
-      ? {
-          stripePaymentId: opts.paymentId,
-          stripeCheckoutSessionId: opts.orderId,
-        }
-      : provider === "razorpay"
-        ? {
-            razorpayPaymentId: opts.paymentId,
-            razorpayOrderId: opts.orderId,
-          }
-        : provider === "paypal"
-          ? {
-              paypalCaptureId: opts.paymentId,
-              paypalOrderId: opts.orderId,
-            }
-          : {
-              xflowIntentId: opts.paymentId,
-            };
-
   await prisma.licenseKey.create({
     data: {
       key,
       email: opts.email,
       tier,
-      ...providerFields,
+      ...(provider === "xflow" ? { xflowIntentId: opts.paymentId } : {}),
     },
   });
   await sendLicenseKeyEmail(opts.email, key, tier);
   return key;
 }
 
-/** Bundle / annual / foundry unlocks — single entry used by verify + webhook. */
 export async function fulfillPurchase(opts: {
   email: string;
   planId: string;
@@ -160,9 +113,8 @@ export async function fulfillPurchase(opts: {
   customerId?: string;
   provider?: PaymentProvider;
 }): Promise<{ licenseKey?: string; product: string }> {
-  const provider = opts.provider ?? "stripe";
+  const provider = opts.provider ?? "xflow";
 
-  // Fail closed: refuse unknown / free / forged plan ids from notes or metadata
   if (!isFulfillablePlanId(opts.planId)) {
     securityLog("fulfill_unknown_plan", { planId: opts.planId.slice(0, 64), provider });
     return { product: "unknown" };
@@ -180,6 +132,7 @@ export async function fulfillPurchase(opts: {
       email: opts.email,
       planId: "vault-pro-annual",
       provider,
+      subscriptionId: opts.subscriptionId,
     });
     return { licenseKey, product: "bundle" };
   }

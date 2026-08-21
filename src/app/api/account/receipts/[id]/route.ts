@@ -53,6 +53,7 @@ export async function GET(
           where: {
             email: sessionEmail,
             OR: [
+              { xflowIntentId: tx.providerRef },
               { stripePaymentId: tx.providerRef },
               { stripeCheckoutSessionId: tx.providerRef },
               { razorpayPaymentId: tx.providerRef },

@@ -14,8 +14,8 @@ async function RefundBody() {
   return (
     <LegalShell title="Refund Policy" config={config}>
       <p>
-        This Refund Policy applies to purchases made on {config.productName} (USD list prices;
-        checkout via the configured payment provider). All products are digital —{" "}
+        This Refund Policy applies to purchases made on {config.productName} (USD catalog prices;
+        checkout charged in INR via Xflow UPI). All products are digital —{" "}
         {config.shipping.delivery}
       </p>
 
@@ -39,9 +39,9 @@ async function RefundBody() {
       <h2>How to request</h2>
       <p>
         Email <ContactMailto email={config.business.contactEmail} /> with purchase email, payment /
-        receipt ID (Razorpay or Stripe), Foundry license key if issued, and a short reason. We aim
-        to respond within 3 business days. Approved refunds are issued via the original payment
-        processor.
+        receipt ID (Xflow transaction intent), Foundry license key if issued, and a short reason. We aim
+        to respond within 3 business days. Approved refunds are issued via Xflow where the Xflow
+        account supports them — this site does not call a public refund API.
       </p>
 
       <h2>Chargebacks</h2>

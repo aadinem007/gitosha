@@ -55,8 +55,8 @@ export default async function CookiesPage() {
 
       <h2>Third-party checkout</h2>
       <p>
-        When you open Razorpay or Stripe checkout, those processors may set their own cookies on
-        their domains subject to their policies. We do not control those cookies.
+        Checkout uses Xflow UPI. Xflow may set cookies on its own domains subject to its policy. We
+        do not control those cookies.
       </p>
 
       <h2>Manage preferences</h2>

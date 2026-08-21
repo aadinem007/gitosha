@@ -1,6 +1,5 @@
 import { BRAND } from "@/lib/brand";
 import { FOUNDRY_PLANS, VAULT_PLANS } from "@/lib/pricing";
-import { getPaymentsProvider } from "@/lib/payments";
 import { isLegalEmailConfigured } from "@/lib/legal/email";
 import type {
   ConsentPreferences,
@@ -17,12 +16,12 @@ function envTrim(key: string): string | undefined {
   return v && v.length > 0 ? v : undefined;
 }
 
-function isStripeConfigured(): boolean {
-  return Boolean(process.env.STRIPE_SECRET_KEY?.trim());
-}
-
-function isRazorpayConfigured(): boolean {
-  return Boolean(process.env.RAZORPAY_KEY_ID?.trim() && process.env.RAZORPAY_KEY_SECRET?.trim());
+function isXflowConfigured(): boolean {
+  return Boolean(
+    process.env.XFLOW_API_KEY?.trim() &&
+      process.env.XFLOW_ACCOUNT_ID?.trim() &&
+      process.env.XFLOW_WEBHOOK_SECRET?.trim()
+  );
 }
 
 function isResendConfigured(): boolean {
@@ -42,9 +41,6 @@ function privacyEmail(): string {
 }
 
 function buildProcessors(): ThirdPartyProcessor[] {
-  const provider = getPaymentsProvider();
-  const stripeOn = isStripeConfigured();
-  const razorpayOn = isRazorpayConfigured();
   const openaiOn = isOpenAiConfigured();
 
   return [
@@ -65,21 +61,12 @@ function buildProcessors(): ThirdPartyProcessor[] {
       active: true,
     },
     {
-      id: "razorpay",
-      name: "Razorpay",
-      purpose: "Payment processing for checkout (default provider when configured).",
-      dataCategories: ["email", "payment references", "order/subscription IDs", "billing metadata"],
-      policyUrl: "https://razorpay.com/privacy/",
-      active: razorpayOn || provider === "razorpay",
-      optional: true,
-    },
-    {
-      id: "stripe",
-      name: "Stripe",
-      purpose: "Optional alternate payment processing when PAYMENTS_PROVIDER=stripe.",
-      dataCategories: ["email", "customer/subscription IDs", "checkout session IDs", "billing metadata"],
-      policyUrl: "https://stripe.com/privacy",
-      active: stripeOn && provider === "stripe",
+      id: "xflow",
+      name: "Xflow",
+      purpose: "Payment collection via INR UPI (TransactionIntent / Subscription) and settlement.",
+      dataCategories: ["email", "payment references", "transaction intent IDs", "billing metadata"],
+      policyUrl: "https://www.xflowpay.com/privacy",
+      active: isXflowConfigured(),
       optional: true,
     },
     {
@@ -341,7 +328,7 @@ export function buildDefaultLegalConfig(): LegalConfig {
       oneTimePlans: oneTime,
       notes: [
         "Scout (vault-free) requires no payment and has nothing to cancel.",
-        "List prices are USD; Razorpay may charge an INR equivalent when that provider is active.",
+        "List prices are USD; checkout is charged in INR via Xflow UPI using a fixed price book (not live FX).",
         "Operator launch pricing may change after the early-operator cap described on Pricing.",
       ],
     },

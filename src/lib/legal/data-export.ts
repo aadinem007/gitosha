@@ -38,7 +38,7 @@ export async function buildUserDataExport(email: string) {
     email: normalized,
     limitations: [
       "Does not include Supabase Auth internal records beyond what this app stores.",
-      "Does not include full payment processor history (Razorpay/Stripe dashboards).",
+      "Does not include full payment processor history (Xflow dashboard; historical Stripe/Razorpay if any).",
       "Does not include Vercel/OpenAI/Resend provider logs.",
       "Chat messages are not stored in the app database by default.",
       "License keys are included because you are the authenticated owner.",
@@ -51,10 +51,11 @@ export async function buildUserDataExport(email: string) {
           status: subscriber.status,
           createdAt: subscriber.createdAt,
           updatedAt: subscriber.updatedAt,
+          hasXflowSubscription: Boolean(subscriber.xflowSubscriptionId),
           hasStripeCustomer: Boolean(subscriber.stripeCustomerId),
           hasRazorpayCustomer: Boolean(subscriber.razorpayCustomerId),
           // IDs useful for support; not secrets
-          stripeCustomerId: subscriber.stripeCustomerId,
+          xflowSubscriptionId: subscriber.xflowSubscriptionId,
           stripeSubscriptionId: subscriber.stripeSubscriptionId,
           razorpayCustomerId: subscriber.razorpayCustomerId,
           razorpaySubscriptionId: subscriber.razorpaySubscriptionId,
@@ -70,6 +71,7 @@ export async function buildUserDataExport(email: string) {
       createdAt: l.createdAt,
       razorpayOrderId: l.razorpayOrderId,
       stripeCheckoutSessionId: l.stripeCheckoutSessionId,
+      xflowIntentId: l.xflowIntentId,
     })),
     consents: consents.map((c) => ({
       id: c.id,
@@ -97,6 +99,7 @@ export async function attemptSafeAutoDelete(email: string): Promise<{
   const subscriber = await prisma.subscriber.findUnique({ where: { email: normalized } });
   if (subscriber) {
     const hasBilling =
+      Boolean(subscriber.xflowSubscriptionId) ||
       Boolean(subscriber.stripeCustomerId) ||
       Boolean(subscriber.razorpayCustomerId) ||
       Boolean(subscriber.stripeSubscriptionId) ||

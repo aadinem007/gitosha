@@ -33,6 +33,7 @@ model Subscriber {
   stripeSubscriptionId    String?          @unique
   razorpayCustomerId      String?          @unique
   razorpaySubscriptionId  String?          @unique
+  xflowSubscriptionId     String?          @unique
   createdAt               DateTime         @default(now())
   updatedAt               DateTime         @updatedAt
 
@@ -210,8 +211,10 @@ model ThirdPartyProcessor {
 // --- Payments (provider-agnostic ledger; secrets stay in env) ---
 
 enum PaymentTxStatus {
+  created
   pending
   requires_action
+  processing
   succeeded
   failed
   canceled

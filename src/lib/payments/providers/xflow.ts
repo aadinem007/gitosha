@@ -1,6 +1,5 @@
 import { createHmac } from "crypto";
 import { fulfillPurchase, isFulfillablePlanId } from "@/lib/fulfill";
-import { safeEqual } from "@/lib/secure";
 import { PaymentServiceError, paymentsLog } from "../errors";
 import type { PaymentProvider } from "../provider";
 import type {
@@ -10,19 +9,24 @@ import type {
   VerifyPaymentResult,
 } from "../types";
 import { formatMoney, siteUrl } from "../currencies";
+import { verifyXflowWebhook } from "../xflow-webhook";
+import { mapXflowIntentStatus, xflowIntentIsPaid } from "../xflow-status";
 
 /**
- * Xflow (xflowpay.com) — real cross-border / India collection API.
+ * Xflow adapter — official collection APIs only.
  *
- * Buyer checkout path used here: UPI TransactionIntent (INR only).
- * Requires platform/connected-user onboarding (`XFLOW_ACCOUNT_ID`).
- * UPI intent URLs are mobile-oriented; web desktop UX is limited vs Razorpay/Stripe.
+ * Checkout: INR UPI TransactionIntent (one-time) or Subscription (monthly Vault).
+ * Docs: https://docs.xflowpay.com/imports/latest/guide
+ * Webhooks: https://docs.xflowpay.com/exports/latest/guide (Verify events)
  *
- * Live checkout is opt-in: credentials + PAYMENTS_XFLOW_ENABLED=true.
- * Do not enable for production traffic until webhooks fulfill licenses in your env.
+ * Xflow does not document a public refund API — refund() fails closed.
  */
 
-const API_BASE = "https://api.xflowpay.com";
+const DEFAULT_API_BASE = "https://api.xflowpay.com";
+
+function apiBase(): string {
+  return (process.env.XFLOW_API_BASE ?? DEFAULT_API_BASE).replace(/\/$/, "");
+}
 
 function credentialsOk(): boolean {
   const key = process.env.XFLOW_API_KEY?.trim() ?? "";
@@ -46,7 +50,7 @@ function authHeaders(): Record<string, string> {
 }
 
 /** Minor units (paise) → major INR string for Xflow. */
-function paiseToMajor(paise: number): string {
+export function paiseToMajor(paise: number): string {
   return (paise / 100).toFixed(2);
 }
 
@@ -60,66 +64,88 @@ function majorToPaise(value: string | number | undefined): number | undefined {
 type XflowIntent = {
   id: string;
   status?: string;
-  amount?: string;
+  type?: string;
+  amount?: string | number;
   currency?: string;
+  livemode?: boolean;
+  subscription_id?: string;
   metadata?: Record<string, string> | null;
   payment_method_details?: {
     upi?: { intent_url?: string; flow?: string };
   };
 };
 
-async function xflowFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: { ...authHeaders(), ...(init.headers as Record<string, string> | undefined) },
-  });
-  const text = await res.text();
-  let body: unknown = null;
-  try {
-    body = text ? JSON.parse(text) : null;
-  } catch {
-    body = null;
+type XflowSubscription = {
+  id: string;
+  status?: string;
+  amount?: string | number;
+  currency?: string;
+  metadata?: Record<string, string> | null;
+};
+
+function asList<T>(body: unknown): T[] {
+  if (Array.isArray(body)) return body as T[];
+  if (body && typeof body === "object" && Array.isArray((body as { data?: T[] }).data)) {
+    return (body as { data: T[] }).data;
   }
-  if (!res.ok) {
-    paymentsLog("xflow_api_error", { path: path.slice(0, 80), status: res.status });
-    throw new PaymentServiceError(
-      "generic",
-      res.status >= 500 ? 502 : 400,
-      "Xflow request failed."
-    );
-  }
-  return body as T;
+  return [];
 }
 
-function verifyXflowSignature(rawBody: string, headers: Headers): boolean {
-  const secret = process.env.XFLOW_WEBHOOK_SECRET?.trim();
-  if (!secret) return false;
-  const signature =
-    headers.get("x-xflow-signature") ||
-    headers.get("xflow-signature") ||
-    headers.get("x-signature");
-  if (!signature) return false;
-  const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
-  // Accept hex or sha256=<hex>
-  const provided = signature.replace(/^sha256=/i, "").trim();
-  return safeEqual(expected, provided);
+async function xflowFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20_000);
+  try {
+    const res = await fetch(`${apiBase()}${path}`, {
+      ...init,
+      signal: controller.signal,
+      headers: { ...authHeaders(), ...(init.headers as Record<string, string> | undefined) },
+    });
+    const text = await res.text();
+    let parsed: unknown = null;
+    try {
+      parsed = text ? JSON.parse(text) : null;
+    } catch {
+      parsed = null;
+    }
+    if (!res.ok) {
+      paymentsLog("xflow_api_error", { path: path.slice(0, 80), status: res.status });
+      throw new PaymentServiceError(
+        "generic",
+        res.status >= 500 ? 502 : 400,
+        "Xflow request failed."
+      );
+    }
+    return parsed as T;
+  } catch (err) {
+    if (err instanceof PaymentServiceError) throw err;
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new PaymentServiceError("timeout", 504);
+    }
+    throw new PaymentServiceError("network", 502);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function isoDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+function monthlyAnchor(): number {
+  return Math.min(28, Math.max(1, new Date().getUTCDate()));
 }
 
 export const xflowProvider: PaymentProvider = {
   id: "xflow",
 
   isLiveReady() {
-    return (
-      credentialsOk() &&
-      webhookConfigured() &&
-      process.env.PAYMENTS_XFLOW_ENABLED === "true"
-    );
+    return credentialsOk() && webhookConfigured();
   },
 
   getPublicConfig(): ProviderPublicConfig {
     return {
       providerId: "xflow",
-      enabled: process.env.PAYMENTS_XFLOW_ENABLED === "true",
+      enabled: this.isLiveReady(),
       credentialsConfigured: credentialsOk(),
       supportedCurrencies: ["INR"],
       secretEnvVars: ["XFLOW_API_KEY", "XFLOW_ACCOUNT_ID", "XFLOW_WEBHOOK_SECRET"],
@@ -127,7 +153,7 @@ export const xflowProvider: PaymentProvider = {
       capability: "checkout",
       scaffoldOnly: false,
       operatorNote:
-        "Xflow UPI TransactionIntent (INR). Needs connected account onboarding. Prefer Razorpay for India card/UPI SaaS checkout unless you already run Xflow.",
+        "Xflow is the only checkout. INR UPI only (India). Monthly Vault uses Xflow Subscription; one-time plans use TransactionIntent. Public refund API is not documented — refunds stay in the Xflow dashboard.",
     };
   },
 
@@ -139,42 +165,72 @@ export const xflowProvider: PaymentProvider = {
       throw new PaymentServiceError(
         "currency_rejected",
         400,
-        "Xflow checkout currently supports INR only."
-      );
-    }
-    if (input.mode === "subscription") {
-      throw new PaymentServiceError(
-        "unavailable",
-        503,
-        "Xflow adapter supports one-time UPI intents only."
+        "Xflow collects INR via UPI only."
       );
     }
 
     const accountId = process.env.XFLOW_ACCOUNT_ID!.trim();
-    const intent = await xflowFetch<XflowIntent>("/v1/transaction_intents", {
-      method: "POST",
-      body: JSON.stringify({
-        amount: paiseToMajor(input.amount),
-        currency: "INR",
-        payment_method: "upi",
-        payment_method_details: { upi: { flow: "intent" } },
-        to: { account_id: accountId },
-        type: "payment",
-        metadata: {
-          planId: input.planId,
-          email: input.email,
-          product: input.product,
-        },
-      }),
-    });
+    const metadata = {
+      planId: input.planId,
+      email: input.email,
+      product: input.product,
+    };
+
+    let intent: XflowIntent;
+    let subscriptionId: string | undefined;
+
+    if (input.mode === "subscription" && input.planId !== "vault-pro-annual") {
+      // Official monthly Subscription (imports guide §5.3). Annual is one-time — interval yearly is not documented.
+      const start = new Date();
+      const end = new Date();
+      end.setUTCFullYear(end.getUTCFullYear() + 10);
+      const subscription = await xflowFetch<XflowSubscription>("/v1/subscriptions", {
+        method: "POST",
+        body: JSON.stringify({
+          amount: Number(paiseToMajor(input.amount)),
+          currency: "INR",
+          execution_anchor: monthlyAnchor(),
+          interval: "monthly",
+          payment_method: "upi",
+          payment_method_details: { upi: { flow: "intent" } },
+          to: { account_id: accountId },
+          validity_start_date: isoDate(start),
+          validity_end_date: isoDate(end),
+          metadata,
+        }),
+      });
+      subscriptionId = subscription.id;
+      const listed = await xflowFetch<unknown>(
+        `/v1/transaction_intents?subscription_id=${encodeURIComponent(subscription.id)}`
+      );
+      const intents = asList<XflowIntent>(listed);
+      const authorize =
+        intents.find((row) => row.type === "authorize_subscription") ?? intents[0];
+      if (!authorize?.id) {
+        throw new PaymentServiceError("generic", 502, "Xflow did not return a UPI authorization intent.");
+      }
+      intent = authorize;
+    } else {
+      intent = await xflowFetch<XflowIntent>("/v1/transaction_intents", {
+        method: "POST",
+        body: JSON.stringify({
+          amount: paiseToMajor(input.amount),
+          currency: "INR",
+          payment_method: "upi",
+          payment_method_details: { upi: { flow: "intent" } },
+          to: { account_id: accountId },
+          type: "payment",
+          metadata,
+        }),
+      });
+    }
 
     const intentUrl = intent.payment_method_details?.upi?.intent_url;
-    // Hosted bridge page shows UPI deep-link / instructions (desktop-safe).
     const bridgeUrl = `${siteUrl()}/checkout/xflow?intent=${encodeURIComponent(intent.id)}`;
 
     return {
       provider: "xflow",
-      mode: "payment",
+      mode: input.mode,
       planId: input.planId,
       product: input.product,
       email: input.email,
@@ -184,10 +240,10 @@ export const xflowProvider: PaymentProvider = {
       url: bridgeUrl,
       orderId: intent.id,
       sessionId: intent.id,
-      // Surface raw UPI URL for clients that can open it
-      description: intentUrl
-        ? `UPI intent ready. Open on a UPI app or use the checkout bridge.`
-        : input.planName,
+      subscriptionId,
+      upiIntentUrl: intentUrl,
+      name: input.planName,
+      description: input.planName,
     };
   },
 
@@ -197,7 +253,7 @@ export const xflowProvider: PaymentProvider = {
     if (!intentId) throw new PaymentServiceError("generic", 400, "Invalid request");
 
     const intent = await xflowFetch<XflowIntent>(`/v1/transaction_intents/${intentId}`);
-    if (intent.status !== "successful" && intent.status !== "completed") {
+    if (!xflowIntentIsPaid(intent.status)) {
       throw new PaymentServiceError("not_paid", 400);
     }
 
@@ -212,6 +268,7 @@ export const xflowProvider: PaymentProvider = {
       planId,
       paymentId: intent.id,
       orderId: intent.id,
+      subscriptionId: intent.subscription_id,
       provider: "xflow",
     });
     if (result.product === "unknown") throw new PaymentServiceError("unknown_plan", 400);
@@ -232,8 +289,9 @@ export const xflowProvider: PaymentProvider = {
     if (!credentialsOk() || !webhookConfigured()) {
       return { ok: false, error: "Unavailable", status: 503 };
     }
-    if (!verifyXflowSignature(rawBody, headers)) {
-      paymentsLog("webhook_bad_signature", { provider: "xflow" });
+    const verified = verifyXflowWebhook(rawBody, headers);
+    if (!verified.ok) {
+      paymentsLog("webhook_bad_signature", { provider: "xflow", reason: verified.reason });
       return { ok: false, error: "Invalid signature", status: 400 };
     }
 
@@ -242,6 +300,7 @@ export const xflowProvider: PaymentProvider = {
       type?: string;
       event?: string;
       linked_id?: string;
+      linked_object?: string;
       data?: { object?: Record<string, unknown> };
       object?: Record<string, unknown>;
     };
@@ -252,69 +311,86 @@ export const xflowProvider: PaymentProvider = {
     }
 
     const eventType = body.type || body.event || "unknown";
-    const eventId = body.id || `xflow_${createHmac("sha256", "id").update(rawBody).digest("hex").slice(0, 24)}`;
+    const eventId = verified.webhookId || body.id || `xflow_${createHmac("sha256", "id").update(rawBody).digest("hex").slice(0, 24)}`;
 
-    if (
-      eventType === "transaction_intent.status.successful" ||
-      eventType === "deposit.status.completed"
-    ) {
+    if (eventType === "transaction_intent.status.successful") {
       const linkedId =
         body.linked_id ||
         (typeof body.data?.object?.id === "string" ? body.data.object.id : undefined) ||
         (typeof body.object?.id === "string" ? body.object.id : undefined);
-
-      let email: string | undefined;
-      let planId: string | undefined;
-      let amount: number | undefined;
-
-      if (linkedId?.startsWith("transaction_intent") || eventType.includes("transaction_intent")) {
-        const id = linkedId!;
-        try {
-          const intent = await xflowFetch<XflowIntent>(`/v1/transaction_intents/${id}`);
-          email = intent.metadata?.email?.toLowerCase();
-          planId = intent.metadata?.planId;
-          amount = majorToPaise(intent.amount);
-          if (intent.status === "successful" || intent.status === "completed") {
-            return {
-              ok: true,
-              event: {
-                provider: "xflow",
-                eventId,
-                type: "payment.succeeded",
-                rawType: eventType,
-                email,
-                planId,
-                paymentId: intent.id,
-                orderId: intent.id,
-                amount,
-                currency: "INR",
-                summary: {
-                  event: eventType,
-                  intentId: intent.id,
-                  planId: planId ?? null,
-                },
-              },
-            };
-          }
-        } catch {
-          paymentsLog("webhook_intent_fetch_failed", { provider: "xflow" });
-        }
+      if (!linkedId) {
+        return {
+          ok: true,
+          event: {
+            provider: "xflow",
+            eventId,
+            type: "unknown",
+            rawType: eventType,
+            summary: { event: eventType, reason: "missing_linked_id" },
+          },
+        };
       }
 
+      try {
+        const intent = await xflowFetch<XflowIntent>(`/v1/transaction_intents/${linkedId}`);
+        if (!xflowIntentIsPaid(intent.status)) {
+          return {
+            ok: true,
+            event: {
+              provider: "xflow",
+              eventId,
+              type: "unknown",
+              rawType: eventType,
+              summary: {
+                event: eventType,
+                intentId: intent.id,
+                mapped: mapXflowIntentStatus(intent.status),
+              },
+            },
+          };
+        }
+        const email = intent.metadata?.email?.toLowerCase();
+        const planId = intent.metadata?.planId;
+        return {
+          ok: true,
+          event: {
+            provider: "xflow",
+            eventId,
+            type: "payment.succeeded",
+            rawType: eventType,
+            email,
+            planId,
+            paymentId: intent.id,
+            orderId: intent.id,
+            subscriptionId: intent.subscription_id,
+            amount: majorToPaise(intent.amount),
+            currency: "INR",
+            summary: {
+              event: eventType,
+              intentId: intent.id,
+              planId: planId ?? null,
+              mapped: mapXflowIntentStatus(intent.status),
+            },
+          },
+        };
+      } catch {
+        paymentsLog("webhook_intent_fetch_failed", { provider: "xflow" });
+        return { ok: false, error: "Handler failed", status: 503 };
+      }
+    }
+
+    if (eventType === "subscription.status.paused") {
+      const linkedId = body.linked_id;
       return {
         ok: true,
         event: {
           provider: "xflow",
           eventId,
-          type: "payment.succeeded",
+          type: "subscription.canceled",
           rawType: eventType,
-          email,
-          planId,
-          paymentId: linkedId,
-          orderId: linkedId,
-          amount,
-          currency: "INR",
-          summary: { event: eventType, linkedId: linkedId ?? null },
+          subscriptionId: linkedId,
+          cancelSubscription: true,
+          summary: { event: eventType, subscriptionId: linkedId ?? null },
         },
       };
     }
@@ -332,11 +408,56 @@ export const xflowProvider: PaymentProvider = {
   },
 
   async refund() {
-    // Xflow UPI collections do not expose a simple card-style refund in public docs.
     throw new PaymentServiceError(
       "refund_failed",
       501,
-      "Xflow refunds must be processed in the Xflow dashboard / support — API refund not wired."
+      "Xflow does not document a public refund API. Process refunds in the Xflow dashboard, then they will not auto-mark here."
     );
   },
+
+  async getTransaction(providerRef: string) {
+    const snap = await getXflowSettlementSnapshot(providerRef);
+    if (!snap) return null;
+    return {
+      provider: "xflow",
+      providerRef: snap.xflowIntentId,
+      status: snap.mappedStatus,
+      metadata: {
+        xflowStatus: snap.xflowStatus,
+        settlementStatus: snap.settlementStatus,
+        reconciliationStatus: snap.reconciliationStatus,
+      },
+    };
+  },
 };
+
+export type XflowSettlementSnapshot = {
+  xflowIntentId: string;
+  xflowStatus: string;
+  mappedStatus: ReturnType<typeof mapXflowIntentStatus>;
+  settlementStatus: string;
+  reconciliationStatus: string;
+  livemode: boolean | null;
+};
+
+/** Safe snapshot for admin — never includes secrets. */
+export async function getXflowSettlementSnapshot(
+  intentId: string
+): Promise<XflowSettlementSnapshot | null> {
+  if (!credentialsOk() || !intentId.startsWith("transaction_intent")) return null;
+  try {
+    const intent = await xflowFetch<XflowIntent>(`/v1/transaction_intents/${intentId}`);
+    const mapped = mapXflowIntentStatus(intent.status);
+    const paid = xflowIntentIsPaid(intent.status);
+    return {
+      xflowIntentId: intent.id,
+      xflowStatus: intent.status ?? "unknown",
+      mappedStatus: mapped,
+      settlementStatus: paid ? "collected_inr" : mapped,
+      reconciliationStatus: paid ? "awaiting_xflow_payout" : "not_settled",
+      livemode: typeof intent.livemode === "boolean" ? intent.livemode : null,
+    };
+  } catch {
+    return null;
+  }
+}

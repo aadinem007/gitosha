@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHmac } from "crypto";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { xflowFetch, xflowReady, type KitIntent } from "@/lib/xflow";
 
 const bodySchema = z.object({
-  planId: z.string().max(64),
-  email: z.string().email().max(254),
-  razorpay_payment_id: z.string().max(128),
-  razorpay_order_id: z.string().max(128),
-  razorpay_signature: z.string().max(256),
+  sessionId: z.string().max(200),
+  email: z.string().email().max(254).optional(),
+  planId: z.string().max(64).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -17,42 +15,41 @@ export async function POST(req: NextRequest) {
   if (!limited.ok) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
+  if (!xflowReady()) {
+    return NextResponse.json({ error: "Verification unavailable" }, { status: 500 });
+  }
 
   const parsed = bodySchema.safeParse(await req.json());
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const secret = process.env.RAZORPAY_KEY_SECRET;
-  if (!secret) {
-    return NextResponse.json({ error: "Verification unavailable" }, { status: 500 });
+  const intent = await xflowFetch<KitIntent>(`/v1/transaction_intents/${parsed.data.sessionId}`);
+  const status = (intent.status ?? "").toLowerCase();
+  if (status !== "successful" && status !== "completed") {
+    return NextResponse.json({ error: "Payment not completed" }, { status: 400 });
   }
 
-  const data = parsed.data;
-  const expected = createHmac("sha256", secret)
-    .update(`${data.razorpay_order_id}|${data.razorpay_payment_id}`)
-    .digest("hex");
-
-  if (expected !== data.razorpay_signature) {
-    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  const email = (intent.metadata?.email || parsed.data.email || "").toLowerCase();
+  const planId = intent.metadata?.planId || parsed.data.planId || "";
+  if (!email || !planId) {
+    return NextResponse.json({ error: "Metadata mismatch" }, { status: 400 });
   }
 
   await prisma.customer.upsert({
-    where: { email: data.email.toLowerCase() },
+    where: { email },
     create: {
-      email: data.email.toLowerCase(),
-      planId: data.planId,
+      email,
+      planId,
       status: "ACTIVE",
-      razorpayPaymentId: data.razorpay_payment_id,
-      razorpayOrderId: data.razorpay_order_id,
+      xflowIntentId: intent.id,
     },
     update: {
-      planId: data.planId,
+      planId,
       status: "ACTIVE",
-      razorpayPaymentId: data.razorpay_payment_id,
-      razorpayOrderId: data.razorpay_order_id,
+      xflowIntentId: intent.id,
     },
   });
 
-  return NextResponse.json({ ok: true, email: data.email, planId: data.planId });
+  return NextResponse.json({ ok: true, email, planId });
 }

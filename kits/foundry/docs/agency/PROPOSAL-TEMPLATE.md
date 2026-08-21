@@ -10,7 +10,7 @@ One sentence: what business outcome the software should create.
 
 ## Scope
 - MVP pages: …
-- Payments: Razorpay INR
+- Payments: Xflow INR UPI
 - Auth: magic link
 - Admin / dashboard: …
 

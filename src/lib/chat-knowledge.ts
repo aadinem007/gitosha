@@ -157,16 +157,16 @@ export const KNOWLEDGE: KnowledgeEntry[] = [
     id: "pricing",
     keywords: ["price", "pricing", "cost", "how much", "dollar", "usd", "$", "cheap", "plan"],
     reply: {
-      text: "Vault: Scout free · Operator $15/mo launch (then $19) · Operator Annual $149/yr · Studio $49/mo. Foundry: Solo $99 · Agency $249 · Launch Bundle $149. Prices in USD; cards accepted worldwide.",
+      text: "Vault: Scout free · Operator $15/mo launch (then $19) · Operator Annual $149/yr · Studio $49/mo. Foundry: Solo $99 · Agency $249 · Launch Bundle $149. Catalog is USD; checkout is INR UPI through Xflow (India). International cards are not on this rail.",
       links: [{ label: "Full pricing", href: "/pricing" }],
       suggestions: ["Operator details", "Foundry Solo details", "Launch Bundle"],
     },
   },
   {
     id: "payment",
-    keywords: ["stripe", "razorpay", "upi", "pay", "payment", "card", "checkout", "refund", "test"],
+    keywords: ["xflow", "upi", "pay", "payment", "card", "checkout", "refund", "test"],
     reply: {
-      text: "Checkout runs through the site payment provider. List prices are USD; amounts are set server-side. After a successful payment, Foundry buyers get a license key on-screen; Vault buyers sign in with the same email. For billing issues, use Contact in the footer.",
+      text: "Checkout is Xflow only (INR UPI). List prices are USD; the charge uses our INR price book, not live FX. After a verified Xflow payment, Foundry buyers get a license key; Vault buyers sign in with the same email. Refunds, if any, are processed in Xflow — this site does not mark refunds without Xflow confirmation.",
       links: [
         { label: "Pricing", href: "/pricing" },
         { label: "Contact", href: `mailto:${BRAND.supportEmail}` },

@@ -3,26 +3,6 @@
 import { useId, useState } from "react";
 import Link from "next/link";
 
-declare global {
-  interface Window {
-    Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
-  }
-}
-
-function loadRazorpayScript(): Promise<boolean> {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-}
-
 export function CheckoutButton({
   planId,
   label,
@@ -64,13 +44,6 @@ export function CheckoutButton({
     setLoading(true);
     setError(null);
     try {
-      const ready = await loadRazorpayScript();
-      if (!ready || !window.Razorpay) {
-        setError("Could not load checkout. Check your connection and try again.");
-        setLoading(false);
-        return;
-      }
-
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,46 +55,23 @@ export function CheckoutButton({
         setLoading(false);
         return;
       }
-
-      const rzp = new window.Razorpay({
-        key: data.keyId,
-        order_id: data.orderId,
-        amount: data.amount,
-        currency: data.currency,
-        name: data.name,
-        description: data.description,
-        prefill: { email: data.email },
-        handler: async (response: {
-          razorpay_payment_id: string;
-          razorpay_order_id: string;
-          razorpay_signature: string;
-        }) => {
-          const verifyRes = await fetch("/api/checkout/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              planId: data.planId,
-              email: data.email,
-              ...response,
-            }),
-          });
-          if (verifyRes.ok) {
-            window.location.href = `/dashboard?paid=1`;
-          } else {
-            setError(
-              "Payment received but verification failed. Check your email before retrying."
-            );
-            setLoading(false);
-          }
-        },
-        modal: {
-          ondismiss: () => {
-            setLoading(false);
-            setError("Checkout canceled. No charge was made.");
-          },
-        },
-      });
-      rzp.open();
+      if (typeof data.upiIntentUrl === "string" && data.upiIntentUrl) {
+        window.location.href = data.upiIntentUrl as string;
+        return;
+      }
+      if (data.sessionId) {
+        const verifyRes = await fetch("/api/checkout/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId: data.sessionId, email: data.email, planId: data.planId }),
+        });
+        if (verifyRes.ok) {
+          window.location.href = "/dashboard?paid=1";
+          return;
+        }
+      }
+      setError("Checkout unavailable.");
+      setLoading(false);
     } catch {
       setError("Network error starting checkout. Please try again.");
       setLoading(false);
@@ -177,7 +127,7 @@ export function CheckoutButton({
           <Link href="/privacy" className="underline" target="_blank">
             Privacy Policy
           </Link>
-          .
+          . Pay with UPI via Xflow (INR).
         </span>
       </label>
       {error ? (
@@ -186,7 +136,7 @@ export function CheckoutButton({
         </p>
       ) : null}
       <button type="submit" disabled={loading || !accepted} className={`${base} ${style}`}>
-        {loading ? "Opening…" : label}
+        {loading ? "Opening Xflow…" : label}
       </button>
     </form>
   );

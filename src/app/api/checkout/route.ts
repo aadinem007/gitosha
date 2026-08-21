@@ -68,15 +68,14 @@ export async function POST(req: NextRequest) {
       displayCurrency,
     });
 
-    // Stable client shape for CheckoutButton (Stripe redirect + Razorpay Checkout.js)
     return NextResponse.json({
       provider: session.provider,
       mode: session.mode,
       url: session.url,
       sessionId: session.sessionId,
-      keyId: session.keyId,
       orderId: session.orderId,
       subscriptionId: session.subscriptionId,
+      upiIntentUrl: session.upiIntentUrl,
       amount: session.amount,
       currency: session.currency,
       chargeLabel: session.chargeLabel,

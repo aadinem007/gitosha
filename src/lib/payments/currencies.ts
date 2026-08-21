@@ -56,14 +56,9 @@ export function formatMoney(amountMinor: number, currency: Currency): string {
 /**
  * Charge currency is determined by the live provider, not display preference.
  */
-export function chargeCurrencyForProvider(providerId: ProviderId): Currency {
-  if (providerId === "razorpay" || providerId === "xflow") return "INR";
-  if (providerId === "paypal") {
-    const pref = (process.env.PAYPAL_CHARGE_CURRENCY ?? "USD").toUpperCase();
-    if (pref === "EUR") return "EUR";
-    return "USD";
-  }
-  return "USD";
+export function chargeCurrencyForProvider(_providerId: ProviderId = "xflow"): Currency {
+  void _providerId;
+  return "INR";
 }
 
 /**

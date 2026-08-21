@@ -8,7 +8,7 @@ export default function Home() {
       </p>
       <h1 className="mt-4 text-4xl font-bold tracking-tight">Your SaaS starts here.</h1>
       <p className="mt-4 max-w-xl text-[var(--muted)]">
-        Auth, database, Razorpay billing, webhooks, and security headers are already wired.
+        Auth, database, Xflow UPI billing, webhooks, and security headers are already wired.
         Replace this homepage with your product story and ship.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">

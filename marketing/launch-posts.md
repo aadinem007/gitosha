@@ -34,7 +34,7 @@ right now.
 
 Free tier (Scout) gets the weekly digest + top 3 ideas. Operator is $15/mo
 for the first 100 seats (then $19) — full scored database + teardowns.
-Foundry Solo is $99 one-time (production Next.js + Stripe scaffold).
+Foundry Solo is $99 one-time (production Next.js + Xflow scaffold).
 Would love brutal feedback on the scoring methodology from this community
 specifically — you're the audience who'd catch me if I started inflating
 numbers.
@@ -73,7 +73,7 @@ business in public — $0 spent so far
 Starting a build-in-public thread for a two-product venture: a scored
 opportunity-research subscription (Build-Intel Vault) and a production SaaS
 scaffold (Foundry). Total spend so far: $0 — everything's on free
-tiers (Vercel, Supabase, Stripe test mode) until there's
+tiers (Vercel, Supabase, Xflow test mode) until there's
 revenue to justify a real domain and paid infra.
 
 Will post weekly updates here with actual subscriber/revenue numbers, good or
@@ -132,7 +132,7 @@ one of these.
 ```
 Bhai — short ask.
 
-I shipped Gitosha: scored SaaS ideas + a production Next.js/Stripe starter
+I shipped Gitosha: scored SaaS ideas + a production Next.js/Xflow starter
 (Foundry Solo, $99 one-time). Checkout is live:
 
 https://gitosha.vercel.app/pricing
@@ -158,7 +158,7 @@ scoreboard first: https://gitosha.vercel.app
 ### C — X / Twitter DM (short)
 
 ```
-Hey — built Gitosha (idea scoring + Next.js/Stripe kit). Foundry Solo is
+Hey — built Gitosha (idea scoring + Next.js/Xflow kit). Foundry Solo is
 $99 one-time: https://gitosha.vercel.app/pricing
 
 If you're shipping something this month and don't want to rewire billing,

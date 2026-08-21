@@ -128,7 +128,7 @@ export function redactSecrets(value: string): string {
   return value
     .replace(/(Bearer\s+)[A-Za-z0-9._\-+=/]+/gi, "$1[REDACTED]")
     .replace(
-      /(razorpay[_-]?(key|secret|webhook)|supabase[_-]?(service|anon)|api[_-]?key|password|authorization)["'\s:=]+[^\s"',}]+/gi,
+      /(razorpay[_-]?(key|secret|webhook)|xflow[_-]?(api|webhook|account)|supabase[_-]?(service|anon)|api[_-]?key|password|authorization)["'\s:=]+[^\s"',}]+/gi,
       "$1=[REDACTED]"
     )
     .replace(/\bGITO-[A-Z0-9-]{8,}\b/g, "GITO-[REDACTED]")

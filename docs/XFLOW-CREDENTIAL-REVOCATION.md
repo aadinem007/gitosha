@@ -6,7 +6,7 @@ Removing a variable from this repo or from Vercel **does not revoke** the creden
 
 | Old provider | Status in this application | Where the credential was referenced | Action required at the provider |
 |---|---|---|---|
-| Razorpay | Removed from application | `.env.example` (removed); Vercel Production/Preview `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`; historical `LicenseKey` / `Subscriber` columns kept | Revoke/rotate keys in Razorpay Dashboard → Settings → API Keys. Delete Vercel env vars after this deploy. Disable `/api/razorpay/webhook` in Razorpay if it still points here. |
+| Razorpay | Removed from application **and removed from Vercel** | Was on Vercel Production/Preview as `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` (deleted 2026-08-21 after Xflow code went live). Historical `LicenseKey` / `Subscriber` columns kept | Still revoke/rotate keys in Razorpay Dashboard → Settings → API Keys. Disable any Razorpay webhook still pointing at `/api/razorpay/webhook`. |
 | Stripe | Removed from application | `.env.example` (removed); optional Vercel `STRIPE_*` / `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`; `npm run setup-stripe` deleted | Roll/delete keys in Stripe Dashboard → Developers → API keys. Remove webhook endpoints pointing at `/api/stripe/webhook`. |
 | PayPal | Removed from application | `.env.example` comments (removed); optional `PAYPAL_CLIENT_ID` / `PAYPAL_CLIENT_SECRET` / `PAYPAL_WEBHOOK_ID` | Disable the REST app and webhook in PayPal Developer. |
 | Wise | Removed from application | Optional `WISE_API_TOKEN` / `WISE_PROFILE_ID` | Revoke API token in Wise if one was created. |
